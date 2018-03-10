@@ -4,7 +4,7 @@ import vgl.core.gfx.render.IRenderer2D;
 import vgl.core.gfx.render.Renderer2D;
 import vgl.maths.vector.Vector2f;
 
-public class Layer2D extends ILayer2D {
+public final class Layer2D extends ILayer2D {
 
 	public Layer2D(IRenderer2D layerRenderer, float maxXProj, float maxYProj) {
 		super(layerRenderer, maxXProj, maxYProj);
@@ -22,14 +22,13 @@ public class Layer2D extends ILayer2D {
 		super(new Renderer2D(), bottomRightX, bottomRightY);
 	}
 
-
 	@Override
 	public void update() {
 	}
 
 	@Override
 	public void render(GFX2D graphics) {
-		
+
 	}
 
 }

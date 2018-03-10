@@ -21,7 +21,7 @@ import vgl.maths.vector.Matrix4f;
 import vgl.maths.vector.Vector2f;
 
 @SuppressWarnings("deprecation")
-abstract public class ILayer2D {
+abstract public class ILayer2D implements ILayer {
 
 	// TODO rework shader framework, add ShaderValidator class
 	// TODO add possibility for custom shaders in layers
@@ -49,6 +49,9 @@ abstract public class ILayer2D {
 		this.layerBackground = Color.TRANSPARENT;
 		this.initializeTextureSamplers();
 		this.uploadProjection(Projection.topLeftOrthographic(maxXProj, maxYProj));
+		if (layerRenderer instanceof Renderer2D)
+			((Renderer2D) layerRenderer).setScaling(maxXProj, maxYProj);
+
 	}
 
 	public ILayer2D(IRenderer2D layerRenderer, Vector2f bottomRight) {
@@ -100,7 +103,7 @@ abstract public class ILayer2D {
 	 * ENCAPSULATE
 	 */
 	@VGLInternal
-	void _renderInternal() {
+	public void _renderInternal() {
 		render(graphicsInstance);
 		layerRenderer.begin();
 		layerRenderer.renderSprite(new ColoredSprite(layerBackground, maxX, maxY), 0, 0);

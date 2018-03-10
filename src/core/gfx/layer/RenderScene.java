@@ -7,7 +7,7 @@ import vgl.core.internal.Checks;
 
 public class RenderScene {
 	@VGLInternal
-	private Stack<ILayer2D> layerStack;
+	private Stack<ILayer> layerStack;
 
 	public RenderScene() {
 		Checks.checkIfInitialized();
@@ -15,17 +15,17 @@ public class RenderScene {
 	}
 
 	@VGLInternal
-	public void pushInternal(ILayer2D layer) {
+	public void pushInternal(ILayer layer) {
 		this.layerStack.push(layer);
 	}
 
 	@VGLInternal
-	public ILayer2D popInternal() {
+	public ILayer popInternal() {
 		return layerStack.pop();
 	}
 
 	public void renderInternal() {
-		for (ILayer2D layer : layerStack) {
+		for (ILayer layer : layerStack) {
 			layer._renderInternal();
 		}
 	}
