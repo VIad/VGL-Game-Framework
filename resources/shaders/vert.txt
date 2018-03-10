@@ -1,0 +1,26 @@
+#version 400 core
+
+in layout (location = 0) vec3 positions;
+in layout (location = 1) vec4 color;
+in layout (location = 2) vec2 uvs;
+in layout (location = 3) float texId;
+
+uniform mat4 transformationMatrix = mat4(1);
+uniform mat4 projectionMatrix;
+
+out DATA{
+ vec3 positions;
+ vec4 color;
+ vec2 uvs;
+ float texId;
+} vs_out;
+
+
+
+void main(void){
+  gl_Position = projectionMatrix * transformationMatrix * vec4(positions,1.0f);
+  vs_out.positions = positions;
+  vs_out.color = color;
+  vs_out.uvs = uvs;
+  vs_out.texId = texId;
+}
