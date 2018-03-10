@@ -80,11 +80,18 @@ final public class Renderer2D implements IRenderer2D {
 		GL30.glBindVertexArray(0);
 
 		setupIBO();
-
 	}
 
-	final static private float	scaleX	= (float) Window.getWidth() / 16f;
-	final static private float	scaleY	= (float) Window.getHeight() / 9f;
+	public void setScaling(float pmatMaxX, float pmatMaxY) {
+		this.projMaxX = pmatMaxX;
+		this.projMaxY = pmatMaxY;
+	}
+
+	private float	projMaxX	= 16f, projMaxY = 9f;
+
+	private float	scaleX		= (float) Window.getWidth() / projMaxX;
+
+	private float	scaleY		= (float) Window.getHeight() / projMaxY;
 
 	private void setupIBO() {
 		int[] indices = new int[IBO_TOTAL_BUFFER_LENGTH];
