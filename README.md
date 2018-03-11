@@ -24,7 +24,7 @@ Cross-Platform, High performance Java Game Framework
 
 >-Ability to load 3D Models in from a file using either Assimp or the OBJ Loader provided 
 
->-Has its own mathematics library (Vectors, Matrices, Projection, linear algebra) implemented to perfeclty suit the framework's needs.
+>-Has its own mathematics library (Vectors, Matrices, Projection, linear algebra) implemented to perfeclty suit both the user and the framework's needs
 
 **IT'S EASY TO USE**
 
