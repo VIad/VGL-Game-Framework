@@ -13,6 +13,7 @@ public final class Buffer {
 
 	public Buffer(int dataUsage, float[] data) {
 		Checks.checkIfInitialized();
+		Checks.checkCanInstantiate(getClass());
 		buffer = glGenBuffers();
 		glBindBuffer(GL_ARRAY_BUFFER, buffer);
 		glBufferData(buffer, data, dataUsage);
@@ -22,6 +23,7 @@ public final class Buffer {
 
 	public Buffer(FloatBuffer data, int dataUsage) {
 		Checks.checkIfInitialized();
+		Checks.checkCanInstantiate(getClass());
 		buffer = glGenBuffers();
 		glBindBuffer(GL_ARRAY_BUFFER, buffer);
 		glBufferData(buffer, data, dataUsage);
@@ -31,6 +33,7 @@ public final class Buffer {
 
 	public Buffer(int dataSizeBytes, int usage) {
 		Checks.checkIfInitialized();
+		Checks.checkCanInstantiate(getClass());
 		buffer = glGenBuffers();
 		glBindBuffer(GL_ARRAY_BUFFER, buffer);
 		glBufferData(GL_ARRAY_BUFFER, dataSizeBytes, usage);
