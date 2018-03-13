@@ -1,7 +1,5 @@
 package vgl.platform.gl;
 
-import org.lwjgl.opengl.GL15;
-
 import vgl.core.internal.Checks;
 
 public abstract class GLIndexBuffer {
@@ -11,6 +9,7 @@ public abstract class GLIndexBuffer {
 
 	public GLIndexBuffer(final int[] data) {
 		Checks.checkIfInitialized();
+		Checks.checkCanInstantiate(getClass());
 		buffer_ID = newBuffer();
 		storeData(data);
 		count = data.length;

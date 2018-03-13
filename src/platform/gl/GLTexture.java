@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import vgl.core.internal.Checks;
+import vgl.platform.Platform;
+import vgl.web.gl.WGLTexture;
 
 abstract public class GLTexture {
 
@@ -19,12 +21,14 @@ abstract public class GLTexture {
 
 	public GLTexture(final String path) {
 		Checks.checkIfInitialized();
+		Checks.checkCanInstantiate(getClass());
 		texture = load(path);
 		all.add(this);
 	}
 
 	public GLTexture(final BufferedImage image) {
 		Checks.checkIfInitialized();
+		Checks.checkCanInstantiate(getClass());
 		texture = load(image);
 		all.add(this);
 	}
