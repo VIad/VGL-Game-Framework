@@ -1,0 +1,17 @@
+<component name="libraryTable">
+  <library name="LWJGL - Mini">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../../lwjgl/lwjgl.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../lwjgl/lwjgl-assimp.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../lwjgl/lwjgl-glfw.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../lwjgl/lwjgl-opengl.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../lwjgl/lwjgl-opengles.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../lwjgl/lwjgl-jawt.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../lwjgl/lwjgl-natives-windows.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../lwjgl/lwjgl-opengl-natives-windows.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../common Java libs/lwjgl_util.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
