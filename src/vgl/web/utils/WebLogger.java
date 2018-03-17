@@ -95,15 +95,15 @@ public class WebLogger implements ILogger {
 	}
 
 	private static native void nJSInfo(String prefix, String message) /*-{
-		$wnd.console.log("[" + prefix + "]" + indent + +message);
+		$wnd.console.log(prefix + indent + +message);
 	}-*/;
 
 	private static native void nJSWarn(String prefix, String message) /*-{
-		$wnd.console.warn("[" + prefix + "]" + indent + message);
+		$wnd.console.warn(prefix + indent + message);
 	}-*/;
 
 	private static native void nJSError(String prefix, String message) /*-{
-		$wnd.console.error("[" + prefix + "]" + indent + +message);
+		$wnd.console.error(prefix + indent + +message);
 	}-*/;
 
 }
