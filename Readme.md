@@ -10,11 +10,13 @@ Cross-Platform, High performance Java Game Framework
 
 >-Ability to create both 2D / 3D Applications
 
+>-Multiplatform - You can create and export your games for web(Html) and desktop(Windows, Linux).
+
 >-Great Audio Engine supporting formats such as WAV, OGG and others
 
 >-Extremelly fast render engine for 2D games (3D Still in development)
 
->-Completelly fitted for java 8 development with asynchronous file loading / writing, callback functions and worker implementations
+>-Completelly fit for java 8 development with asynchronous file loading / writing, callback functions and worker implementations
 
 >-Wrapper classes for nearly all OpenGL / OpenAL objects
 
@@ -48,8 +50,6 @@ for more information
 
 **FUTURE PLANS**
 
->-Web Platform using WebGL
-
 >-UI Framework(Buttons / Sliders / Panels)
 
 >-Better 3D Support
@@ -67,6 +67,8 @@ for more information
 >-Android support(Far future)
 
 **CURRENTLY SUPPORTED PLATFORMS:**
+
+Web (HTML)
 
 Windows(x86 - x64)
 
