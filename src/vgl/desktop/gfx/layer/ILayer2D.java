@@ -49,8 +49,10 @@ abstract public class ILayer2D implements ILayer {
 		this.shader = ShaderFactory.default2DShader(GlobalDetails.getPlatform());
 		this.submitted = new ArrayList<>();
 		this.layerBackground = Color.TRANSPARENT;
+		shader.start();
 		this.initializeTextureSamplers();
 		this.uploadProjection(Projection.topLeftOrthographic(maxXProj, maxYProj));
+		shader.stop();
 		layerRenderer.setScaling(maxXProj, maxYProj);
 	}
 
@@ -104,9 +106,11 @@ abstract public class ILayer2D implements ILayer {
 	 */
 	@VGLInternal
 	public void _renderInternal() {
-		render(graphicsInstance);
+		shader.start();
 		layerRenderer.begin();
-		layerRenderer.renderSprite(new ColoredSprite(layerBackground, maxX, maxY), 0, 0);
+		if (!layerBackground.equals(Color.TRANSPARENT))
+			layerRenderer.renderSprite(new ColoredSprite(layerBackground, maxX, maxY), 0, 0);
+		render(graphicsInstance);
 		for (Renderable2D renderable2d : submitted) {
 			if (renderable2d instanceof TextRenderable) {
 				TextRenderable r = (TextRenderable) renderable2d;
@@ -117,8 +121,10 @@ abstract public class ILayer2D implements ILayer {
 			layerRenderer.renderSprite(renderable.getRenderable(), renderable.x, renderable.y, renderable.width,
 			        renderable.height, renderable.transform != null ? renderable.transform.toMatrix() : null);
 		}
+		submitted.clear();
 		layerRenderer.end();
 		layerRenderer.render();
+		shader.stop();
 	}
 
 	abstract public void render(GFX2D graphics);
