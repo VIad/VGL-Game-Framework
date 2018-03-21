@@ -1,38 +1,41 @@
 package vgl.desktop;
 
+import static org.lwjgl.glfw.GLFW.glfwDefaultWindowHints;
+import static org.lwjgl.glfw.GLFW.glfwInit;
+import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
+import static org.lwjgl.glfw.GLFW.glfwPollEvents;
+import static org.lwjgl.glfw.GLFW.glfwShowWindow;
+import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
+import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
+import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_VERSION;
+import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glGetString;
+
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
-import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL43;
+import org.lwjgl.opengl.GLDebugMessageCallbackI;
 
 import vgl.core.exception.VGLException;
 import vgl.core.internal.Checks;
-import vgl.core.internal.ProcessManager;
-import vgl.core.main.GameLoop;
-import vgl.core.main.PostLoopCleaner;
-import vgl.core.main.PreLoopInitializer;
 import vgl.desktop.gl.VertexArray;
 import vgl.desktop.input.Mouse;
 import vgl.natives.NativeUtils;
 
-import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*;
-
 public class CoreContext {
 
-	private static final String					version	= "0.1";
+	private static final String		version	= "0.1";
 
-	private static CoreContext					context;
+	private static CoreContext		context;
 
-	private volatile static GameLoop			loop;
+	private static VGLApplication	application;
 
-	private volatile static PreLoopInitializer	initializer;
-
-	private volatile static PostLoopCleaner		cleaner;
-
-	private static VGLApplication				application;
-
-	private static Window						w;
+	private static Window			w;
 
 	/**
 	 * User of the API should not access the constructor
@@ -85,10 +88,6 @@ public class CoreContext {
 		CoreContext.createWindow(title, width, height, false, false);
 	}
 
-	public synchronized static void preLoop(final PreLoopInitializer initializer) {
-		CoreContext.initializer = initializer;
-	}
-
 	public static void initGL() {
 		Checks.__setglinit(true);
 		Window.create();
@@ -100,6 +99,7 @@ public class CoreContext {
 		else
 			glfwSwapInterval(0);
 		System.out.println("VGL " + version + " | OpenGL " + glGetString(GL_VERSION));
+
 	}
 
 	private static boolean f = true;
@@ -123,7 +123,7 @@ public class CoreContext {
 			lastTime = now;
 			while (delta >= 1) {
 				try {
-//					ProcessManager.runAll();
+					// ProcessManager.runAll();
 					application.update();
 					ups++;
 				} catch (VGLException e) {
@@ -133,6 +133,8 @@ public class CoreContext {
 				delta--;
 			}
 			try {
+				if (application.getLayout() != null)
+					application.getLayout().render();
 				application.render();
 			} catch (VGLException e) {
 				// TODO Auto-generated catch block
@@ -158,6 +160,10 @@ public class CoreContext {
 
 			// glFinish();
 			// glFlush();
+			int error = GL11.glGetError();
+			if (error != GL11.GL_NO_ERROR) {
+				System.out.println("GL_ERROR >> " + error);
+			}
 			glfwSwapBuffers(Window.__ptr());
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glfwPollEvents();
@@ -173,10 +179,6 @@ public class CoreContext {
 		GLFW.glfwDestroyWindow(Window.__ptr());
 	}
 
-	public synchronized static void postLoop(final PostLoopCleaner cleaner) {
-		CoreContext.cleaner = cleaner;
-	}
-
 	public static CoreContext getContext() {
 		return context;
 	}
@@ -185,10 +187,5 @@ public class CoreContext {
 		if (context == null)
 			throw new NullPointerException("Context >> null");
 		return w;
-	}
-
-	public static synchronized void openLoop(final GameLoop loop) {
-		System.out.println("Context loop >> open");
-		CoreContext.loop = loop;
 	}
 }
