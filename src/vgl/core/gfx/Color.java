@@ -123,7 +123,7 @@ public final class Color implements java.io.Serializable, Comparable<Color> {
 	 */
 	public static final Color BLACK = new Color(0x000000);
 	
-	public static final Color TRANSPARENT = new Color(0xffffff00);
+	public static final Color TRANSPARENT = new Color(0xffffff00, true);
 
 	public static final byte SIZE_BYTES = 4 * Float.BYTES;
 
