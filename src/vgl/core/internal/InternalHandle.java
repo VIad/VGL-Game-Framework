@@ -6,13 +6,11 @@ import java.util.Queue;
 //TODO
 public class InternalHandle {
 
-	private final Queue<Runnable>		taskQueue;
 	private final Queue<Runnable>		onUpdateQueue;
 
 	private static final InternalHandle	handle	= new InternalHandle();
 
 	private InternalHandle() {
-		taskQueue = new LinkedList<>();
 		onUpdateQueue = new LinkedList<>();
 	}
 
@@ -20,19 +18,12 @@ public class InternalHandle {
 		return handle;
 	}
 
-	void enqueueProcess(final Runnable process, boolean onUpdate) {
-		if (onUpdate)
-			handle.onUpdateQueue.offer(process);
-		else
-			handle.taskQueue.offer(process);
+	void enqueueOnUpdate(final Runnable process) {
+		onUpdateQueue.offer(process);
 	}
 
 	Queue<Runnable> getOnUpdateQueue() {
 		return onUpdateQueue;
-	}
-
-	Queue<Runnable> getTaskQueue() {
-		return taskQueue;
 	}
 
 }

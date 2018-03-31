@@ -13,21 +13,16 @@ public class ProcessManager {
 	// }
 	// }).start();
 	// }
-	//
-	// public static void runNextUpdate(final Runnable runnable) {
-	// InternalHandle.getHandle().enqueueProcess(runnable, true);
-	// }
-	//
-	// public static void enqueue(final Runnable runnable) {
-	// InternalHandle.getHandle().enqueueProcess(runnable, false);
-	// }
-	//
-	// public static void runOnUpdate() {
-	// final Queue<Runnable> taskQueue =
-	// InternalHandle.getHandle().getOnUpdateQueue();
-	// for (Runnable runnable : taskQueue) {
-	// runnable.run();
-	// }
-	// }
+
+	public static void runNextUpdate(final Runnable runnable) {
+		InternalHandle.getHandle().enqueueOnUpdate(runnable);
+	}
+
+	public static void runOnUpdate() {
+		InternalHandle.getHandle().getOnUpdateQueue().removeIf((r) -> {
+			r.run();
+			return true;
+		});
+	}
 
 }
