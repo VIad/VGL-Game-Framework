@@ -18,11 +18,10 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL43;
-import org.lwjgl.opengl.GLDebugMessageCallbackI;
 
 import vgl.core.exception.VGLException;
 import vgl.core.internal.Checks;
+import vgl.core.internal.ProcessManager;
 import vgl.desktop.gl.VertexArray;
 import vgl.desktop.input.Mouse;
 import vgl.natives.NativeUtils;
@@ -123,7 +122,7 @@ public class CoreContext {
 			lastTime = now;
 			while (delta >= 1) {
 				try {
-					// ProcessManager.runAll();
+					ProcessManager.runOnUpdate();
 					application.update();
 					ups++;
 				} catch (VGLException e) {

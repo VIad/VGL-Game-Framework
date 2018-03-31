@@ -2,11 +2,10 @@ package vgl.desktop;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils.Collections;
-
-import vgl.platform.FileDetails;
+import vgl.platform.io.FileDetails;
 
 public class DesktopFileDetails extends FileDetails {
 
@@ -18,7 +17,7 @@ public class DesktopFileDetails extends FileDetails {
 	}
 
 	@Override
-	public long size() {
+	public long sizeBytes() {
 		return file.length();
 	}
 
@@ -44,20 +43,15 @@ public class DesktopFileDetails extends FileDetails {
 
 	@Override
 	public String getExtension() {
-		return isDirectory() ?
-				             null 
-				           : path.substring(path.lastIndexOf('.'), path.length());
+		return isDirectory() ? null : path.substring(path.lastIndexOf('.') + 1, path.length());
 	}
 
 	@Override
 	public List<FileDetails> listFiles() {
 		if (!isDirectory())
 			return EMPTY_FILE_LIST;
-		File[] files = file.listFiles();
 		List<FileDetails> details = new ArrayList<>();
-		for (File file : files) {
-			details.add(new DesktopFileDetails(file.getAbsolutePath()));
-		}
+		Arrays.stream(file.listFiles()).forEach(f -> details.add(new DesktopFileDetails(f.getAbsolutePath())));
 		return details;
 	}
 
