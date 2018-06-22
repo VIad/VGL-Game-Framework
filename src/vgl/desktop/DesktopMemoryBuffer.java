@@ -4,6 +4,8 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
+import org.lwjgl.system.MemoryUtil;
+
 import vgl.core.buffers.BufferDetails;
 import vgl.core.buffers.MemoryBuffer;
 
@@ -14,28 +16,23 @@ public class DesktopMemoryBuffer extends MemoryBuffer {
 
 	public DesktopMemoryBuffer(int capacity) {
 		super(capacity);
-		this.direct = ByteBuffer.allocateDirect(capacity);
+		this.direct = MemoryUtil.memAlloc(capacity);
 		this.details = new BufferDetails(direct, capacity);
 	}
 
 	@Override
-	public void writeInt(int value) {
-		direct.putInt(value);
-	}
-
-	@Override
-	public void writeInt(int index, int value) {
+	public void putInt(int index, int value) {
 		direct.putInt(index, value);
 	}
 
 	@Override
-	public void writeByte(byte value) {
-		direct.put(value);
+	public void putByte(int index, int value) {
+		direct.put(index, (byte) value);
 	}
 
 	@Override
-	public void writeFloat(float value) {
-		direct.putFloat(value);
+	public void putFloat(int index, float value) {
+		direct.putFloat(index, value);
 	}
 
 	@Override
@@ -62,7 +59,7 @@ public class DesktopMemoryBuffer extends MemoryBuffer {
 		DesktopMemoryBuffer buffer = new DesktopMemoryBuffer(nioBuffer.capacity());
 		nioBuffer.flip();
 		for (int i = 0; i < nioBuffer.capacity(); i++) {
-			buffer.writeByte(nioBuffer.get());
+			buffer.putByte(i, nioBuffer.get());
 		}
 		return buffer;
 	}
@@ -71,7 +68,7 @@ public class DesktopMemoryBuffer extends MemoryBuffer {
 		DesktopMemoryBuffer buffer = new DesktopMemoryBuffer(nioBuffer.capacity() * Integer.BYTES);
 		nioBuffer.flip();
 		for (int i = 0; i < nioBuffer.capacity(); i++) {
-			buffer.writeInt(nioBuffer.get());
+			buffer.putInt(i, nioBuffer.get());
 		}
 		return buffer;
 	}
@@ -80,7 +77,7 @@ public class DesktopMemoryBuffer extends MemoryBuffer {
 		DesktopMemoryBuffer buffer = new DesktopMemoryBuffer(nioBuffer.capacity() * Float.BYTES);
 		nioBuffer.flip();
 		for (int i = 0; i < nioBuffer.capacity(); i++) {
-			buffer.writeFloat(nioBuffer.get());
+			buffer.putFloat(i * 4, nioBuffer.get());
 		}
 		return buffer;
 	}
@@ -88,5 +85,11 @@ public class DesktopMemoryBuffer extends MemoryBuffer {
 	@Override
 	public int getPointer() {
 		return direct.position();
+	}
+
+	@Override
+	public void free() {
+		// TODO Auto-generated method stub
+
 	}
 }

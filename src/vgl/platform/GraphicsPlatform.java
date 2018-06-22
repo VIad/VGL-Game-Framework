@@ -69,6 +69,8 @@ public interface GraphicsPlatform {
 
 	void glDisable(int what);
 
+	void glClear(int flags);
+
 	void glClearColor(float r, float g, float b, float a);
 
 	void glDepthMask(boolean val);
@@ -100,9 +102,13 @@ public interface GraphicsPlatform {
 
 	void glLinkProgram(int program);
 
-	int glGetUniformLocation(int program, CharSequence name);
+	void glValidateProgram(int program);
 
-	int glGetAttributeLocation(int program, CharSequence name);
+	int glGetUniformLocation(int program, String name);
+
+	void glBindAttribLocation(int program, int attribute, String variableName);
+
+	int glGetAttributeLocation(int program, String name);
 
 	void glUseProgram(int program);
 
@@ -126,6 +132,14 @@ public interface GraphicsPlatform {
 
 	void glUniformMatrix3fv(int location, boolean transpose, MemoryBuffer matrix);
 
+	void glUniform1fv(int location, float[] data);
+
+	void glUniform1iv(int location, int[] data);
+
+	void glDetachShader(int program, int shader);
+
+	void glDeleteShader(int shader);
+
 	void glDeleteProgram(int... id);
 
 	int glCreateShader(ShaderType type);
@@ -136,8 +150,10 @@ public interface GraphicsPlatform {
 
 	int glGetShaderi(int shader, int param);
 
-	String getShaderInfoLog(int shader);
-
 	void glDeleteShader(int... shaders);
+
+	String glGetShaderInfoLog(int shaderID);
+
+	boolean glGetBoolean(int which);
 
 }

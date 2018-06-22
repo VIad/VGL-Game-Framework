@@ -1,16 +1,10 @@
 package vgl.platform.gl;
 
-import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.system.MemoryUtil;
-
 import vgl.core.gfx.shader.ShaderType;
 import vgl.core.internal.Checks;
-import vgl.desktop.gfx.shader.ShaderProgram;
 import vgl.maths.vector.Matrix4f;
 import vgl.maths.vector.Vector2f;
 import vgl.maths.vector.Vector3f;

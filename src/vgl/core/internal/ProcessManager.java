@@ -1,6 +1,6 @@
 package vgl.core.internal;
 
-import java.util.Queue;
+import vgl.core.annotation.VGLInternal;
 
 public class ProcessManager {
 
@@ -14,11 +14,23 @@ public class ProcessManager {
 	// }).start();
 	// }
 
-	public static void runNextUpdate(final Runnable runnable) {
-		InternalHandle.getHandle().enqueueOnUpdate(runnable);
+	private ProcessManager() {
+
 	}
 
-	public static void runOnUpdate() {
+	private final static ProcessManager instance = new ProcessManager();
+
+	public static ProcessManager get() {
+		return instance;
+	}
+
+	public ProcessManager runNextUpdate(final Runnable runnable) {
+		InternalHandle.getHandle().enqueueOnUpdate(runnable);
+		return this;
+	}
+
+	@VGLInternal
+	public void runOnUpdate() {
 		InternalHandle.getHandle().getOnUpdateQueue().removeIf((r) -> {
 			r.run();
 			return true;

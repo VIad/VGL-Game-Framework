@@ -3,7 +3,6 @@ package vgl.core.geom;
 import vgl.maths.vector.Matrix4f;
 import vgl.maths.vector.Vector2f;
 import vgl.maths.vector.Vector3f;
-import vgl.maths.vector.VectorMaths;
 
 public class Transform2D {
 

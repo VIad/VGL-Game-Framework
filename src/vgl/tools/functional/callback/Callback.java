@@ -4,5 +4,5 @@ package vgl.tools.functional.callback;
 public interface Callback<T> {
 
 	void invoke(T t);
-
+	
 }

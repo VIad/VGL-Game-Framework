@@ -1,11 +1,16 @@
 package vgl.desktop.utils;
 
-import org.lwjgl.opengl.*;
+import java.nio.FloatBuffer;
+
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL15;
+import org.lwjgl.opengl.GL20;
+import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL33;
+
 import vgl.core.gfx.Color;
 import vgl.maths.vector.Vector2f;
 import vgl.maths.vector.Vector3f;
-
-import java.nio.FloatBuffer;
 
 public class VertexBufferUtils {
 

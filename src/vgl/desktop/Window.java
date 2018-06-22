@@ -1,5 +1,13 @@
 package vgl.desktop;
 
+import static org.lwjgl.glfw.GLFW.GLFW_FALSE;
+import static org.lwjgl.glfw.GLFW.GLFW_RESIZABLE;
+import static org.lwjgl.glfw.GLFW.GLFW_TRUE;
+import static org.lwjgl.glfw.GLFW.GLFW_VISIBLE;
+import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
+import static org.lwjgl.glfw.GLFW.glfwGetVideoMode;
+import static org.lwjgl.glfw.GLFW.glfwWindowHint;
+
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL11;
@@ -7,8 +15,6 @@ import org.lwjgl.opengl.GL11;
 import vgl.core.annotation.VGLInternal;
 import vgl.core.gfx.Color;
 import vgl.maths.vector.Vector4f;
-
-import static org.lwjgl.glfw.GLFW.*;
 
 public class Window {
 

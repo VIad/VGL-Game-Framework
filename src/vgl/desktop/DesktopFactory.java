@@ -1,7 +1,6 @@
 package vgl.desktop;
 
 import vgl.core.buffers.MemoryBuffer;
-import vgl.main.VGL;
 import vgl.platform.Factory;
 import vgl.platform.io.FileDetails;
 

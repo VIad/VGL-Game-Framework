@@ -1,13 +1,19 @@
 package vgl.desktop.audio;
 
+import static org.lwjgl.openal.AL10.AL_PAUSED;
+import static org.lwjgl.openal.AL10.AL_PLAYING;
+import static org.lwjgl.openal.AL10.AL_POSITION;
+import static org.lwjgl.openal.AL10.AL_SOURCE_STATE;
+import static org.lwjgl.openal.AL10.alGenSources;
+import static org.lwjgl.openal.AL10.alGetSourcei;
+import static org.lwjgl.openal.AL10.alSource3f;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.lwjgl.openal.AL10;
 
 import vgl.core.annotation.VGLInternal;
-
-import static org.lwjgl.openal.AL10.*;
 //============================================================================
 //Name        : AudioSourcePool
 //Author      : Vladimir Ivanov
@@ -63,12 +69,10 @@ public class AudioSourcePool {
 	 */
 	@VGLInternal
 	public static int queryFreeSourceSlot() {
-		for (int source : sourcesHandle) {
-			if (alGetSourcei(source, AL_SOURCE_STATE) != AL_PLAYING
-			        && alGetSourcei(source, AL_SOURCE_STATE) != AL_PAUSED) {
-				return source;
-			}
-		}
-		return ASP_NOT_FOUND;
+		return sourcesHandle.stream()
+		                    .filter(source -> alGetSourcei(source, AL_SOURCE_STATE) != AL_PAUSED)
+		                    .filter(source -> alGetSourcei(source, AL_SOURCE_STATE) != AL_PLAYING)
+		                    .findFirst()
+		                    .orElse(ASP_NOT_FOUND);
 	}
 }

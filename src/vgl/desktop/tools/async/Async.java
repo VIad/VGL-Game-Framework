@@ -1,12 +1,9 @@
 package vgl.desktop.tools.async;
 
-import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import vgl.desktop.io.FileInput;
 
 public class Async {
 

@@ -1,12 +1,12 @@
 package vgl.desktop.system;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+
 import vgl.core.gfx.render.VertexLayout;
 import vgl.maths.vector.Vector2f;
 import vgl.maths.vector.Vector3f;
 import vgl.maths.vector.Vector4f;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 
 //============================================================================
 //Name        : Size

@@ -1,8 +1,6 @@
 package vgl.maths.vector;
 //==================================================================================
 
-import java.nio.BufferOverflowException;
-
 //Name        : Matrix4f
 //Author      : Vladimir Ivanov
 //Version     : 1.0
@@ -45,7 +43,10 @@ public class Matrix4f implements java.io.Serializable {
 	 */
 	public float
 
-								m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33;
+	m00, m01, m02, m03,
+	m10, m11, m12, m13,
+	m20, m21, m22, m23,
+	m30, m31, m32, m33;
 
 	public Matrix4f() {
 		setIdentity();

@@ -143,6 +143,11 @@ public class DesktopGraphicsPlatform implements GraphicsPlatform {
 	}
 
 	@Override
+	public void glClear(int mask) {
+		GL11.glClear(mask);
+	}
+
+	@Override
 	public void glClearColor(float r, float g, float b, float a) {
 		GL11.glClearColor(r, g, b, a);
 	}
@@ -213,12 +218,12 @@ public class DesktopGraphicsPlatform implements GraphicsPlatform {
 	}
 
 	@Override
-	public int glGetUniformLocation(int program, CharSequence name) {
+	public int glGetUniformLocation(int program, String name) {
 		return GL20.glGetUniformLocation(program, name);
 	}
 
 	@Override
-	public int glGetAttributeLocation(int program, CharSequence name) {
+	public int glGetAttributeLocation(int program, String name) {
 		return GL20.glGetAttribLocation(program, name);
 	}
 
@@ -308,11 +313,6 @@ public class DesktopGraphicsPlatform implements GraphicsPlatform {
 	}
 
 	@Override
-	public String getShaderInfoLog(int shader) {
-		return GL20.glGetShaderInfoLog(shader);
-	}
-
-	@Override
 	public void glDeleteShader(int... shaders) {
 		for (int shader : shaders)
 			GL20.glDeleteShader(shader);
@@ -321,6 +321,46 @@ public class DesktopGraphicsPlatform implements GraphicsPlatform {
 	@Override
 	public void glDisableVertexAttribArray(int index) {
 		GL20.glDisableVertexAttribArray(index);
+	}
+
+	@Override
+	public void glUniform1fv(int location, float[] data) {
+		GL20.glUniform1fv(location, data);
+	}
+
+	@Override
+	public void glUniform1iv(int location, int[] data) {
+		GL20.glUniform1iv(location, data);
+	}
+
+	@Override
+	public void glDetachShader(int program, int shader) {
+		GL20.glDetachShader(program, shader);
+	}
+
+	@Override
+	public void glDeleteShader(int shader) {
+		GL20.glDeleteShader(shader);
+	}
+
+	@Override
+	public void glBindAttribLocation(int program, int attribute, String variableName) {
+		GL20.glBindAttribLocation(program, attribute, variableName);
+	}
+
+	@Override
+	public void glValidateProgram(int program) {
+		GL20.glValidateProgram(program);
+	}
+
+	@Override
+	public String glGetShaderInfoLog(int shaderID) {
+		return GL20.glGetShaderInfoLog(shaderID);
+	}
+
+	@Override
+	public boolean glGetBoolean(int which) {
+		return GL11.glGetBoolean(which);
 	}
 
 }

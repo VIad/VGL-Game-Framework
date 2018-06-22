@@ -6,7 +6,7 @@ public interface ThrowableFunction<T extends java.lang.Throwable, A> {
 
 	T apply(A a);
 
-	default java.util.function.Supplier<T> thenProcess(A argument) {
+	default java.util.function.Supplier<T> supplyWith(A argument) {
 		Objects.requireNonNull(argument);
 		return () -> this.apply(argument);
 	}

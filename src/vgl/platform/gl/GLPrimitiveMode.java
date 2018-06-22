@@ -1,6 +1,6 @@
 package vgl.platform.gl;
 
-import org.lwjgl.opengl.GL11;
+import com.shc.webgl4j.client.WebGL10;
 
 public enum GLPrimitiveMode {
 
@@ -10,21 +10,21 @@ public enum GLPrimitiveMode {
 		switch (this)
 		{
 			case LINES:
-				return GL11.GL_LINES;
+				return WebGL10.GL_LINES;
 			case QUADS:
-				return GL11.GL_QUADS;
+				return 7;// glQuads
 			case LINE_LOOP:
-				return GL11.GL_LINE_LOOP;
+				return WebGL10.GL_LINE_LOOP;
 			case LINE_STRIP:
-				return GL11.GL_LINE_STRIP;
+				return WebGL10.GL_LINE_STRIP;
 			case POINTS:
-				return GL11.GL_POINTS;
+				return WebGL10.GL_POINTS;
 			case TRIANGLES:
-				return GL11.GL_TRIANGLES;
+				return WebGL10.GL_TRIANGLES;
 			case TRIANGLE_FAN:
-				return GL11.GL_TRIANGLE_FAN;
+				return WebGL10.GL_TRIANGLE_FAN;
 			case TRIANGLE_STRIP:
-				return GL11.GL_TRIANGLE_STRIP;
+				return WebGL10.GL_TRIANGLE_STRIP;
 			default:
 				throw new Error();
 		}

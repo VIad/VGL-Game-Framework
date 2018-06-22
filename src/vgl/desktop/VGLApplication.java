@@ -1,9 +1,11 @@
 package vgl.desktop;
 
-import sun.security.util.DisabledAlgorithmConstraints;
-import vgl.VGLInitializator;
 import vgl.core.exception.VGLException;
 import vgl.core.internal.GlobalDetails;
+import vgl.desktop.gl.DesktopGraphicsPlatform;
+import vgl.desktop.input.Keyboard;
+import vgl.desktop.input.Mouse;
+import vgl.desktop.io.DesktopIOSystem;
 import vgl.desktop.utils.DesktopLogger;
 import vgl.main.VGL;
 import vgl.platform.Application;
@@ -32,6 +34,8 @@ abstract public class VGLApplication extends Application {
 		CoreContext.createWindow(title, w_width, w_height, vsync, false);
 		Window.setResizable(resizable);
 		CoreContext.initGL();
+		Mouse.create();
+		Keyboard.create();
 		try {
 			init();
 		} catch (VGLException e) {
@@ -66,6 +70,8 @@ abstract public class VGLApplication extends Application {
 		VGL.factory = new DesktopFactory();
 		VGL.logger = new DesktopLogger();
 		VGL.display = new Display(w_width, w_height);
+		VGL.api = new DesktopGraphicsPlatform();
+		VGL.io = new DesktopIOSystem();
 	}
 
 }

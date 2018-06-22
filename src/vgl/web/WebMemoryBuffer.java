@@ -1,7 +1,5 @@
 package vgl.web;
 
-import javax.xml.soap.Detail;
-
 import com.vgl.gwtreq.client.GWTArrayBuffer;
 import com.vgl.gwtreq.client.GWTDataView;
 
@@ -23,12 +21,24 @@ public class WebMemoryBuffer extends MemoryBuffer {
 	public WebMemoryBuffer(int capacity) {
 		super(capacity);
 		if (endian == 0) {
-			endian = getEndianness() ? LITTLE_ENDIAN : BIG_ENDIAN;
+			endian = isLittleEndian() ? LITTLE_ENDIAN : BIG_ENDIAN;
 		}
 		this.buffer = new GWTArrayBuffer(capacity);
 		this.dataView = new GWTDataView(buffer);
 		this.details = new BufferDetails(dataView, capacity);
 	}
+	
+	public WebMemoryBuffer(GWTArrayBuffer arrayBuffer) {
+		super(0);
+		if(endian == 0) {
+			endian = isLittleEndian() ? LITTLE_ENDIAN : BIG_ENDIAN;
+		}
+		this.buffer = arrayBuffer;
+		this.dataView = new GWTDataView(buffer);
+		this.details = new BufferDetails(dataView, capacity);
+	}
+	
+	
 
 	@Override
 	public void putInt(int index, int value) {
@@ -36,8 +46,8 @@ public class WebMemoryBuffer extends MemoryBuffer {
 	}
 
 	@Override
-	public void putByte(int index, byte value) {
-		dataView.getView().setInt8(index, value, endian == LITTLE_ENDIAN);
+	public void putByte(int index, int value) {
+		dataView.getView().setInt8(index, value);
 	}
 
 	@Override
@@ -53,12 +63,11 @@ public class WebMemoryBuffer extends MemoryBuffer {
 	@Override
 	public float readFloat(int index) {
 		return dataView.getView().getFloat32(index, endian == LITTLE_ENDIAN);
-		;
 	}
 
 	@Override
 	public byte readByte(int index) {
-		return dataView.getView().getInt8(index, endian == LITTLE_ENDIAN);
+		return dataView.getView().getInt8(index);
 	}
 
 	@Override
@@ -77,15 +86,10 @@ public class WebMemoryBuffer extends MemoryBuffer {
 
 	}
 
-	/**
-	 * @author Sri Harsha Chilakapati
-	 * @return
-	 */
-	private native boolean getEndianness() /*-{
-		var buffer = new ArrayBuffer(2);
-		new DataView(buffer).setInt16(0, 256, true);
-		// Int16Array uses the platform's endianness.
-		return new Int16Array(buffer)[0] === 256;
+	private native boolean isLittleEndian() /*-{
+		var isLittleEndian = new Uint8Array(
+				new Uint32Array([ 0x12345678 ]).buffer)[0] === 0x78;
+		return isLittleEndian;
 	}-*/;
 
 }

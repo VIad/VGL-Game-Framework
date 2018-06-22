@@ -2,13 +2,12 @@ package vgl.core.gfx.shader;
 
 import java.io.File;
 
-import vgl.desktop.gfx.shader.ShaderProgram;
 import vgl.desktop.io.FileInput;
 import vgl.platform.Platform;
 
 public class ShaderFactory {
 
-	public static ShaderProgram default2DShader(Platform platform) {
+	public static ShaderProgram batch2DGLSL(Platform platform) {
 		if (platform != Platform.WEB) {
 			ShaderProgram def = new ShaderProgram(
 			        FileInput.readAllSync(new File("resources/shaders/vert.txt")),

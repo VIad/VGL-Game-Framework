@@ -3,8 +3,7 @@ package vgl.core.gfx.shader;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
-import com.shc.webgl4j.client.WebGL10;
-
+import vgl.core.buffers.Buffers;
 import vgl.core.buffers.MemoryBuffer;
 import vgl.main.VGL;
 import vgl.maths.vector.Matrix4f;
@@ -12,14 +11,13 @@ import vgl.maths.vector.Vector2f;
 import vgl.maths.vector.Vector3f;
 import vgl.maths.vector.Vector4f;
 import vgl.platform.gl.Shader;
-import vgl.utils.BufferStorageSafe;
 
 abstract public class ShaderProgram extends Shader {
 
 	protected static MemoryBuffer buffer4f = VGL.factory.newMemoryBuffer(16 * 4);
 
-	public ShaderProgram(String vertexFilePath, String fragmentFilePath) {
-		super(vertexFilePath, fragmentFilePath);
+	public ShaderProgram(String vertexSource, String fragmentSource) {
+		super(vertexSource, fragmentSource);
 	}
 
 	@Override
@@ -69,10 +67,10 @@ abstract public class ShaderProgram extends Shader {
 		VGL.api.glShaderSource(shaderID, source);
 		VGL.api.glCompileShader(shaderID);
 		if (VGL.api.glGetShaderi(shaderID, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
-			System.out.println(VGL.api.glGetShaderInfoLog(shaderID));
+			VGL.logger.info(VGL.api.glGetShaderInfoLog(shaderID));
 			throw new vgl.core.exception.VGLFatalError("Shader failed to compile >> [" + source + "]");
 		}
-		System.out.println("Succesfull compilation of shader : " + type);
+		VGL.logger.info("Succesfull compilation of shader : " + type);
 		return shaderID;
 	}
 
@@ -129,7 +127,7 @@ abstract public class ShaderProgram extends Shader {
 
 	@Override
 	public void uniformMat4f(String uniformName, Matrix4f matrix) {
-		BufferStorageSafe.storeInBuffer(buffer4f, matrix);
+		Buffers.wrap(buffer4f, matrix);
 		VGL.api.glUniformMatrix4fv(findUniform(uniformName), false, buffer4f);
 	}
 

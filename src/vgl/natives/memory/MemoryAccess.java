@@ -1,14 +1,20 @@
 package vgl.natives.memory;
 
-import vgl.natives.VGLNative;
-
-import static vgl.natives.memory.VGLMemory.*;
+import static vgl.natives.memory.VGLMemory.__nvglbyteArray;
+import static vgl.natives.memory.VGLMemory.__nvglcharArray;
+import static vgl.natives.memory.VGLMemory.__nvgldoubleArray;
+import static vgl.natives.memory.VGLMemory.__nvglfloatArray;
+import static vgl.natives.memory.VGLMemory.__nvglintArray;
+import static vgl.natives.memory.VGLMemory.__nvgllongArray;
+import static vgl.natives.memory.VGLMemory.__nvglmemAllocByte;
+import static vgl.natives.memory.VGLMemory.__nvglmemFree;
+import static vgl.natives.memory.VGLMemory.__nvglshortArray;
 
 import vgl.core.annotation.VGLInternal;
 
 @VGLInternal
 public class MemoryAccess {
-
+	
 	public static java.nio.ByteBuffer _allocBufferByte(int size) {
 		return __nvglmemAllocByte(size);
 	}

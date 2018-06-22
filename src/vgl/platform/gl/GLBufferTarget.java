@@ -1,7 +1,6 @@
 package vgl.platform.gl;
 
-import org.lwjgl.opengl.GL15;
-
+import com.shc.webgl4j.client.WebGL10;
 import com.shc.webgl4j.client.WebGL20;
 
 public enum GLBufferTarget {
@@ -11,9 +10,9 @@ public enum GLBufferTarget {
 		switch (this)
 		{
 			case ARRAY_BUFFER:
-				return GL15.GL_ARRAY_BUFFER;
+				return WebGL10.GL_ARRAY_BUFFER;
 			case ELEMENT_ARRAY_BUFFER:
-				return GL15.GL_ELEMENT_ARRAY_BUFFER;
+				return WebGL10.GL_ELEMENT_ARRAY_BUFFER;
 			case UNIFORM_BUFFER:
 				return WebGL20.GL_UNIFORM_BUFFER;
 			default:

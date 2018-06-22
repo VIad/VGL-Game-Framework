@@ -2,6 +2,7 @@ package vgl.core.geom;
 
 import vgl.maths.vector.Matrix4f;
 import vgl.maths.vector.Vector3f;
+import vgl.maths.vector.VectorMaths;
 
 public class Transform implements java.io.Serializable {
 
@@ -16,22 +17,28 @@ public class Transform implements java.io.Serializable {
 
 	private float				rotXDeg, rotYDeg, rotZDeg;
 
+	private Matrix4f			currentTransformation;
+
 	public Transform() {
 		this.position = new Vector3f();
 		this.scale = new Vector3f(1, 1, 1);
 		this.rotXDeg = rotYDeg = rotZDeg = 0;
+		currentTransformation = VectorMaths.transformationMatrix(this);
 	}
 
 	public Transform(Vector3f position) {
 		this.position = position;
 		this.scale = new Vector3f();
 		this.rotXDeg = rotYDeg = rotZDeg = 0;
+		this.currentTransformation = new Matrix4f();
+		currentTransformation = VectorMaths.transformationMatrix(this);
 	}
 
 	public Transform(Vector3f position, Vector3f scale) {
 		this.position = position;
 		this.scale = scale;
 		this.rotXDeg = rotYDeg = rotZDeg = 0;
+		currentTransformation = VectorMaths.transformationMatrix(this);
 	}
 
 	public Transform(Vector3f position, float rotXDeg, float rotYDeg, float rotZDeg) {
@@ -40,6 +47,7 @@ public class Transform implements java.io.Serializable {
 		this.rotXDeg = rotXDeg;
 		this.rotYDeg = rotYDeg;
 		this.rotZDeg = rotZDeg;
+		currentTransformation = VectorMaths.transformationMatrix(this);
 	}
 
 	public Transform(Vector3f position, Vector3f scale, float rotXDeg, float rotYDeg, float rotZDeg) {
@@ -48,6 +56,7 @@ public class Transform implements java.io.Serializable {
 		this.rotXDeg = rotXDeg;
 		this.rotYDeg = rotYDeg;
 		this.rotZDeg = rotZDeg;
+		currentTransformation = VectorMaths.transformationMatrix(this);
 	}
 
 	public Vector3f position() {
@@ -66,20 +75,26 @@ public class Transform implements java.io.Serializable {
 		return rotZDeg;
 	}
 
-	public void increasePosition(Vector3f amount) {
+	public Transform translateBy(Vector3f amount) {
 		this.position.add(amount);
+		currentTransformation = VectorMaths.transformationMatrix(this);
+		return this;
 	}
 
-	public void increasePosition(float xAmnt, float yAmnt, float zAmnt) {
+	public Transform translateBy(float xAmnt, float yAmnt, float zAmnt) {
 		this.position.x += xAmnt;
 		this.position.y += yAmnt;
 		this.position.z += zAmnt;
+		currentTransformation = VectorMaths.transformationMatrix(this);
+		return this;
 	}
 
-	public void increaseRotation(float amntRotXDeg, float amntRotYDeg, float amntRotZDeg) {
+	public Transform rotateBy(float amntRotXDeg, float amntRotYDeg, float amntRotZDeg) {
 		this.rotXDeg += amntRotXDeg;
 		this.rotYDeg += amntRotYDeg;
 		this.rotZDeg += amntRotZDeg;
+		currentTransformation = VectorMaths.transformationMatrix(this);
+		return this;
 	}
 
 	public Matrix4f toMatrix() {

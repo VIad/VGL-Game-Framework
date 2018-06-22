@@ -6,9 +6,10 @@ import java.nio.IntBuffer;
 
 import vgl.maths.vector.Matrix4f;
 
-public class BufferStorage {
+public class BufferStorageUnsafe {
 
-	public static void store(Matrix4f m4f, FloatBuffer buffer) {
+	@Deprecated
+	public static FloatBuffer store(Matrix4f m4f, FloatBuffer buffer) {
 		buffer.put(m4f.m00);
 		buffer.put(m4f.m01);
 		buffer.put(m4f.m02);
@@ -27,8 +28,10 @@ public class BufferStorage {
 
 		buffer.put(m4f.m33);
 		buffer.flip();
+		return buffer;
 	}
 
+	@Deprecated
 	public static IntBuffer storeDataInIntBuffer(final int[] data) {
 		final IntBuffer buffer = ByteBuffer.allocateDirect(data.length << 2).asIntBuffer();
 		buffer.put(data);
@@ -36,6 +39,7 @@ public class BufferStorage {
 		return buffer;
 	}
 
+	@Deprecated
 	public static FloatBuffer storeInFloatBuffer(final float[] data) {
 		final FloatBuffer buffer = ByteBuffer.allocateDirect(data.length << 2).asFloatBuffer();
 		buffer.put(data);

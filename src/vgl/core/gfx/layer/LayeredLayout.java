@@ -1,13 +1,12 @@
 package vgl.core.gfx.layer;
 
-import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glEnable;
-
 import java.util.Stack;
 
-import org.lwjgl.opengl.GL11;
+import com.shc.webgl4j.client.WebGL10;
 
 import vgl.core.annotation.VGLInternal;
+import vgl.desktop.gfx.layer.ILayer2D;
+import vgl.main.VGL;
 
 public class LayeredLayout implements ILayout {
 
@@ -27,14 +26,19 @@ public class LayeredLayout implements ILayout {
 
 	public void pushLayer(ILayer layer) {
 		if (layerStack.size() > 0)
-			if (!GL11.glGetBoolean(GL11.GL_BLEND)) {
-				glEnable(GL11.GL_BLEND);
-				glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+			if (!VGL.api.glGetBoolean(WebGL10.GL_BLEND)) {
+				VGL.api.glEnable(WebGL10.GL_BLEND);
+				VGL.api.glBlendFunc(WebGL10.GL_SRC_ALPHA, WebGL10.GL_ONE_MINUS_SRC_ALPHA);
 			}
 		layerStack.push(layer);
 	}
 
 	public ILayer popLayer() {
 		return layerStack.pop();
+	}
+
+	@Override
+	public void update() {
+		layerStack.stream().filter(l -> l instanceof ILayer2D).forEach(l -> ((ILayer2D) l).update());
 	}
 }

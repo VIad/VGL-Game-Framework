@@ -9,8 +9,6 @@ import org.lwjgl.openal.ALC;
 import org.lwjgl.openal.ALC10;
 import org.lwjgl.openal.ALCCapabilities;
 
-import vgl.core.annotation.VGLInternal;
-
 //============================================================================
 //Name        : AudioSystem
 //Author      : Vladimir Ivanov

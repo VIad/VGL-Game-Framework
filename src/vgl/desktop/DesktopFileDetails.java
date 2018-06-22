@@ -17,7 +17,7 @@ public class DesktopFileDetails extends FileDetails {
 	}
 
 	@Override
-	public long sizeBytes() {
+	public long length() {
 		return file.length();
 	}
 

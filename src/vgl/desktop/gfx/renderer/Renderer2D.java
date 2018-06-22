@@ -63,7 +63,6 @@ final public class Renderer2D implements IRenderer2D {
 		GL30.glBindVertexArray(vao);
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
 		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, RENDERER_BUFFER_SIZE, GLBufferUsage.DYNAMIC_DRAW);
-
 		GL20.glEnableVertexAttribArray(VertexLayout.VERTEX_INDEX);
 		GL20.glEnableVertexAttribArray(VertexLayout.COLOR_INDEX);
 		GL20.glEnableVertexAttribArray(VertexLayout.UV_INDEX);

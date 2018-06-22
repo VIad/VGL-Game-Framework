@@ -1,7 +1,5 @@
 package vgl.platform;
 
-import vgl.tools.async.UniContainer;
-
 public interface ILogger {
 
 	void log(Object message, LogLevel logLevel);

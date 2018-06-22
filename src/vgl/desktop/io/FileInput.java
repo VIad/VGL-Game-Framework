@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 
+import vgl.desktop.tools.async.VoidWorker;
 import vgl.tools.functional.callback.Callback;
 
 public class FileInput {
@@ -22,21 +23,21 @@ public class FileInput {
 	}
 
 	public static void readAll(final File f, final Callback<String> onCompletion, final boolean keepNewLines) {
-		new Thread(() -> {
-			String result = readAllSync(f, keepNewLines);
-			onCompletion.invoke(result);
+		new VoidWorker<File>(f, (file) -> {
+			String contents = readAllSync(file);
+			onCompletion.invoke(contents);
 		}).start();
 	}
 
 	public static void readALLUTF8(final File f, final Callback<String> onCompletion) {
-		new Thread(() -> {
+		new VoidWorker<File>(f, (file) -> {
 			String utf8Read = readAllUTF8Sync(f, true);
 			onCompletion.invoke(utf8Read);
 		}).start();
 	}
 
 	public static void readBytes(final File f, final Callback<byte[]> onCompletion) {
-		new Thread(() -> {
+		new VoidWorker<File>(f, (file) -> {
 			byte[] bytes = readBytesSync(f);
 			onCompletion.invoke(bytes);
 		}).start();

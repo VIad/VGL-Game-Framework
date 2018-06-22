@@ -1,7 +1,5 @@
 package vgl.core.buffers;
 
-import vgl.main.VGL;
-
 public class BufferDetails {
 
 	private Object	buffer;

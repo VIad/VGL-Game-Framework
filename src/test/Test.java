@@ -6,8 +6,8 @@ import java.util.Random;
 
 import org.lwjgl.opengl.GL11;
 
-import com.shc.webgl4j.client.WebGL10;
-
+import vgl.core.buffers.MemoryBufferInt;
+import vgl.core.buffers.TypedBuffer;
 import vgl.core.exception.VGLException;
 import vgl.core.gfx.Color;
 import vgl.core.gfx.camera.PerspectiveCamera;
@@ -15,27 +15,23 @@ import vgl.core.gfx.renderable.ColoredSprite;
 import vgl.core.gfx.renderable.ImageSprite;
 import vgl.core.gfx.renderable.Renderable2D;
 import vgl.core.gfx.shader.ShaderFactory;
+import vgl.core.gfx.shader.ShaderProgram;
+import vgl.desktop.DesktopFactory;
 import vgl.desktop.VGLApplication;
 import vgl.desktop.Window;
 import vgl.desktop.audio.AudioManager;
 import vgl.desktop.audio.AudioSystem;
-import vgl.desktop.audio.Sound;
 import vgl.desktop.gfx.Texture;
 import vgl.desktop.gfx.font.VFont;
 import vgl.desktop.gfx.renderer.Renderer2D;
-import vgl.desktop.gfx.shader.ShaderProgram;
 import vgl.desktop.input.Key;
 import vgl.desktop.input.Keyboard;
 import vgl.desktop.input.Mouse;
-import vgl.desktop.tools.async.Async;
-import vgl.desktop.utils.DesktopLogger;
+import vgl.main.VGL;
 import vgl.maths.Projection;
 import vgl.maths.vector.Matrix4f;
-import vgl.maths.vector.Vector2f;
 import vgl.maths.vector.Vector3f;
 import vgl.maths.vector.VectorMaths;
-import vgl.natives.memory.MemoryAccess;
-import vgl.platform.LogLevel;
 import vgl.platform.Platform;
 
 public class Test extends VGLApplication {
@@ -94,7 +90,9 @@ public class Test extends VGLApplication {
 	        -0.5f, -0.5f, 0.5f, -0.5f, -0.5f, -0.5f, 0.5f, -0.5f, -0.5f, 0.5f, -0.5f, 0.5f };
 
 	public static int[]			indices				= { 0, 1, 3, 3, 1, 2, 4, 5, 7, 7, 5, 6, 8, 9, 11, 11, 9, 10, 12, 13,
+
 	        15, 15, 13, 14, 16, 17, 19, 19, 17, 18, 20, 21, 23, 23, 21, 22 };
+
 	private static VFont		font;
 
 	public static void main(final String[] args) throws Exception {
@@ -109,7 +107,7 @@ public class Test extends VGLApplication {
 		VGLApplication app = new Test("Test", 1280, 720);
 		app.setVerticalSynchronized(false);
 		app.setResizable(true);
-		app.setUpdatesPerSecond(60);
+		app.setUpdatesPerSecond(100);
 		app.startApplication();
 	}
 
@@ -117,31 +115,13 @@ public class Test extends VGLApplication {
 
 	private static float	angleRotY	= 0;
 
-	private static class DefaultShader extends ShaderProgram {
-
-		public DefaultShader(final String vertexFilePath, final String fragmentFilePath) {
-			super(vertexFilePath, fragmentFilePath);
-		}
-
-		@Override
-		public void bindVertexShaderInputAttribs() {
-			super.bindAttribute(0, "positions");
-			super.bindAttribute(1, "color");
-			super.bindAttribute(2, "uvs");
-			super.bindAttribute(3, "texId");
-		}
-
-		@Override
-		public void getAllUniformLocations() {
-		}
-	}
-
 	static ArrayList<Renderable2D> list = new ArrayList<>();
 
 	@Override
 	public void init() throws VGLException {
 		AudioSystem.initialize(100);
 		AudioManager.create();
+
 		// AudioManager.add("music", new Sound("resources/test_track.ogg"));
 		// AudioManager.reconfigure("music", 1f, 1f).play();
 		System.out.println("GL_VENDOR   : " + GL11.glGetString(GL11.GL_VENDOR));
@@ -161,7 +141,7 @@ public class Test extends VGLApplication {
 
 		Window.setClearColor(Color.BLACK);
 
-		defaultShader = ShaderFactory.default2DShader(Platform.DESKTOP_X64);
+		defaultShader = ShaderFactory.batch2DGLSL(Platform.DESKTOP_X64);
 		defaultShader.start();
 		defaultShader.uniform1iv("textures", new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
 		        18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 });
@@ -252,7 +232,11 @@ public class Test extends VGLApplication {
 	@Override
 	public void render() throws VGLException {
 		if (System.currentTimeMillis() - time > 2000) {
-			time = System.currentTimeMillis() + 50000000;
+			// FileInput.readAll(new File("E:\\Folderington\\newFile0.txt"), (result) -> {
+			// System.out.println("Read -> " + result.length() + " :: " +
+			// result.getBytes().length);
+			// });
+			time = System.currentTimeMillis() + 5000;
 			// Async.invoke(5.5f, list, "clear");
 			// Async.invokeStatic(5.5f, Test.class, "exit");
 
@@ -275,9 +259,9 @@ public class Test extends VGLApplication {
 		// bRenderer.renderSprite(sprites.get(i), i * 6, 10, null);
 		// }
 		// bRenderer.drawText(randStr, 0, 10, font);
-		// bRenderer.drawText("0", 0, 0, font);
-		// bRenderer.drawText("Enjoy your stay", 0, 7, font);
-		// bRenderer.drawText("^\\gggggg", 0, 3, font);
+//		bRenderer.drawText("0", 0, 0, font);
+		 bRenderer.drawText("Enjoy your stay", 0, 7, font);
+		 bRenderer.drawText("^\\gggggg", 0, 3, font);
 		bRenderer.end();
 		bRenderer.render();
 		// for (Sprite sprite : sprites) {
@@ -319,9 +303,6 @@ public class Test extends VGLApplication {
 		transMat = VectorMaths.translationMatrix(new Vector3f(transX, transY, 0f));
 
 		defaultShader.uniformMat4f("transformationMatrix", transMat);
-		defaultShader.uniformVec2f("lightPos",
-		        new Vector2f(((Mouse.getX() * 16) / Window.getWidth()), ((Mouse.getY() * 9) / Window.getHeight())));
-
 	}
 
 	@Override

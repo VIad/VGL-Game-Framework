@@ -15,7 +15,7 @@ public interface IFont {
 	int getOriginalFontSize();
 
 	int getCharHeight();
-
+	
 	public static boolean isSupported(char c) {
 		return c >= 32 && c < 127;
 	}

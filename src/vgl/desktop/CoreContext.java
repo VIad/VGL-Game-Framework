@@ -14,12 +14,17 @@ import static org.lwjgl.opengl.GL11.GL_VERSION;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glGetString;
 
+import java.util.concurrent.ForkJoinPool;
+
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 
+import com.sun.glass.ui.Application;
+
 import vgl.core.exception.VGLException;
+import vgl.core.gfx.layer.LayeredLayout;
 import vgl.core.internal.Checks;
 import vgl.core.internal.ProcessManager;
 import vgl.desktop.gl.VertexArray;
@@ -35,6 +40,12 @@ public class CoreContext {
 	private static VGLApplication	application;
 
 	private static Window			w;
+	
+	private static ForkJoinPool pool;
+	
+	static {
+		pool = new ForkJoinPool(10);
+	}
 
 	/**
 	 * User of the API should not access the constructor
@@ -122,8 +133,12 @@ public class CoreContext {
 			lastTime = now;
 			while (delta >= 1) {
 				try {
-					ProcessManager.runOnUpdate();
+					ProcessManager.get().runOnUpdate();
 					application.update();
+					if (application.getLayout() != null)
+						if (application.getLayout() instanceof LayeredLayout)
+							((LayeredLayout) application.getLayout()).update();
+
 					ups++;
 				} catch (VGLException e) {
 					// TODO Auto-generated catch block
@@ -186,5 +201,9 @@ public class CoreContext {
 		if (context == null)
 			throw new NullPointerException("Context >> null");
 		return w;
+	}
+	
+	public static void submitTask(Runnable task) {
+		pool.execute(task);
 	}
 }

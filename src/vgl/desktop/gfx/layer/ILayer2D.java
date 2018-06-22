@@ -46,7 +46,7 @@ abstract public class ILayer2D implements ILayer {
 		this.maxY = maxYProj;
 		this.layerRenderer = layerRenderer;
 		this.graphicsInstance = new GFX2D(this);
-		this.shader = ShaderFactory.default2DShader(GlobalDetails.getPlatform());
+		this.shader = ShaderFactory.batch2DGLSL(GlobalDetails.getPlatform());
 		this.submitted = new ArrayList<>();
 		this.layerBackground = Color.TRANSPARENT;
 		shader.start();

@@ -10,9 +10,9 @@ import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
+import vgl.core.buffers.Buffers;
 import vgl.core.buffers.MemoryBuffer;
 import vgl.platform.gl.GLVertexArray;
-import vgl.utils.BufferStorageSafe;
 
 public class VertexArray extends GLVertexArray {
 
@@ -28,7 +28,7 @@ public class VertexArray extends GLVertexArray {
 		final int vboID = GL15.glGenBuffers();
 		buffers.put(attribPosition, vboID);
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboID);
-		final MemoryBuffer memBuffer = BufferStorageSafe.storeInBuffer(data);
+		final MemoryBuffer memBuffer = Buffers.wrap(data).getBuffer();
 		final FloatBuffer buffer = ((ByteBuffer) memBuffer.nativeBufferDetails().getBuffer()).asFloatBuffer();
 		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
 		bufferCache.add(memBuffer);
@@ -45,7 +45,7 @@ public class VertexArray extends GLVertexArray {
 		final int vboID = GL15.glGenBuffers();
 		buffers.put(DEFAULT_IBO_KEY, vboID);
 		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vboID);
-		final MemoryBuffer memBuffer = BufferStorageSafe.storeInBuffer(ind);
+		final MemoryBuffer memBuffer = Buffers.wrap(ind).getBuffer();
 		final IntBuffer buffer = ((ByteBuffer) memBuffer.nativeBufferDetails().getBuffer()).asIntBuffer();
 		GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
 		bufferCache.add(memBuffer);
@@ -59,7 +59,6 @@ public class VertexArray extends GLVertexArray {
 		for (final Map.Entry<Integer, Integer> en : buffers.entrySet())
 			if (!(en.getKey() == DEFAULT_IBO_KEY))
 				GL20.glEnableVertexAttribArray(en.getKey());
-
 	}
 
 	@Override

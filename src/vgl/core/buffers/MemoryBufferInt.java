@@ -1,9 +1,6 @@
 package vgl.core.buffers;
 
-import java.nio.Buffer;
-
 import vgl.core.exception.VGLMemoryException;
-import vgl.main.VGL;
 
 public class MemoryBufferInt extends TypedBuffer<Integer> {
 
@@ -13,8 +10,14 @@ public class MemoryBufferInt extends TypedBuffer<Integer> {
 
 	@Override
 	public void put(Integer val) {
-		buffer.putInt(bytePointer += 4, val);
-		pointer++;
+		try {
+			if (pointer == capacity())
+				throw new VGLMemoryException("Buffer Overflow");
+			buffer.putInt(bytePointer, val);
+		} finally {
+			bytePointer += Integer.BYTES;
+			pointer++;
+		}
 	}
 
 	@Override
@@ -29,6 +32,8 @@ public class MemoryBufferInt extends TypedBuffer<Integer> {
 	@Override
 	public Integer read() {
 		try {
+			if (pointer == capacity())
+				throw new VGLMemoryException("Buffer Overflow");
 			return buffer.readInt(bytePointer);
 		} finally {
 			bytePointer += Integer.BYTES;

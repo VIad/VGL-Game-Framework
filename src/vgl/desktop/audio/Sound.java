@@ -1,9 +1,13 @@
 package vgl.desktop.audio;
 
-import static org.lwjgl.openal.AL10.*;
+import static org.lwjgl.openal.AL10.AL_BUFFER;
+import static org.lwjgl.openal.AL10.AL_GAIN;
+import static org.lwjgl.openal.AL10.AL_PITCH;
+import static org.lwjgl.openal.AL10.alSourcePause;
+import static org.lwjgl.openal.AL10.alSourcePlay;
+import static org.lwjgl.openal.AL10.alSourceStop;
 import static org.lwjgl.openal.AL10.alSourcef;
-
-import org.lwjgl.openal.AL10;
+import static org.lwjgl.openal.AL10.alSourcei;
 
 //============================================================================
 //Name        : Sound

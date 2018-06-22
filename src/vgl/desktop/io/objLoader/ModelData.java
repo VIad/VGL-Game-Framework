@@ -1,7 +1,5 @@
 package vgl.desktop.io.objLoader;
 
-import vgl.desktop.gl.VertexArray;
-
 public class ModelData {
 
 	private final float[]	vertices;

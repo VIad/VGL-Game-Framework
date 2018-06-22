@@ -36,7 +36,7 @@ public class AudioManager {
 		}
 		created = true;
 		soundMap = new HashMap<>();
-	}
+	}	
 
 	/**
 	 * Adds a sound to the manager with the given alias
@@ -138,7 +138,10 @@ public class AudioManager {
 	 * {@link VGLAudioException}
 	 */
 	private static java.util.Map.Entry<String, Sound> findEntryOrThrow(String entry) {
-		return soundMap.entrySet().stream().filter((kvp) -> kvp.getKey().equals(entry)).findFirst().orElseThrow(
+		return soundMap.entrySet().stream()
+				.filter((kvp) -> kvp.getKey().equals(entry))
+				.findFirst()
+				.orElseThrow(
 		        vgl.tools.functional.Functional.bind(VGLAudioException::new,
 		                "Unable to find sound with name >> " + entry));
 	}

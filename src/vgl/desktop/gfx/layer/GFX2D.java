@@ -1,12 +1,12 @@
 package vgl.desktop.gfx.layer;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
+import com.sun.javafx.geom.Rectangle;
 
+import vgl.core.geom.RectFloat;
 import vgl.core.geom.Transform2D;
 import vgl.core.gfx.Color;
 import vgl.core.gfx.render.IRenderer2D;
-import vgl.core.gfx.renderable.ImageSprite;
+import vgl.core.gfx.renderable.ColoredSprite;
 import vgl.core.gfx.renderable.Renderable2D;
 import vgl.desktop.gfx.font.VFont;
 import vgl.maths.vector.Vector2f;
@@ -44,6 +44,11 @@ public class GFX2D {
 
 	public Color getColor() {
 		return color;
+	}
+
+	public void drawRectangle(RectFloat rectangle) {
+		layer.submitSprite(new ColoredSprite(getColor(), rectangle.width, rectangle.height), rectangle.x, rectangle.y,
+		        rectangle.width, rectangle.height, null);
 	}
 
 	public void draw(Renderable2D renderable, float x, float y) {

@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import vgl.core.internal.Checks;
-import vgl.platform.Platform;
-import vgl.web.gl.WGLTexture;
 
 abstract public class GLTexture {
 

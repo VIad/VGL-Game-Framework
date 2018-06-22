@@ -1,6 +1,6 @@
 package vgl.core.gfx.shader;
 
-import org.lwjgl.opengl.GL20;
+import com.shc.webgl4j.client.WebGL10;
 
 import vgl.core.exception.VGLRuntimeException;
 
@@ -18,9 +18,9 @@ public enum ShaderType {
 			default:
 				throw new VGLRuntimeException("Not supported for " + this);
 			case FRAGMENT:
-				return GL20.GL_FRAGMENT_SHADER;
+				return WebGL10.GL_FRAGMENT_SHADER;
 			case VERTEX:
-				return GL20.GL_VERTEX_SHADER;
+				return WebGL10.GL_VERTEX_SHADER;
 		}
 	}
 

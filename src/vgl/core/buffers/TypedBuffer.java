@@ -31,8 +31,12 @@ abstract public class TypedBuffer<T> {
 		return bytePointer;
 	}
 
-	public int getCapacity() {
+	public int capacity() {
 		return typeCapacity;
+	}
+
+	public int byteCapacity() {
+		return typeCapacity * dataSizeBytes;
 	}
 
 	public void flip() {

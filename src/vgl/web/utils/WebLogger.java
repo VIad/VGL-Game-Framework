@@ -16,16 +16,16 @@ public class WebLogger implements ILogger {
 		switch (logLevel)
 		{
 			case CRITICAL:
-				nJSError(CRITICAL_PREFIX, message.toString());
+				nJSError(CRITICAL_PREFIX + indent + message.toString());
 				break;
 			case ERROR:
-				nJSError(ERROR_PREFIX, message.toString());
+				nJSError(ERROR_PREFIX + indent + message.toString());
 				break;
 			case INFO:
-				nJSInfo(INFO_PREFIX, message.toString());
+				nJSInfo(INFO_PREFIX + indent + message.toString());
 				break;
 			case WARN:
-				nJSWarn(WARN_PREFIX, message.toString());
+				nJSWarn(WARN_PREFIX + indent + message.toString());
 				break;
 			default:
 				throw new vgl.core.exception.VGLFatalError("Not Possible");
@@ -81,7 +81,6 @@ public class WebLogger implements ILogger {
 			case WARN:
 				WebLogger.WARN_PREFIX = newPrefix;
 				break;
-
 		}
 	}
 
@@ -94,16 +93,16 @@ public class WebLogger implements ILogger {
 		indent = "  ";
 	}
 
-	private static native void nJSInfo(String prefix, String message) /*-{
-		$wnd.console.log(prefix + indent + +message);
+	private static native void nJSInfo(String message) /*-{
+		$wnd.console.log(message);
 	}-*/;
 
-	private static native void nJSWarn(String prefix, String message) /*-{
-		$wnd.console.warn(prefix + indent + message);
+	private static native void nJSWarn(String message) /*-{
+		$wnd.console.warn(message);
 	}-*/;
 
-	private static native void nJSError(String prefix, String message) /*-{
-		$wnd.console.error(prefix + indent + +message);
+	private static native void nJSError(String message) /*-{
+		$wnd.console.error(message);
 	}-*/;
 
 }

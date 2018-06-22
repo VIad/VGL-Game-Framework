@@ -1,29 +1,10 @@
 package vgl.web.gl;
 
-import java.awt.Event;
-import java.awt.image.BufferedImage;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-
-import javax.imageio.ImageIO;
-
-import org.lwjgl.opengl.GL11;
-
-import com.shc.webgl4j.client.WebGL10;
-import com.vgl.gwtreq.client.VGWT;
-
-import jdk.nashorn.internal.objects.annotations.Function;
-import sun.rmi.server.UnicastRef;
-import vgl.core.internal.GlobalDetails;
-import vgl.platform.gl.GLTexture;
-import vgl.platform.gl.GLTypes;
-import vgl.tools.async.UniContainer;
-import vgl.web.VGLWebApplication;
-import static com.shc.webgl4j.client.WebGL10.*;
+import static com.shc.webgl4j.client.WebGL10.GL_ONE_MINUS_SRC_ALPHA;
+import static com.shc.webgl4j.client.WebGL10.GL_SRC_ALPHA;
+import static com.shc.webgl4j.client.WebGL10.glBlendFunc;
+import static com.shc.webgl4j.client.WebGL10.glCreateTexture;
+import static com.shc.webgl4j.client.WebGL10.glTexImage2D;
 import static org.lwjgl.opengl.GL11.GL_NEAREST;
 import static org.lwjgl.opengl.GL11.GL_RGBA;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
@@ -31,8 +12,19 @@ import static org.lwjgl.opengl.GL11.GL_TEXTURE_MAG_FILTER;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_MIN_FILTER;
 import static org.lwjgl.opengl.GL11.glBindTexture;
 import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glTexImage2D;
 import static org.lwjgl.opengl.GL11.glTexParameteri;
+
+import java.awt.image.BufferedImage;
+
+import org.lwjgl.opengl.GL11;
+
+import com.shc.webgl4j.client.WebGL10;
+import com.vgl.gwtreq.client.VGWT;
+
+import vgl.core.internal.GlobalDetails;
+import vgl.platform.gl.GLTexture;
+import vgl.platform.gl.GLTypes;
+import vgl.web.VGLWebApplication;
 
 /**
  * TODO USE IMAGE INSTEAD OF ARRAYVIEW / ARRAYBUFFER

@@ -1,15 +1,10 @@
 package test;
 
-import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.image.BufferedImage;
 
-import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
-
+import vgl.core.geom.Transform;
 import vgl.desktop.gfx.font.VFont;
+import vgl.maths.vector.Vector3f;
 
 public class FontTest {
 
