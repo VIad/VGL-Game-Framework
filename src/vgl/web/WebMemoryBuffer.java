@@ -41,18 +41,21 @@ public class WebMemoryBuffer extends MemoryBuffer {
 	
 
 	@Override
-	public void putInt(int index, int value) {
+	public WebMemoryBuffer putInt(int index, int value) {
 		dataView.getView().setInt32(index, value, endian == LITTLE_ENDIAN);
+		return this;
 	}
 
 	@Override
-	public void putByte(int index, int value) {
+	public WebMemoryBuffer putByte(int index, int value) {
 		dataView.getView().setInt8(index, value);
+		return this;
 	}
 
 	@Override
-	public void putFloat(int index, float value) {
+	public WebMemoryBuffer putFloat(int index, float value) {
 		dataView.getView().setFloat32(index, value, endian == LITTLE_ENDIAN);
+		return this;
 	}
 
 	@Override
@@ -76,14 +79,8 @@ public class WebMemoryBuffer extends MemoryBuffer {
 	}
 
 	@Override
-	public int getPointer() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
 	public void free() {
-
+		
 	}
 
 	private native boolean isLittleEndian() /*-{

@@ -7,6 +7,7 @@
 	</classpathentry>
 	<classpathentry exported="true" kind="lib" path="E:/Restored/webgl4j-0.2.9.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/LWJGL"/>
+	<classpathentry kind="con" path="com.gwtplugins.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="lib" path="C:/libs/common Java libs/lwjgl_util.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="C:/wr/li.jar"/>

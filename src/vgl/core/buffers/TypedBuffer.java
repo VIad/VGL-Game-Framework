@@ -16,7 +16,8 @@ abstract public class TypedBuffer<T> {
 		this.pointer = 0;
 		this.bytePointer = 0;
 		this.typeCapacity = capacity;
-		this.buffer = VGL.factory.newMemoryBuffer(capacity * dataSize);
+		this.buffer = VGL.factory.dataBuffer(capacity * dataSize);
+		VGL.io.memset(buffer, (byte) 0); //Make sure no garbage is left in buffers, this is java ffs :)
 	}
 
 	public MemoryBuffer getBuffer() {
@@ -44,9 +45,9 @@ abstract public class TypedBuffer<T> {
 		bytePointer = 0;
 	}
 
-	abstract public void put(T val);
+	abstract public TypedBuffer<T> put(T val);
 
-	abstract public void put(int index, T val);
+	abstract public TypedBuffer<T> put(int index, T val);
 
 	abstract public T read();
 

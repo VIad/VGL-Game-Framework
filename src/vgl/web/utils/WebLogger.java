@@ -1,5 +1,7 @@
 package vgl.web.utils;
 
+import java.util.Objects;
+
 import vgl.platform.ILogger;
 import vgl.platform.LogLevel;
 
@@ -13,19 +15,24 @@ public class WebLogger implements ILogger {
 
 	@Override
 	public void log(Object message, LogLevel logLevel) {
+		StringBuilder builder = new StringBuilder();
 		switch (logLevel)
 		{
 			case CRITICAL:
-				nJSError(CRITICAL_PREFIX + indent + message.toString());
+				builder.append(CRITICAL_PREFIX).append(indent).append(Objects.toString(message, "null"));
+				nJSError(builder.toString());
 				break;
 			case ERROR:
-				nJSError(ERROR_PREFIX + indent + message.toString());
+				builder.append(ERROR_PREFIX).append(indent).append(Objects.toString(message, "null"));
+				nJSError(builder.toString());
 				break;
 			case INFO:
-				nJSInfo(INFO_PREFIX + indent + message.toString());
+				builder.append(INFO_PREFIX).append(indent).append(Objects.toString(message, "null"));
+				nJSInfo(builder.toString());
 				break;
 			case WARN:
-				nJSWarn(WARN_PREFIX + indent + message.toString());
+				builder.append(WARN_PREFIX).append(indent).append(Objects.toString(message, "null"));
+				nJSWarn(builder.toString());
 				break;
 			default:
 				throw new vgl.core.exception.VGLFatalError("Not Possible");

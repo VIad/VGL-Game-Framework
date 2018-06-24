@@ -3,7 +3,7 @@ package vgl.platform.io;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import vgl.main.VGL;
+import vgl.tools.functional.Result;
 
 abstract public class FileDetails {
 
@@ -21,11 +21,13 @@ abstract public class FileDetails {
 
 	public static final char							SEPARATOR		= '/';
 
-	abstract public long length();
+	abstract public Result<Long> length();
+	
+	abstract public Result<Boolean> isFile();
 
-	abstract public boolean isDirectory();
+	abstract public Result<Boolean> isDirectory();
 
-	abstract public boolean exists();
+	abstract public Result<Boolean> exists();
 
 	abstract public String absolutePath();
 
@@ -34,5 +36,12 @@ abstract public class FileDetails {
 	abstract public FileDetails getParent();
 
 	abstract public String getExtension();
+
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName()+" [path=" + path + "]";
+	}
+	
+	
 
 }

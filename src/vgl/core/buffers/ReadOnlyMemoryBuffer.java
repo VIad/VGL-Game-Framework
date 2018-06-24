@@ -1,24 +1,23 @@
 package vgl.core.buffers;
 
-public class UnmodifiableMemoryBuffer extends MemoryBuffer {
+public class ReadOnlyMemoryBuffer extends MemoryBuffer {
 
-	UnmodifiableMemoryBuffer(int capacity) {
+	ReadOnlyMemoryBuffer(int capacity) {
 		super(capacity);
 	}
 
 	@Override
-	public void putInt(int index, int value) {
+	public MemoryBuffer putInt(int index, int value) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void putByte(int index, int value) {
+	public MemoryBuffer putByte(int index, int value) {
 		throw new UnsupportedOperationException();
-
 	}
 
 	@Override
-	public void putFloat(int index, float value) {
+	public MemoryBuffer putFloat(int index, float value) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -39,11 +38,6 @@ public class UnmodifiableMemoryBuffer extends MemoryBuffer {
 
 	@Override
 	public BufferDetails nativeBufferDetails() {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public int getPointer() {
 		throw new UnsupportedOperationException();
 	}
 

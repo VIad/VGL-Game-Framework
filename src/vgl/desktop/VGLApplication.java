@@ -27,13 +27,13 @@ abstract public class VGLApplication extends Application {
 		boolean osarch64 = Integer.valueOf(System.getProperty("sun.arch.data.model")) == 64;
 		GlobalDetails.set((Application) this);
 		GlobalDetails.set(osarch64 ? Platform.DESKTOP_X64 : Platform.DESKTOP_X86);
-		CoreContext.createContext(this);
+		DesktopContext.createContext(this);
 	}
 
 	public void startApplication() {
-		CoreContext.createWindow(title, w_width, w_height, vsync, false);
+		DesktopContext.createWindow(title, w_width, w_height, vsync, false);
 		Window.setResizable(resizable);
-		CoreContext.initGL();
+		DesktopContext.initGL();
 		Mouse.create();
 		Keyboard.create();
 		try {
@@ -42,7 +42,7 @@ abstract public class VGLApplication extends Application {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		CoreContext.startLoop();
+		DesktopContext.startLoop();
 	}
 
 	public String getTitle() {

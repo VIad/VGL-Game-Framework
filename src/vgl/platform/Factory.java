@@ -5,7 +5,7 @@ import vgl.platform.io.FileDetails;
 
 abstract public class Factory {
 
-	abstract public MemoryBuffer newMemoryBuffer(int byteCapacity);
+	abstract public MemoryBuffer dataBuffer(int byteCapacity);
 
-	abstract public FileDetails newFileDetails(String file);
+
 }

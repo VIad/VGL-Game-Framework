@@ -18,6 +18,7 @@ public class VGL {
 	public static GraphicsPlatform	api;
 
 	public static Display			display;
+	
 	public static IOSystem			io;
 
 	public static ILogger			logger;

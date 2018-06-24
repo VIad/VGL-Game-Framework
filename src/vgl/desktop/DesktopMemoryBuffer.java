@@ -21,18 +21,21 @@ public class DesktopMemoryBuffer extends MemoryBuffer {
 	}
 
 	@Override
-	public void putInt(int index, int value) {
+	public DesktopMemoryBuffer putInt(int index, int value) {
 		direct.putInt(index, value);
+		return this;
 	}
 
 	@Override
-	public void putByte(int index, int value) {
+	public DesktopMemoryBuffer putByte(int index, int value) {
 		direct.put(index, (byte) value);
+		return this;
 	}
 
 	@Override
-	public void putFloat(int index, float value) {
+	public DesktopMemoryBuffer putFloat(int index, float value) {
 		direct.putFloat(index, value);
+		return this;
 	}
 
 	@Override
@@ -83,13 +86,7 @@ public class DesktopMemoryBuffer extends MemoryBuffer {
 	}
 
 	@Override
-	public int getPointer() {
-		return direct.position();
-	}
-
-	@Override
 	public void free() {
-		// TODO Auto-generated method stub
-
+		MemoryUtil.memFree(direct);
 	}
 }

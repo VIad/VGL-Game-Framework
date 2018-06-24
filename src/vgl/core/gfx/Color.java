@@ -1,5 +1,6 @@
 package vgl.core.gfx;
 
+import vgl.core.buffers.MemoryBuffer;
 import vgl.maths.vector.Vector4f;
 
 public final class Color implements java.io.Serializable, Comparable<Color> {
@@ -364,6 +365,9 @@ public final class Color implements java.io.Serializable, Comparable<Color> {
 
 	public vgl.maths.vector.Vector4f toVector() {
 		return new vgl.maths.vector.Vector4f(r, g, b, a);
+	}
+	
+	public void store(MemoryBuffer buffer) {
 	}
 	
 	public static boolean isValid(float r, float g, float b, float a) {		

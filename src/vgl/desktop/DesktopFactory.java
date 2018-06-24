@@ -7,13 +7,8 @@ import vgl.platform.io.FileDetails;
 public class DesktopFactory extends Factory {
 
 	@Override
-	public MemoryBuffer newMemoryBuffer(int byteCapacity) {
+	public MemoryBuffer dataBuffer(int byteCapacity) {
 		return new DesktopMemoryBuffer(byteCapacity);
-	}
-
-	@Override
-	public FileDetails newFileDetails(String file) {
-		return new DesktopFileDetails(file);
 	}
 
 }

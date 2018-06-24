@@ -14,7 +14,7 @@ import vgl.platform.gl.Shader;
 
 abstract public class ShaderProgram extends Shader {
 
-	protected static MemoryBuffer buffer4f = VGL.factory.newMemoryBuffer(16 * 4);
+	protected static MemoryBuffer buffer4f = VGL.factory.dataBuffer(16 * 4);
 
 	public ShaderProgram(String vertexSource, String fragmentSource) {
 		super(vertexSource, fragmentSource);

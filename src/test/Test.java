@@ -6,6 +6,9 @@ import java.util.Random;
 
 import org.lwjgl.opengl.GL11;
 
+import vgl.core.buffers.Buffers;
+import vgl.core.buffers.MemoryBuffer;
+import vgl.core.buffers.MemoryBufferFloat;
 import vgl.core.buffers.MemoryBufferInt;
 import vgl.core.buffers.TypedBuffer;
 import vgl.core.exception.VGLException;
@@ -27,6 +30,7 @@ import vgl.desktop.gfx.renderer.Renderer2D;
 import vgl.desktop.input.Key;
 import vgl.desktop.input.Keyboard;
 import vgl.desktop.input.Mouse;
+import vgl.desktop.io.DesktopIOSystem;
 import vgl.main.VGL;
 import vgl.maths.Projection;
 import vgl.maths.vector.Matrix4f;
@@ -96,7 +100,11 @@ public class Test extends VGLApplication {
 	private static VFont		font;
 
 	public static void main(final String[] args) throws Exception {
-		engineTest();
+		VGL.factory = new DesktopFactory();
+		VGL.io = new DesktopIOSystem();
+		System.out.println(VGL.io.file("C:\\wr\\f.txt"));
+//		engineTest();
+		
 	}
 
 	static Texture	tex;
@@ -141,7 +149,7 @@ public class Test extends VGLApplication {
 
 		Window.setClearColor(Color.BLACK);
 
-		defaultShader = ShaderFactory.batch2DGLSL(Platform.DESKTOP_X64);
+		defaultShader = ShaderFactory.batch2DGLSL();
 		defaultShader.start();
 		defaultShader.uniform1iv("textures", new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
 		        18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 });

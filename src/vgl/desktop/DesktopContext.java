@@ -31,11 +31,11 @@ import vgl.desktop.gl.VertexArray;
 import vgl.desktop.input.Mouse;
 import vgl.natives.NativeUtils;
 
-public class CoreContext {
+public class DesktopContext {
 
 	private static final String		version	= "0.1";
 
-	private static CoreContext		context;
+	private static DesktopContext		context;
 
 	private static VGLApplication	application;
 
@@ -50,7 +50,7 @@ public class CoreContext {
 	/**
 	 * User of the API should not access the constructor
 	 */
-	private CoreContext() {
+	private DesktopContext() {
 	}
 
 	public static void createContext(VGLApplication application) {
@@ -58,8 +58,8 @@ public class CoreContext {
 			throw new Error("Unable to init GLFW >> Shutting down");
 		GLFWErrorCallback.createPrint(System.err).set();
 		glfwDefaultWindowHints();
-		context = new CoreContext();
-		CoreContext.application = application;
+		context = new DesktopContext();
+		DesktopContext.application = application;
 	}
 
 	/**
@@ -85,7 +85,7 @@ public class CoreContext {
 	 * @param vsync
 	 */
 	public static void createWindow(final String title, final int width, final int height, final boolean vsync) {
-		CoreContext.createWindow(title, width, height, vsync, false);
+		DesktopContext.createWindow(title, width, height, vsync, false);
 	}
 
 	/**
@@ -95,7 +95,7 @@ public class CoreContext {
 	 * @param height
 	 */
 	public static void createWindow(final String title, final int width, final int height) {
-		CoreContext.createWindow(title, width, height, false, false);
+		DesktopContext.createWindow(title, width, height, false, false);
 	}
 
 	public static void initGL() {
@@ -193,7 +193,7 @@ public class CoreContext {
 		GLFW.glfwDestroyWindow(Window.__ptr());
 	}
 
-	public static CoreContext getContext() {
+	public static DesktopContext getContext() {
 		return context;
 	}
 

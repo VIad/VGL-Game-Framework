@@ -289,7 +289,7 @@ public class WebGraphicsPlatform implements GraphicsPlatform {
 
 	@Override
 	public void glUniformMatrix4fv(int location, boolean transpose, MemoryBuffer matrix) {
-		WebGL10.glUniformMatrix4fv(location, transpose, Buffers.toArray(matrix));
+		WebGL10.glUniformMatrix4fv(location, transpose, Buffers.castToFloatUnsafe(matrix));
 		// WebGL10.glUniformMatrix4fv(location, transpose,
 		// Native.create((GWTArrayBuffer) matrix.nativeBufferDetails().getBuffer()));
 
@@ -299,7 +299,7 @@ public class WebGraphicsPlatform implements GraphicsPlatform {
 	public void glUniformMatrix3fv(int location, boolean transpose, MemoryBuffer matrix) {
 		// WebGL10.glUniformMatrix4fv(location, transpose,
 		// Native.create((GWTArrayBuffer) matrix.nativeBufferDetails().getBuffer()));
-		WebGL10.glUniformMatrix3fv(location, transpose, Buffers.toArray(matrix));
+		WebGL10.glUniformMatrix3fv(location, transpose, Buffers.castToFloatUnsafe(matrix));
 	}
 
 	@Override

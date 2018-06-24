@@ -1,9 +1,13 @@
 package vgl.web.io;
 
+import java.util.Arrays;
+
 import com.google.gwt.xhr.client.XMLHttpRequest;
 import com.vgl.gwtreq.client.GWTArrayBuffer;
 
 import vgl.core.buffers.MemoryBuffer;
+import vgl.core.exception.VGLRuntimeException;
+import vgl.core.internal.GlobalDetails;
 import vgl.platform.io.FileDetails;
 import vgl.platform.io.IOSystem;
 import vgl.platform.io.ReadOption;
@@ -28,21 +32,50 @@ public class WebIOSystem extends IOSystem {
 	}
 
 	@Override
-	public MemoryBuffer readBytes(FileDetails file) {
-		// TODO Auto-generated method stub
-		return null;
+	public void readString(FileDetails file, Callback<String> result, ReadOption... options) {
+		boolean ignoreLines = Arrays.stream(options).anyMatch(op -> op == ReadOption.IGNORE_NEWLINES);
+		XMLHttpRequest request = XMLHttpRequest.create();
+		request.open("GET", file.absolutePath());
+		request.setResponseType(XMLHttpRequest.ResponseType.Default);
+		request.setOnReadyStateChange(xhr -> {
+			if (request.getReadyState() == XMLHttpRequest.DONE) {
+				if (request.getStatus() == 200) {
+					String res = request.getResponseText();
+					if (ignoreLines)
+						res = res.replaceAll("\n", "");
+					result.invoke(res);
+				} else {
+					result.invoke("");
+				}
+			}
+		});
+		request.send();
 	}
 
 	@Override
-	public void readString(FileDetails file, Callback<String> result, ReadOption... options) {
-		// TODO Auto-generated method stub
-
+	public MemoryBuffer readBytes(FileDetails file) {
+		throw new VGLRuntimeException(
+		        "this instance of readBytes method is not supported on platform : " + GlobalDetails.getPlatform()
+		                + ", instead use readBytes(callback)");
 	}
 
 	@Override
 	public String readString(FileDetails file, ReadOption... options) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new VGLRuntimeException(
+		        "this instance of readString method is not supported on platform : " + GlobalDetails.getPlatform()
+		                + ", instead use readString(callback)");
+	}
+
+	@Override
+	public FileDetails file(String file) {
+		return new WebFileDetails(file);
+	}
+
+	@Override
+	public void memset(MemoryBuffer buffer, int data) {
+		for (int i = 0; i < buffer.capacity(); i++) {
+			buffer.putByte(i, data);
+		}
 	}
 
 }

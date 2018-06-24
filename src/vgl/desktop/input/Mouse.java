@@ -12,7 +12,7 @@ import static org.lwjgl.glfw.GLFW.glfwSetInputMode;
 import static org.lwjgl.glfw.GLFW.glfwSetMouseButtonCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetScrollCallback;
 
-import vgl.desktop.CoreContext;
+import vgl.desktop.DesktopContext;
 import vgl.desktop.Window;
 
 public class Mouse {
@@ -33,7 +33,7 @@ public class Mouse {
 	private Mouse() {}
 
 	public static void create() {
-		if ((CoreContext.getContext() == null) || (CoreContext.getWindow() == null))
+		if ((DesktopContext.getContext() == null) || (DesktopContext.getWindow() == null))
 			throw new NullPointerException("Context || window >> null");
 		glfwSetCursorPosCallback(Window.__ptr(), (window, x, y) -> {
 			Mouse.dx = (float) (x - Mouse.x);

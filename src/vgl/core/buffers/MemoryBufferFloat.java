@@ -9,7 +9,7 @@ public class MemoryBufferFloat extends TypedBuffer<Float> {
 	}
 
 	@Override
-	public void put(Float val) {
+	public MemoryBufferFloat put(Float val) {
 		try {
 			if (pointer == capacity())
 				throw new VGLMemoryException("Buffer Overflow");
@@ -18,15 +18,17 @@ public class MemoryBufferFloat extends TypedBuffer<Float> {
 			bytePointer += Float.BYTES;
 			pointer++;
 		}
+		return this;
 	}
 
 	@Override
-	public void put(int index, Float val) {
+	public MemoryBufferFloat put(int index, Float val) {
 		int byteIndex = index << 2;
 		if (byteIndex > (typeCapacity << 2)) {
 			throw new VGLMemoryException("Buffer Overflow");
 		}
 		buffer.putFloat(byteIndex, val);
+		return this;
 	}
 
 	@Override
