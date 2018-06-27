@@ -12,6 +12,7 @@ import org.lwjgl.opengl.GL30;
 import vgl.core.gfx.Color;
 import vgl.core.gfx.font.Glyph;
 import vgl.core.gfx.font.IFont;
+import vgl.core.gfx.gl.IndexBuffer;
 import vgl.core.gfx.render.IRenderer2D;
 import vgl.core.gfx.render.VertexLayout;
 import vgl.core.gfx.renderable.ColoredSprite;
@@ -19,12 +20,11 @@ import vgl.core.gfx.renderable.ImageSprite;
 import vgl.core.gfx.renderable.Renderable2D;
 import vgl.core.internal.Checks;
 import vgl.desktop.Window;
-import vgl.desktop.gl.IndexBuffer;
+import vgl.desktop.gfx.Texture;
 import vgl.maths.vector.Matrix4f;
 import vgl.maths.vector.Vector2f;
 import vgl.maths.vector.Vector3f;
 import vgl.platform.gl.GLBufferUsage;
-import vgl.platform.gl.GLTexture;
 import vgl.platform.gl.GLTypes;
 
 final public class Renderer2D implements IRenderer2D {
@@ -118,7 +118,7 @@ final public class Renderer2D implements IRenderer2D {
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 	}
 
-	private float getTextureSlot(final GLTexture glTexture) {
+	private float getTextureSlot(final Texture glTexture) {
 		if (glTexture == null)
 			return 0.0f;
 		float ts = 0.0f;
@@ -144,7 +144,7 @@ final public class Renderer2D implements IRenderer2D {
 	}
 
 	public void drawText(String str, float x, float y, IFont font) {
-		GLTexture fontTexture = font.getFontTexture();
+		Texture fontTexture = font.getFontTexture();
 		float ts = getTextureSlot(fontTexture);
 		float currentX = x;
 		for (char ch : str.toCharArray()) {

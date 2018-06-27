@@ -9,6 +9,7 @@ import vgl.main.VGL;
 import vgl.platform.Application;
 import vgl.platform.Display;
 import vgl.platform.Platform;
+import vgl.web.input.WebInputSystem;
 import vgl.web.io.WebIOSystem;
 import vgl.web.utils.WebLogger;
 
@@ -41,8 +42,10 @@ abstract public class VGLWebApplication extends Application {
 		VGL.display = new Display(w_width, w_height);
 		VGL.factory = new WebFactory();
 		VGL.logger = new WebLogger();
-		VGL.api = new WebGraphicsPlatform();
+		VGL.api_gfx = new WebGraphicsPlatform();
 		VGL.io = new WebIOSystem();
+		VGL.input = new WebInputSystem();
+		VGL.app = (Application) this;
 	}
 
 	void set(Dim dim) {
@@ -52,5 +55,9 @@ abstract public class VGLWebApplication extends Application {
 
 	public WebContext getContext() {
 		return context;
+	}
+	
+	public String getRenderTargetID() {
+		return renderTargetID;
 	}
 }

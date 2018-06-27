@@ -20,31 +20,42 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 
 import org.lwjgl.opengl.GL11;
 
-import vgl.platform.gl.GLTexture;
 import vgl.platform.gl.GLTypes;
 
-public class Texture extends GLTexture {
+public class Texture {
+
+	int	width, height;
+
+	int	texture;
+	
+	private static List<Integer> textures;
+	
+	static {
+		textures = new ArrayList<>();
+	}
 
 	public Texture(BufferedImage image) {
-		super(image);
+		this.texture = this.load(image);
+		textures.add(texture);
 	}
 
 	public Texture(final String path) {
-		super(path);
+		this.texture = this.load(path);
+		textures.add(texture);
 	}
 
-	@Override
-	protected void removeFromGL() {
+	public void removeFromGL() {
 		GL11.glDeleteTextures(texture);
 	}
 
-	@Override
-	protected int load(BufferedImage texImage) {
+	private int load(BufferedImage texImage) {
 		int[] pixels = null;
 		width = texImage.getWidth();
 		height = texImage.getHeight();
@@ -78,8 +89,7 @@ public class Texture extends GLTexture {
 		return result;
 	}
 
-	@Override
-	protected int load(String path) {
+	private int load(String path) {
 		try {
 			return load(ImageIO.read(new FileInputStream(path)));
 		} catch (IOException e) {
@@ -87,14 +97,28 @@ public class Texture extends GLTexture {
 		}
 	}
 
-	@Override
 	public void bind() {
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture);
 	}
 
-	@Override
 	public void unbind() {
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
+	public int getTextureID() {
+		return texture;
+	}
+
+	public static void cleanTextureCache() {
+		textures.forEach(GL11::glDeleteTextures);
 	}
 
 }

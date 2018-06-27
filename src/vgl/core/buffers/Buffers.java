@@ -6,8 +6,6 @@ import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import com.google.gwt.dev.util.Memory;
-
 import vgl.core.buffers.utils.BufferIterator;
 import vgl.core.exception.VGLMemoryException;
 import vgl.main.VGL;
@@ -97,6 +95,10 @@ abstract public class Buffers {
 			}
 		}
 		return array;
+	}
+	
+	public static MemoryBuffer emptyBuffer(int size) {
+		return VGL.factory.dataBuffer(size);
 	}
 
 	

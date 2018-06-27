@@ -27,7 +27,7 @@ public class WebFileDetails extends FileDetails {
 
 	@Override
 	public FileDetails getParent() {
-		return VGL.io.file(path.substring(0,path.lastIndexOf(SEPARATOR)));
+		return VGL.io.file(path.substring(0, path.lastIndexOf(SEPARATOR)));
 	}
 
 	@Override
@@ -45,7 +45,7 @@ public class WebFileDetails extends FileDetails {
             request.setOnReadyStateChange(xhr ->
             {
                 if (request.getStatus() == 404) {
-                	success.invoke(-1L);
+                	success.invoke(-0xffL);
                 }
 
                 else if (request.getReadyState() == XMLHttpRequest.DONE && request.getStatus() == 200)
@@ -76,8 +76,8 @@ public class WebFileDetails extends FileDetails {
 			request.open("HEAD", absolutePath());
 
 			request.setOnReadyStateChange(xhr -> {
-				if (xhr.getStatus() == 200 || xhr.getStatus() == 404)
-					success.invoke(xhr.getStatus() != 404);
+				if (request.getStatus() == 200 || request.getStatus() == 404)
+					success.invoke(request.getStatus() != 404);
 			});
 			request.send();
 		});

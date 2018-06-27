@@ -29,6 +29,7 @@ import vgl.core.internal.Checks;
 import vgl.core.internal.ProcessManager;
 import vgl.desktop.gl.VertexArray;
 import vgl.desktop.input.Mouse;
+import vgl.main.VGL;
 import vgl.natives.NativeUtils;
 
 public class DesktopContext {
@@ -40,13 +41,6 @@ public class DesktopContext {
 	private static VGLApplication	application;
 
 	private static Window			w;
-	
-	private static ForkJoinPool pool;
-	
-	static {
-		pool = new ForkJoinPool(10);
-	}
-
 	/**
 	 * User of the API should not access the constructor
 	 */
@@ -108,7 +102,7 @@ public class DesktopContext {
 			glfwSwapInterval(1);
 		else
 			glfwSwapInterval(0);
-		System.out.println("VGL " + version + " | OpenGL " + glGetString(GL_VERSION));
+		VGL.logger.info("VGL " + version + " | OpenGL " + glGetString(GL_VERSION));
 
 	}
 
@@ -202,8 +196,5 @@ public class DesktopContext {
 			throw new NullPointerException("Context >> null");
 		return w;
 	}
-	
-	public static void submitTask(Runnable task) {
-		pool.execute(task);
-	}
+
 }

@@ -8,6 +8,7 @@ import org.lwjgl.system.MemoryUtil;
 
 import vgl.core.buffers.BufferDetails;
 import vgl.core.buffers.MemoryBuffer;
+import vgl.main.VGL;
 
 public class DesktopMemoryBuffer extends MemoryBuffer {
 
@@ -18,6 +19,7 @@ public class DesktopMemoryBuffer extends MemoryBuffer {
 		super(capacity);
 		this.direct = MemoryUtil.memAlloc(capacity);
 		this.details = new BufferDetails(direct, capacity);
+		VGL.io.memset(this, 0);
 	}
 
 	@Override
@@ -57,34 +59,7 @@ public class DesktopMemoryBuffer extends MemoryBuffer {
 	public BufferDetails nativeBufferDetails() {
 		return details;
 	}
-
-	public static DesktopMemoryBuffer wrap(ByteBuffer nioBuffer) {
-		DesktopMemoryBuffer buffer = new DesktopMemoryBuffer(nioBuffer.capacity());
-		nioBuffer.flip();
-		for (int i = 0; i < nioBuffer.capacity(); i++) {
-			buffer.putByte(i, nioBuffer.get());
-		}
-		return buffer;
-	}
-
-	public static DesktopMemoryBuffer wrap(IntBuffer nioBuffer) {
-		DesktopMemoryBuffer buffer = new DesktopMemoryBuffer(nioBuffer.capacity() * Integer.BYTES);
-		nioBuffer.flip();
-		for (int i = 0; i < nioBuffer.capacity(); i++) {
-			buffer.putInt(i, nioBuffer.get());
-		}
-		return buffer;
-	}
-
-	public static DesktopMemoryBuffer wrap(FloatBuffer nioBuffer) {
-		DesktopMemoryBuffer buffer = new DesktopMemoryBuffer(nioBuffer.capacity() * Float.BYTES);
-		nioBuffer.flip();
-		for (int i = 0; i < nioBuffer.capacity(); i++) {
-			buffer.putFloat(i * 4, nioBuffer.get());
-		}
-		return buffer;
-	}
-
+	
 	@Override
 	public void free() {
 		MemoryUtil.memFree(direct);

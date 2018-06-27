@@ -2,6 +2,7 @@ package vgl.web;
 
 import java.util.Arrays;
 
+import com.google.gwt.typedarrays.shared.ArrayBufferView;
 import com.shc.webgl4j.client.WebGL10;
 import com.shc.webgl4j.client.WebGL20;
 import com.vgl.gwtreq.client.GWTDataView;
@@ -138,7 +139,15 @@ public class WebGraphicsPlatform implements GraphicsPlatform {
 	@Override
 	public void glTexImage2D(int target, int level, int internalF, int width, int height, int border, int format,
 	        int type, MemoryBuffer data) {
-		throw new VGLFatalError("glTexImage2D not implemented on web");
+		WebGL10.glTexImage2D(target,
+				             level,
+				             internalF,
+				             width,
+				             height,
+				             border,
+				             format,
+				             type,
+		                     ((GWTDataView) data.nativeBufferDetails().getBuffer()).getView());
 	}
 
 	@Override
@@ -367,6 +376,11 @@ public class WebGraphicsPlatform implements GraphicsPlatform {
 	@Override
 	public boolean glGetBoolean(int which) {
 		return false;// For some reason get functions are not in WGL
+	}
+
+	@Override
+	public void glBufferData(int target, int[] data, int usage) {
+		WebGL10.glBufferData(target, data, usage);
 	}
 
 }

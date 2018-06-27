@@ -32,14 +32,14 @@ public class DesktopFileDetails extends FileDetails {
 
 	@Override
 	public String getExtension() {
-		return SynchronousHold.from(isDirectory()).get() ? 
-				               null :
-					           path.substring(path.lastIndexOf('.') + 1, path.length());
+		return isDirectory().get() ? 
+				              null :
+					          path.substring(path.lastIndexOf('.') + 1, path.length());
 	}
 
 	@Override
 	public List<FileDetails> listFiles() {
-		if (!(SynchronousHold.from(isDirectory()).get()))
+		if (!isDirectory().get())
 			return EMPTY_FILE_LIST;
 		if (file.listFiles() == null)
 			return EMPTY_FILE_LIST;

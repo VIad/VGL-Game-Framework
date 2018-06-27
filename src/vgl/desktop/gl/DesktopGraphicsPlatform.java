@@ -363,4 +363,9 @@ public class DesktopGraphicsPlatform implements GraphicsPlatform {
 		return GL11.glGetBoolean(which);
 	}
 
+	@Override
+	public void glBufferData(int target, int[] data, int usage) {
+		GL15.glBufferData(target, data, usage);
+	}
+
 }

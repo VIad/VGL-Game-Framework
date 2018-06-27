@@ -3,9 +3,8 @@ package vgl.platform;
 import vgl.core.buffers.MemoryBuffer;
 import vgl.platform.io.FileDetails;
 
-abstract public class Factory {
+public interface IFactory {
 
-	abstract public MemoryBuffer dataBuffer(int byteCapacity);
-
+	 public MemoryBuffer dataBuffer(int byteCapacity);
 
 }

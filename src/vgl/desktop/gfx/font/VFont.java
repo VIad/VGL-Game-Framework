@@ -13,7 +13,6 @@ import vgl.core.gfx.font.Glyph;
 import vgl.core.gfx.font.IFont;
 import vgl.core.internal.Checks;
 import vgl.desktop.gfx.Texture;
-import vgl.platform.gl.GLTexture;
 
 public class VFont implements IFont {
 
@@ -23,7 +22,7 @@ public class VFont implements IFont {
 		}
 	}
 
-	private GLTexture					fontTexture;
+	private Texture						fontTexture;
 	private final Map<Character, Glyph>	fontMap;
 	private int							originalFontSize;
 	private int							charHeight;
@@ -94,7 +93,7 @@ public class VFont implements IFont {
 		this.fontTexture = new Texture(atlas);
 	}
 
-	public GLTexture getFontTexture() {
+	public Texture getFontTexture() {
 		return fontTexture;
 	}
 

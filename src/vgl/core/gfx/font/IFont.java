@@ -1,6 +1,6 @@
 package vgl.core.gfx.font;
 
-import vgl.platform.gl.GLTexture;
+import vgl.desktop.gfx.Texture;
 
 public interface IFont {
 
@@ -8,7 +8,7 @@ public interface IFont {
 
 	Glyph getGlyph(char c);
 
-	GLTexture getFontTexture();
+	Texture getFontTexture();
 
 	String getFontName();
 

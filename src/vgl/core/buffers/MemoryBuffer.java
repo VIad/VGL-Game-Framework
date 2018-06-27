@@ -1,9 +1,5 @@
 package vgl.core.buffers;
 
-import java.util.stream.IntStream;
-
-import vgl.main.VGL;
-
 abstract public class MemoryBuffer {
 
 	final protected int					capacity;

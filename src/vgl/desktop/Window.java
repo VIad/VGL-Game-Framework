@@ -9,8 +9,10 @@ import static org.lwjgl.glfw.GLFW.glfwGetVideoMode;
 import static org.lwjgl.glfw.GLFW.glfwWindowHint;
 
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.system.JNI;
 
 import vgl.core.annotation.VGLInternal;
 import vgl.core.gfx.Color;
@@ -50,7 +52,6 @@ public class Window {
 			glfwWindowHint(GLFW.GLFW_REFRESH_RATE, vidMode.refreshRate());
 		glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
 		glfwWindowHint(GLFW_RESIZABLE, resizable ? GLFW_TRUE : GLFW_FALSE);
-
 	}
 
 	private volatile static boolean updateOnResize = false;

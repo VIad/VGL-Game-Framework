@@ -42,6 +42,8 @@ public interface GraphicsPlatform {
 	void glBufferData(int target, MemoryBuffer data, int usage);
 
 	void glBufferData(int target, float[] data, int usage);
+	
+	void glBufferData(int target, int[] data, int usage);
 
 	void glBufferSubData(int target, int offset, MemoryBuffer data);
 

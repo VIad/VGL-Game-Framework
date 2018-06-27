@@ -6,6 +6,8 @@ import java.util.Random;
 
 import org.lwjgl.opengl.GL11;
 
+import com.sun.org.apache.bcel.internal.generic.I2L;
+
 import vgl.core.buffers.Buffers;
 import vgl.core.buffers.MemoryBuffer;
 import vgl.core.buffers.MemoryBufferFloat;
@@ -102,7 +104,6 @@ public class Test extends VGLApplication {
 	public static void main(final String[] args) throws Exception {
 		VGL.factory = new DesktopFactory();
 		VGL.io = new DesktopIOSystem();
-		System.out.println(VGL.io.file("C:\\wr\\f.txt"));
 //		engineTest();
 		
 	}

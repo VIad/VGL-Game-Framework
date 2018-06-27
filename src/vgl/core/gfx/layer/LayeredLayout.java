@@ -26,9 +26,9 @@ public class LayeredLayout implements ILayout {
 
 	public void pushLayer(ILayer layer) {
 		if (layerStack.size() > 0)
-			if (!VGL.api.glGetBoolean(WebGL10.GL_BLEND)) {
-				VGL.api.glEnable(WebGL10.GL_BLEND);
-				VGL.api.glBlendFunc(WebGL10.GL_SRC_ALPHA, WebGL10.GL_ONE_MINUS_SRC_ALPHA);
+			if (!VGL.api_gfx.glGetBoolean(WebGL10.GL_BLEND)) {
+				VGL.api_gfx.glEnable(WebGL10.GL_BLEND);
+				VGL.api_gfx.glBlendFunc(WebGL10.GL_SRC_ALPHA, WebGL10.GL_ONE_MINUS_SRC_ALPHA);
 			}
 		layerStack.push(layer);
 	}

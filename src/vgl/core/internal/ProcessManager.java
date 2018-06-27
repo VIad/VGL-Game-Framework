@@ -1,6 +1,7 @@
 package vgl.core.internal;
 
 import vgl.core.annotation.VGLInternal;
+import vgl.main.VGL;
 
 public class ProcessManager {
 

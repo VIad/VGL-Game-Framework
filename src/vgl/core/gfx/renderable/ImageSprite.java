@@ -1,14 +1,14 @@
 package vgl.core.gfx.renderable;
 
+import vgl.desktop.gfx.Texture;
 import vgl.maths.vector.Vector2f;
-import vgl.platform.gl.GLTexture;
 
 public class ImageSprite extends Renderable2D {
 
-	private GLTexture	tex;
+	private Texture	tex;
 	private Vector2f[]	UVs;
 
-	public ImageSprite(GLTexture texture) {
+	public ImageSprite(Texture texture) {
 		this.tex = texture;
 		this.size = new Vector2f(texture.getWidth(), texture.getHeight());
 		this.UVs = defaultUVS();
@@ -28,7 +28,7 @@ public class ImageSprite extends Renderable2D {
 		return defaultUVs;
 	}
 
-	public GLTexture getTexture() {
+	public Texture getTexture() {
 		return tex;
 	}
 

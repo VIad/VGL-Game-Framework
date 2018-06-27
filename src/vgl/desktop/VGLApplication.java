@@ -3,6 +3,7 @@ package vgl.desktop;
 import vgl.core.exception.VGLException;
 import vgl.core.internal.GlobalDetails;
 import vgl.desktop.gl.DesktopGraphicsPlatform;
+import vgl.desktop.input.DesktopInputSystem;
 import vgl.desktop.input.Keyboard;
 import vgl.desktop.input.Mouse;
 import vgl.desktop.io.DesktopIOSystem;
@@ -70,8 +71,10 @@ abstract public class VGLApplication extends Application {
 		VGL.factory = new DesktopFactory();
 		VGL.logger = new DesktopLogger();
 		VGL.display = new Display(w_width, w_height);
-		VGL.api = new DesktopGraphicsPlatform();
+		VGL.api_gfx = new DesktopGraphicsPlatform();
 		VGL.io = new DesktopIOSystem();
+		VGL.input = new DesktopInputSystem();
+		VGL.app = (Application) this;
 	}
 
 }
