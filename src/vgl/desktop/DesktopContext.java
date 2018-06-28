@@ -129,6 +129,7 @@ public class DesktopContext {
 				try {
 					ProcessManager.get().runOnUpdate();
 					application.update();
+					VGL.input.updateDeltas();
 					if (application.getLayout() != null)
 						if (application.getLayout() instanceof LayeredLayout)
 							((LayeredLayout) application.getLayout()).update();
@@ -156,12 +157,6 @@ public class DesktopContext {
 					System.out.println("FPS : " + fps + ", UPS : " + ups);
 				fps = 0;
 				ups = 0;
-				try {
-					application.fixedUpdate();
-				} catch (VGLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 			}
 			if (Mouse.isInitialized())
 				Mouse.update();

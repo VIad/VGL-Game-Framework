@@ -12,6 +12,7 @@ import com.vgl.gwtreq.client.VGWT;
 
 import vgl.core.exception.VGLException;
 import vgl.core.internal.ProcessManager;
+import vgl.main.VGL;
 
 public class WebContext {
 
@@ -53,6 +54,7 @@ public class WebContext {
 				app.fixedUpdate();
 			}
 			app.update();
+			VGL.input.updateDeltas();
 			app.render();
 		} catch (VGLException e) {
 

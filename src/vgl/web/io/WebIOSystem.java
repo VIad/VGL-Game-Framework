@@ -16,6 +16,11 @@ import vgl.web.WebMemoryBuffer;
 
 public class WebIOSystem extends IOSystem {
 
+	
+	public WebIOSystem() {
+		
+	}
+	
 	@Override
 	public void readBytes(FileDetails file, Callback<MemoryBuffer> result) {
 		XMLHttpRequest request = XMLHttpRequest.create();

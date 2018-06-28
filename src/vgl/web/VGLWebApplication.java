@@ -1,5 +1,6 @@
 package vgl.web;
 
+import com.google.gwt.user.client.Window;
 import com.vgl.gwtreq.client.Dim;
 import com.vgl.gwtreq.client.VGWT;
 
@@ -23,10 +24,10 @@ abstract public class VGLWebApplication extends Application {
 		GlobalDetails.set((Application) this);
 		GlobalDetails.set(Platform.WEB);
 		this.renderTargetID = documentCanvasId;
-		context = new WebContext(this);
+		this.context = new WebContext(this);
 		context.set();
 		WebGLExtensions.tryEnableAll();
-
+		initGlobals();
 		try {
 			init();
 		} catch (VGLException e) {
@@ -36,16 +37,22 @@ abstract public class VGLWebApplication extends Application {
 		VGWT.setAnimationCallback(context::animCallback);
 		VGWT.requestAnimation();
 	}
+	
+	@Override
+	public void setFixedUpdateTimestamp(float seconds) {
+		// TODO Auto-generated method stub
+		
+	}
 
 	@Override
 	protected void initGlobals() {
+		VGL.app = (Application) this;
 		VGL.display = new Display(w_width, w_height);
 		VGL.factory = new WebFactory();
 		VGL.logger = new WebLogger();
 		VGL.api_gfx = new WebGraphicsPlatform();
 		VGL.io = new WebIOSystem();
 		VGL.input = new WebInputSystem();
-		VGL.app = (Application) this;
 	}
 
 	void set(Dim dim) {
@@ -59,5 +66,9 @@ abstract public class VGLWebApplication extends Application {
 	
 	public String getRenderTargetID() {
 		return renderTargetID;
+	}
+
+	public void set(WebContext webContext) {
+		this.context = webContext;
 	}
 }

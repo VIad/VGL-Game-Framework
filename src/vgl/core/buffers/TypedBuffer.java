@@ -17,7 +17,7 @@ abstract public class TypedBuffer<T> {
 		this.bytePointer = 0;
 		this.typeCapacity = capacity;
 		this.buffer = VGL.factory.dataBuffer(capacity * dataSize);
-		VGL.io.memset(buffer, (byte) 0); //Make sure no garbage is left in buffers, this is java ffs :)
+		VGL.io.memset(buffer, (byte) 0); // Make sure no garbage is left in buffers, this is java ffs :)
 	}
 
 	public MemoryBuffer getBuffer() {
@@ -52,5 +52,11 @@ abstract public class TypedBuffer<T> {
 	abstract public T read();
 
 	abstract public T readAbsolute(int index);
+
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + "[pointer=" + pointer + ", bytePointer=" + bytePointer
+		        + ", typeCapacity=" + typeCapacity + ", dataSizeBytes=" + dataSizeBytes + "]";
+	}
 
 }

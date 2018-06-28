@@ -1,20 +1,19 @@
 package test;
 
 import java.awt.Font;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Random;
 
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
+
 import org.lwjgl.opengl.GL11;
 
-import com.sun.org.apache.bcel.internal.generic.I2L;
-
 import vgl.core.buffers.Buffers;
-import vgl.core.buffers.MemoryBuffer;
-import vgl.core.buffers.MemoryBufferFloat;
-import vgl.core.buffers.MemoryBufferInt;
-import vgl.core.buffers.TypedBuffer;
 import vgl.core.exception.VGLException;
 import vgl.core.gfx.Color;
+import vgl.core.gfx.Image;
 import vgl.core.gfx.camera.PerspectiveCamera;
 import vgl.core.gfx.renderable.ColoredSprite;
 import vgl.core.gfx.renderable.ImageSprite;
@@ -29,16 +28,17 @@ import vgl.desktop.audio.AudioSystem;
 import vgl.desktop.gfx.Texture;
 import vgl.desktop.gfx.font.VFont;
 import vgl.desktop.gfx.renderer.Renderer2D;
+import vgl.desktop.input.DesktopInputSystem;
 import vgl.desktop.input.Key;
 import vgl.desktop.input.Keyboard;
 import vgl.desktop.input.Mouse;
 import vgl.desktop.io.DesktopIOSystem;
+import vgl.desktop.utils.DesktopLogger;
 import vgl.main.VGL;
 import vgl.maths.Projection;
 import vgl.maths.vector.Matrix4f;
 import vgl.maths.vector.Vector3f;
 import vgl.maths.vector.VectorMaths;
-import vgl.platform.Platform;
 
 public class Test extends VGLApplication {
 
@@ -102,10 +102,34 @@ public class Test extends VGLApplication {
 	private static VFont		font;
 
 	public static void main(final String[] args) throws Exception {
-		VGL.factory = new DesktopFactory();
-		VGL.io = new DesktopIOSystem();
-//		engineTest();
+//		VGL.factory = new DesktopFactory();
+//		VGL.io = new DesktopIOSystem();
+//		VGL.logger = new DesktopLogger();
+//		VGL.input = new DesktopInputSystem();
 		
+//		
+//		Image image = Image.fromColor(1500, 1500, Color.BROWN, 1f);
+//		for(int x = 50; x < 150;x++) {
+//			for(int y = 0; y < image.getHeight();y++) {
+//				image.setPixel(x, y, Color.BLACK);
+//			}
+//		}
+//		Image subImage = image.createSubImage(40, 0, 300,300);
+//		JOptionPane.showMessageDialog(null, new ImageIcon(imageToBufferedImage(subImage)));
+		
+		engineTest();
+	}
+
+	
+	private static BufferedImage imageToBufferedImage(Image image) {
+		System.out.println(image);
+		BufferedImage result = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		for(int x = 0; x < result.getWidth(); x ++) {
+			for(int y = 0; y < result.getHeight(); y ++) {
+				result.setRGB(x, y, image.getPixel(x, y).getARGB());
+			}
+		}
+		return result;
 	}
 
 	static Texture	tex;
@@ -120,11 +144,11 @@ public class Test extends VGLApplication {
 		app.startApplication();
 	}
 
-	private static float	transY		= 0f, transX = 0f;
+	private static float			transY		= 0f, transX = 0f;
 
-	private static float	angleRotY	= 0;
+	private static float			angleRotY	= 0;
 
-	static ArrayList<Renderable2D> list = new ArrayList<>();
+	static ArrayList<Renderable2D>	list		= new ArrayList<>();
 
 	@Override
 	public void init() throws VGLException {
@@ -268,9 +292,9 @@ public class Test extends VGLApplication {
 		// bRenderer.renderSprite(sprites.get(i), i * 6, 10, null);
 		// }
 		// bRenderer.drawText(randStr, 0, 10, font);
-//		bRenderer.drawText("0", 0, 0, font);
-		 bRenderer.drawText("Enjoy your stay", 0, 7, font);
-		 bRenderer.drawText("^\\gggggg", 0, 3, font);
+		// bRenderer.drawText("0", 0, 0, font);
+		bRenderer.drawText("Enjoy your stay", 0, 7, font);
+		bRenderer.drawText("^\\gggggg", 0, 3, font);
 		bRenderer.end();
 		bRenderer.render();
 		// for (Sprite sprite : sprites) {

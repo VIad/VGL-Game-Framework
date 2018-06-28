@@ -5,7 +5,7 @@ import vgl.platform.LogLevel;
 
 public class DesktopLogger implements ILogger {
 
-	private static boolean	def_ostream_used	= false;
+	private static boolean	def_ostream_used	= true;
 	private static String	INFO_PREFIX			= "[VGL::INFO]    ";
 	private static String	WARN_PREFIX			= "[VGL::WARN]    ";
 	private static String	ERROR_PREFIX		= "[VGL::ERROR]   ";

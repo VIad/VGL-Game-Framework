@@ -22,10 +22,15 @@ public class Mouse {
 	private static boolean		rightButtonDown				= false;
 	private static boolean		leftButtonDown				= false;
 	private static boolean		init						= false;
+	private static float        mouseWheelDelta;
 
 	public static final byte	CURSOR_INPUT_MODE			= 0xf;
 	public static final byte	MOVEMENT_INPUT_MODE			= 0xc;
 	public static final byte	CURSOR_HIDDEN_INPUT_MODE	= 0xa;
+	
+	public static final int LEFT_BUTTON = 0;
+	public static final int RIGHT_BUTTON = 1;
+	public static final int MIDDLE_BUTTON = 2;
 
 	/**
 	 * No instances of the class can exist
@@ -48,7 +53,7 @@ public class Mouse {
 				rightButtonDown = action == GLFW_PRESS;
 		});
 		glfwSetScrollCallback(Window.__ptr(), (window, xOffset, yOffset) -> {
-
+			mouseWheelDelta = (float) yOffset;
 		});
 		init = true;
 	}

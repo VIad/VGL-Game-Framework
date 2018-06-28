@@ -1,6 +1,6 @@
 package vgl.core.gfx;
 
-import vgl.core.buffers.MemoryBuffer;
+import vgl.core.buffers.MemoryBufferFloat;
 import vgl.maths.vector.Vector4f;
 
 public final class Color implements java.io.Serializable, Comparable<Color> {
@@ -150,6 +150,8 @@ public final class Color implements java.io.Serializable, Comparable<Color> {
 		this.r = this.g = this.b = 0f;
 		this.a = 1f;
 	}
+	
+	
 
 	public Color(int rgb) {
 		checkIllegalColor(rgb);
@@ -201,16 +203,15 @@ public final class Color implements java.io.Serializable, Comparable<Color> {
 		this.g = g;
 		this.b = b;
 		this.a = a;
-
 	}
 
-	public Color(Color layerBackground) {
-		this.a = layerBackground.a;
-		this.r = layerBackground.r;
-		this.g = layerBackground.g;
-		this.b = layerBackground.b;
+	public Color(Color other) {
+		this.a = other.a;
+		this.r = other.r;
+		this.g = other.g;
+		this.b = other.b;
 	}
-
+	
 	public static int toRGB(int r, int g, int b) {
 		return r << 16 | g << 8 | b;
 	}
@@ -352,7 +353,7 @@ public final class Color implements java.io.Serializable, Comparable<Color> {
 				| ((b & 0xff) << 0);
 	}
 
-	public int getRGBA() {
+	public int getARGB() {
 		int a = (int) (this.a * 255f);
 		int r = (int) (this.r * 255f);
 		int g = (int) (this.g * 255f);
@@ -363,11 +364,52 @@ public final class Color implements java.io.Serializable, Comparable<Color> {
 				| ((b & 0xff) << 0);
 	}
 
+	public static Color fromARGB(int argb) {
+		short alpha =   (short)  ((argb >> 24) & 0x000000ff);
+		short red = (short)  ((argb >> 16) & 0x0000ff);
+		short green =  (short)  ((argb >> 8)  & 0x00ff);
+		short blue = (short)  ((argb >> 0)  & 0xff);
+		return new Color(
+				(float) (red / 255.0f),
+				(float) (green / 255.0f),
+				(float) (blue / 255.0f),
+				(float) (alpha / 255.0f)
+				        );
+	}
+	
+	public int getRGBA() {
+		int a = (int) (this.a * 255f);
+		int r = (int) (this.r * 255f);
+		int g = (int) (this.g * 255f);
+		int b = (int) (this.b * 255f);
+		return 
+				  ((r & 0xff) << 24)
+				| ((g & 0xff) << 16)
+				| ((b & 0xff) << 8)
+				| ((a & 0xff) << 0);
+	}
+	
+	public boolean hasTransparency() {
+		return a < 1f;
+	}
+	
+	private void checkChannelValue(float a) {
+		if(a < 0.0f || a > 1.0f)
+			throw new IllegalArgumentException("The value entered ["+a+"] is out of bounds [0;1]");
+	}
+
 	public vgl.maths.vector.Vector4f toVector() {
 		return new vgl.maths.vector.Vector4f(r, g, b, a);
 	}
 	
-	public void store(MemoryBuffer buffer) {
+	/**
+	 * Stores color in a buffer
+	 * ordering = RGBA
+	 * @param buffer
+	 */
+	public void store(MemoryBufferFloat buffer) {
+		buffer 
+		      .put(r).put(g).put(b).put(a);
 	}
 	
 	public static boolean isValid(float r, float g, float b, float a) {		

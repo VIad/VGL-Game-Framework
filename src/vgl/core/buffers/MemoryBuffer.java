@@ -1,5 +1,7 @@
 package vgl.core.buffers;
 
+import vgl.main.VGL;
+
 abstract public class MemoryBuffer {
 
 	final protected int					capacity;
@@ -8,6 +10,8 @@ abstract public class MemoryBuffer {
 
 	public MemoryBuffer(int capacity) {
 		this.capacity = capacity;
+		if (capacity >= 1024 * 1024)
+			VGL.logger.warn("LARGE ALLOCATION [" + capacity + " bytes] -> " + this);
 	}
 
 	abstract public MemoryBuffer putInt(int index, int value);
@@ -29,5 +33,12 @@ abstract public class MemoryBuffer {
 	public int capacity() {
 		return capacity;
 	}
+
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName()+" [capacity=" + capacity + "]";
+	}
+	
+	
 
 }

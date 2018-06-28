@@ -18,13 +18,16 @@ abstract public class VGLApplication extends Application {
 	private String	title;
 	private boolean	vsync;
 	private boolean	resizable;
+	private float fixedUpdateTs;
 
 	public VGLApplication(String title, int window_width, int window_height) {
 		super();
+		initGlobals();
 		this.title = title;
 		this.resizable = false;
 		this.w_height = window_height;
 		this.w_width = window_width;
+		this.fixedUpdateTs = 1f;
 		boolean osarch64 = Integer.valueOf(System.getProperty("sun.arch.data.model")) == 64;
 		GlobalDetails.set((Application) this);
 		GlobalDetails.set(osarch64 ? Platform.DESKTOP_X64 : Platform.DESKTOP_X86);
@@ -44,6 +47,11 @@ abstract public class VGLApplication extends Application {
 			e.printStackTrace();
 		}
 		DesktopContext.startLoop();
+	}
+	
+	@Override
+	public void setFixedUpdateTimestamp(float seconds) {
+		this.fixedUpdateTs = seconds;
 	}
 
 	public String getTitle() {
@@ -73,7 +81,7 @@ abstract public class VGLApplication extends Application {
 		VGL.display = new Display(w_width, w_height);
 		VGL.api_gfx = new DesktopGraphicsPlatform();
 		VGL.io = new DesktopIOSystem();
-		VGL.input = new DesktopInputSystem();
+//		VGL.input = new DesktopInputSystem();
 		VGL.app = (Application) this;
 	}
 

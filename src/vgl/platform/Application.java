@@ -11,7 +11,6 @@ abstract public class Application {
 		if (instancesOf > 0)
 			throw new vgl.core.exception.VGLFatalError("VGL currently supports 1 application running concurrently");
 		instancesOf++;
-		initGlobals();
 	}
 
 	protected int	w_width, w_height;
@@ -41,6 +40,8 @@ abstract public class Application {
 	public ILayout getLayout() {
 		return layout;
 	}
+	
+	abstract public void setFixedUpdateTimestamp(float seconds);
 
 	abstract public void init() throws vgl.core.exception.VGLException;
 
