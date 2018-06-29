@@ -75,5 +75,7 @@ public interface IAudioPlatform {
 	
 	void setupAudioContext();
 	
+	boolean isInitialized();
+	
 	void destroyOnExit();
 }

@@ -208,6 +208,7 @@ public class DesktopAudioPlatform implements IAudioPlatform{
 	}
 	
 	private long deviceHandle, alContextHandle;
+	private boolean initialized = false;
 
 	@Override
 	public void setupAudioContext() {
@@ -218,6 +219,11 @@ public class DesktopAudioPlatform implements IAudioPlatform{
 			throw new vgl.core.exception.VGLAudioException("Unable to create AL Handle");
 		ALC10.alcMakeContextCurrent(alContextHandle);
 		AL.createCapabilities(deviceCapabilities);
+		initialized = true;
+	}
+	
+	public boolean isInitialized() {
+		return initialized;
 	}
 	
 	@Override

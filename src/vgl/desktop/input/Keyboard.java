@@ -5,6 +5,7 @@ import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
 
 import vgl.desktop.DesktopContext;
 import vgl.desktop.Window;
+import vgl.main.VGL;
 
 public class Keyboard {
 
@@ -23,10 +24,8 @@ public class Keyboard {
 	 */
 	public static void create() {
 		init = true;
-		if ((DesktopContext.getContext() == null) || (DesktopContext.getWindow() == null))
-			throw new NullPointerException("Context || window >> null");
 		keys = new boolean[2000];
-		glfwSetKeyCallback(Window.__ptr(), (window, key, scancode, action, mods) -> {
+		glfwSetKeyCallback(((Window)VGL.display).__nativePtr(), (window, key, scancode, action, mods) -> {
 			if (key > keys.length || key < 0)
 				return;
 			keys[key] = action != GLFW_RELEASE;

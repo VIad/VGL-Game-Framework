@@ -6,9 +6,9 @@ import com.vgl.gwtreq.client.VGWT;
 
 import vgl.core.exception.VGLException;
 import vgl.core.internal.GlobalDetails;
+import vgl.main.Application;
 import vgl.main.VGL;
-import vgl.platform.Application;
-import vgl.platform.Display;
+import vgl.platform.AbstractDisplayDevice;
 import vgl.platform.Platform;
 import vgl.web.audio.WebAudioPlatform;
 import vgl.web.input.WebInputSystem;
@@ -19,14 +19,14 @@ import vgl.web.utils.WebPromptLogger;
 abstract public class VGLWebApplication extends Application {
 
 	String				renderTargetID;
-	private WebContext	context;
+	private WContext	context;
 
 	public VGLWebApplication(String documentCanvasId) {
 		super();
 		GlobalDetails.set((Application) this);
 		GlobalDetails.set(Platform.WEB);
 		this.renderTargetID = documentCanvasId;
-		this.context = new WebContext(this);
+		this.context = new WContext(this);
 		context.set();
 		WebGLExtensions.tryEnableAll();
 		initGlobals();
@@ -35,21 +35,45 @@ abstract public class VGLWebApplication extends Application {
 		} catch (VGLException e) {
 
 		}
-
-		VGWT.setAnimationCallback(context::animCallback);
+		VGWT.setAnimationCallback(timestamp -> {
+			try {
+				context.loop(timestamp);
+			} catch (VGLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		});
 		VGWT.requestAnimation();
 	}
 	
 	@Override
+	public void setUpdatesPerSecond(int ups) {
+		super.setUpdatesPerSecond(ups);
+//		this.context.updateApplicationObject(this);
+//		this.context.setRequestedUPS(ups);
+	}
+	
+	@Override
 	public void setFixedUpdateTimestamp(float seconds) {
-		// TODO Auto-generated method stub
-		
+//		this.context.setFixedUpdateTS(seconds);
+		this.fixedUpdateTs = seconds;
+	}
+	
+	@Override
+	public void startApplication() {
+//		try {
+//			context.startLoop();
+//		} catch (VGLException e) {
+//			VGL.errorChannel
+//			   .forward(() -> e);
+//		}
 	}
 
 	@Override
 	protected void initGlobals() {
 		VGL.app = (Application) this;
-		VGL.display = new Display(w_width, w_height);
+//		VGL.context = this.context;
+		VGL.display = new WebDisplay("display",w_width, w_height, true, false);
 		VGL.factory = new WebFactory();
 		VGL.logger = new WebLogger();
 		VGL.promptLogger = new WebPromptLogger();
@@ -64,7 +88,7 @@ abstract public class VGLWebApplication extends Application {
 		this.w_height = dim.height;
 	}
 
-	public WebContext getContext() {
+	public WContext getContext() {
 		return context;
 	}
 	
@@ -72,7 +96,7 @@ abstract public class VGLWebApplication extends Application {
 		return renderTargetID;
 	}
 
-	public void set(WebContext webContext) {
+	public void set(WContext webContext) {
 		this.context = webContext;
 	}
 }

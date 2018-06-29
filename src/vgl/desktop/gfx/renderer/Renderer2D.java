@@ -21,6 +21,7 @@ import vgl.core.gfx.renderable.Renderable2D;
 import vgl.core.internal.Checks;
 import vgl.desktop.Window;
 import vgl.desktop.gfx.Texture;
+import vgl.main.VGL;
 import vgl.maths.vector.Matrix4f;
 import vgl.maths.vector.Vector2f;
 import vgl.maths.vector.Vector3f;
@@ -87,8 +88,8 @@ final public class Renderer2D implements IRenderer2D {
 
 	private float	projMaxX	= 16f, projMaxY = 9f;
 
-	private float	scaleX		= (float) Window.getWidth() / projMaxX;
-	private float	scaleY		= (float) Window.getHeight() / projMaxY;
+	private float	scaleX		= (float) VGL.display.getWidth() / projMaxX;
+	private float	scaleY		= (float) VGL.display.getHeight() / projMaxY;
 
 	private void setupIBO() {
 		int[] indices = new int[IBO_TOTAL_BUFFER_LENGTH];

@@ -26,6 +26,7 @@ import vgl.desktop.gfx.renderer.Renderer2D;
 import vgl.desktop.input.Key;
 import vgl.desktop.input.Keyboard;
 import vgl.desktop.input.Mouse;
+import vgl.main.VGL;
 import vgl.maths.Projection;
 import vgl.maths.vector.Matrix4f;
 import vgl.maths.vector.Vector3f;
@@ -130,7 +131,7 @@ public class Test extends VGLApplication {
 	private static void engineTest() {
 		VGLApplication app = new Test("Test", 1280, 720);
 		app.setVerticalSynchronized(false);
-		app.setResizable(true);
+		app.setFixedUpdateTimestamp(2f);
 		app.setUpdatesPerSecond(100);
 		app.startApplication();
 	}
@@ -143,6 +144,8 @@ public class Test extends VGLApplication {
 
 	@Override
 	public void init() throws VGLException {
+		VGL.display.setDisplayFps(true);
+		
 		AudioSystem.initialize(100);
 		AudioManager.create();
 
@@ -163,7 +166,7 @@ public class Test extends VGLApplication {
 		tex2 = new Texture("resources/0.png");
 		tex3 = new Texture("resources/1.jpg");
 
-		Window.setClearColor(Color.BLACK);
+		VGL.display.setClearColor(Color.BLACK);
 
 		defaultShader = ShaderFactory.batch2DGLSL();
 		defaultShader.start();
@@ -234,10 +237,10 @@ public class Test extends VGLApplication {
 		        new Color(rand.nextInt(0xffffff))));
 		System.out.println("Rendering >> " + sprites.size() + " sprites !");
 
-		Window.updateOnResize(true);
-		Window.logFps(true);
+//		Window.updateOnResize(true);
+//		Window.logFps(true);
 		Keyboard.create();
-		Mouse.create();
+//		Mouse.create();
 		defaultShader.start();
 		randStr = "((";
 		for (int i = 0; i < 200; i++) {
@@ -300,10 +303,11 @@ public class Test extends VGLApplication {
 
 	@Override
 	public void update() throws VGLException {
-		if (Keyboard.isKeyDown(Key.W)) {
+
+		if (VGL.input.isKeyDown(Key.W)) {
 			transY += 0.05f;
 		}
-		if (Keyboard.isKeyDown(Key.S)) {
+		if (VGL.input.isKeyDown(Key.S)) {
 			transY -= 0.05f;
 		}
 		if (Keyboard.isKeyDown(Key.A)) {
@@ -317,6 +321,10 @@ public class Test extends VGLApplication {
 		}
 		if (Keyboard.isKeyDown(Key.E)) {
 			angleRotY -= 0.05f;
+		}
+		if(VGL.input.isKeyDown(Key.SPACE)) {
+			VGL.context
+			   .toggleLooping();
 		}
 		// transX -= 0.05f;
 		// transMat = VectorMaths.translationMatrix(new Vector3f(transX, transY,
@@ -338,7 +346,7 @@ public class Test extends VGLApplication {
 
 	@Override
 	public void fixedUpdate() throws VGLException {
-
+		System.out.println("Fixed update");
 	}
 
 }

@@ -1,11 +1,12 @@
-package vgl.core.gfx.layer;
+package vgl.desktop.gfx.layer;
 
 import java.util.Stack;
 
 import com.shc.webgl4j.client.WebGL10;
 
 import vgl.core.annotation.VGLInternal;
-import vgl.desktop.gfx.layer.ILayer2D;
+import vgl.core.gfx.layer.ILayer;
+import vgl.core.gfx.layer.ILayout;
 import vgl.main.VGL;
 
 public class LayeredLayout implements ILayout {

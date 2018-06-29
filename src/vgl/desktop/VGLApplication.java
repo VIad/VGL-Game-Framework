@@ -10,9 +10,9 @@ import vgl.desktop.input.Mouse;
 import vgl.desktop.io.DesktopIOSystem;
 import vgl.desktop.utils.DesktopLogger;
 import vgl.desktop.utils.DesktopPromptLogger;
+import vgl.main.Application;
 import vgl.main.VGL;
-import vgl.platform.Application;
-import vgl.platform.Display;
+import vgl.platform.AbstractDisplayDevice;
 import vgl.platform.Platform;
 
 abstract public class VGLApplication extends Application {
@@ -20,11 +20,12 @@ abstract public class VGLApplication extends Application {
 	private String	title;
 	private boolean	vsync;
 	private boolean	resizable;
-	private float fixedUpdateTs;
+	
 
+	private DesktopContext context;
+	
 	public VGLApplication(String title, int window_width, int window_height) {
 		super();
-		initGlobals();
 		this.title = title;
 		this.resizable = false;
 		this.w_height = window_height;
@@ -33,26 +34,30 @@ abstract public class VGLApplication extends Application {
 		boolean osarch64 = Integer.valueOf(System.getProperty("sun.arch.data.model")) == 64;
 		GlobalDetails.set((Application) this);
 		GlobalDetails.set(osarch64 ? Platform.DESKTOP_X64 : Platform.DESKTOP_X86);
-		DesktopContext.createContext(this);
+		context = new DesktopContext(this);
+		initGlobals();
 	}
 
 	public void startApplication() {
-		DesktopContext.createWindow(title, w_width, w_height, vsync, false);
-		Window.setResizable(resizable);
-		DesktopContext.initGL();
-		Mouse.create();
-		Keyboard.create();
+//		DesktopContext.createWindow(title, w_width, w_height, vsync, false);
+		context.initGL();
 		try {
 			init();
 		} catch (VGLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			VGL.errorChannel
+			   .forward(() -> e);
 		}
-		DesktopContext.startLoop();
+		try {
+			context.startLoop();
+		} catch (VGLException e) {
+			VGL.errorChannel
+			   .forward(() -> e);
+		}
 	}
 	
 	@Override
 	public void setFixedUpdateTimestamp(float seconds) {
+		this.context.setFixedUpdateTS(seconds);
 		this.fixedUpdateTs = seconds;
 	}
 
@@ -61,15 +66,21 @@ abstract public class VGLApplication extends Application {
 	}
 
 	public final void setResizable(boolean resizable) {
+		VGL.display.setResizable(resizable);
 		this.resizable = resizable;
 	}
 
 	public final void setVerticalSynchronized(boolean vsync) {
+		VGL.display.setVsync(vsync);
 		this.vsync = vsync;
 	}
+	
+	//TODO ADD UPDATING WINDOW
 
 	public final void setUpdatesPerSecond(int ups) {
-		this.UPS = ups;
+		super.setUpdatesPerSecond(ups);
+		this.context.updateApplicationObject(this);
+		this.context.setRequestedUPS(ups);
 	}
 
 	public final void setFramesPerSecond(int fps) {
@@ -78,10 +89,11 @@ abstract public class VGLApplication extends Application {
 
 	@Override
 	protected void initGlobals() {
+		VGL.context = this.context;
 		VGL.factory = new DesktopFactory();
 		VGL.logger = new DesktopLogger();
 		VGL.promptLogger = new DesktopPromptLogger();
-		VGL.display = new Display(w_width, w_height);
+		VGL.display = new Window(title, w_width, w_height, vsync, false);
 		VGL.api_gfx = new DesktopGraphicsPlatform();
 		VGL.api_afx = new DesktopAudioPlatform();
 		VGL.io = new DesktopIOSystem();

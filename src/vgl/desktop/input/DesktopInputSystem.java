@@ -13,32 +13,34 @@ import static org.lwjgl.glfw.GLFW.glfwSetMouseButtonCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetScrollCallback;
 
 import vgl.desktop.Window;
+import vgl.main.VGL;
 import vgl.platform.input.IPlatformInputDevice;
 
 public class DesktopInputSystem implements IPlatformInputDevice {
-	
-	private float dx, dy, x, y;
-	private boolean leftButtonDown, rightButtonDown;
-	private float mouseWheelDelta;
-	
+
+	private float	dx, dy, x, y;
+	private boolean	leftButtonDown, rightButtonDown;
+	private float	mouseWheelDelta;
+
 	public DesktopInputSystem() {
-		
+
 	}
-	
+
 	public void onGlfwInit() {
-		glfwSetCursorPosCallback(Window.__ptr(), (window, x, y) -> {
+		Keyboard.create();
+		glfwSetCursorPosCallback(((Window) VGL.display).__nativePtr(), (window, x, y) -> {
 			dx = (float) (x - x);
 			dy = (float) (y - y);
 			x = (float) x;
 			y = (float) y;
 		});
-		glfwSetMouseButtonCallback(Window.__ptr(), (window, button, action, mods) -> {
+		glfwSetMouseButtonCallback(((Window) VGL.display).__nativePtr(), (window, button, action, mods) -> {
 			if (button == GLFW_MOUSE_BUTTON_LEFT)
 				leftButtonDown = action == GLFW_PRESS;
 			if (button == GLFW_MOUSE_BUTTON_RIGHT)
 				rightButtonDown = action == GLFW_PRESS;
 		});
-		glfwSetScrollCallback(Window.__ptr(), (window, xOffset, yOffset) -> {
+		glfwSetScrollCallback(((Window) VGL.display).__nativePtr(), (window, xOffset, yOffset) -> {
 			mouseWheelDelta = (float) yOffset;
 		});
 	}
@@ -76,15 +78,15 @@ public class DesktopInputSystem implements IPlatformInputDevice {
 	@Override
 	public void setMouseInputMode(int mInputMode) {
 		if (mInputMode == CURSOR_INPUT_MODE) {
-			glfwSetInputMode(Window.__ptr(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			glfwSetInputMode(((Window)VGL.display).__nativePtr(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 			return;
 		}
 		if (mInputMode == CURSOR_HIDDEN_INPUT_MODE) {
-			glfwSetInputMode(Window.__ptr(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+			glfwSetInputMode(((Window)VGL.display).__nativePtr(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 			return;
 		}
 		if (mInputMode == MOVEMENT_INPUT_MODE)
-			glfwSetInputMode(Window.__ptr(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			glfwSetInputMode(((Window)VGL.display).__nativePtr(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	}
 
 	@Override

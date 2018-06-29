@@ -3,13 +3,7 @@ package vgl.desktop.audio;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.lwjgl.openal.AL;
 import org.lwjgl.openal.AL10;
-import org.lwjgl.openal.ALC;
-import org.lwjgl.openal.ALC10;
-import org.lwjgl.openal.ALCCapabilities;
-
-import com.shc.gwtal.client.openal.AudioDecoder;
 
 import vgl.audio.AudioSourcePool;
 import vgl.main.VGL;

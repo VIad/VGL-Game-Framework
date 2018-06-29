@@ -4,196 +4,113 @@ import static org.lwjgl.glfw.GLFW.glfwDefaultWindowHints;
 import static org.lwjgl.glfw.GLFW.glfwInit;
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
-import static org.lwjgl.glfw.GLFW.glfwShowWindow;
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
-import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
-import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_VERSION;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glGetString;
-
-import java.util.concurrent.ForkJoinPool;
+import static org.lwjgl.glfw.GLFW.*;
 
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
-import org.lwjgl.opengl.GL11;
-
-import com.sun.glass.ui.Application;
 
 import vgl.core.exception.VGLException;
-import vgl.core.gfx.layer.LayeredLayout;
+import vgl.core.exception.VGLFatalError;
 import vgl.core.internal.Checks;
-import vgl.core.internal.ProcessManager;
+import vgl.desktop.gfx.layer.LayeredLayout;
 import vgl.desktop.gl.VertexArray;
 import vgl.desktop.input.DesktopInputSystem;
-import vgl.desktop.input.Mouse;
 import vgl.main.VGL;
 import vgl.natives.NativeUtils;
+import vgl.platform.AbstractContext;
+import vgl.platform.IPlatformContext;
 
-public class DesktopContext {
+public class DesktopContext extends AbstractContext<VGLApplication> implements IPlatformContext{
 
-	private static final String		version	= "0.1";
-
-	private static DesktopContext	context;
-
-	private static VGLApplication	application;
-
-	private static Window			w;
-
-	/**
-	 * User of the API should not access the constructor
-	 */
-	private DesktopContext() {
+	public DesktopContext(VGLApplication app) {
+		super(app);
 	}
 
-	public static void createContext(VGLApplication application) {
-		if (!glfwInit())
-			throw new Error("Unable to init GLFW >> Shutting down");
+	private boolean f = true;
+	
+	@Override
+	protected void preLoop() {
+		Checks.checkIfInitialized();
+		GLFW.glfwSetWindowSize(((Window)VGL.display).__nativePtr(), 1920, 1080);
+		if (f) {
+			f = false;
+			GLFW.glfwSetWindowSize(((Window)VGL.display).__nativePtr(), application.getWindowWidth(), application.getWindowHeight());
+		}
+		((DesktopInputSystem) VGL.input).onGlfwInit();
+	}
+
+	@Override
+	protected void postLoop() throws VGLException {
+		VertexArray.freeBuffers();
+		NativeUtils.clearOnFinish();
+		application.finish();
+		glfwDestroyWindow(((Window)VGL.display).__nativePtr());
+	}
+
+	@Override
+	protected void loopEnd() {
+		glfwSwapBuffers(((Window)VGL.display).__nativePtr());
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glfwPollEvents();
+	}
+
+	@Override
+	protected void platformSpecificRender() {
+		if (application.getLayout() != null)
+			application.getLayout().render();
+	}
+
+	@Override
+	protected boolean shouldStop() {
+		return glfwWindowShouldClose(((Window)VGL.display).__nativePtr());
+	}
+
+	@Override
+	public void createContext() {
+		if(!glfwInit())
+			throw new VGLFatalError("Unable to init GLFW >> Shutting down !");
 		GLFWErrorCallback.createPrint(System.err).set();
 		glfwDefaultWindowHints();
-		context = new DesktopContext();
-		DesktopContext.application = application;
 	}
 
-	/**
-	 *
-	 * @param title
-	 * @param width
-	 * @param height
-	 * @param vsync
-	 * @param fullscreen
-	 */
-	public static void createWindow(final String title, final int width, final int height, final boolean vsync,
-	        final boolean fullscreen) {
-		if (context == null)
-			throw new NullPointerException("Context >> null");
-		w = new Window(title, width, height, vsync, fullscreen);
-	}
 
-	/**
-	 *
-	 * @param title
-	 * @param width
-	 * @param height
-	 * @param vsync
-	 */
-	public static void createWindow(final String title, final int width, final int height, final boolean vsync) {
-		DesktopContext.createWindow(title, width, height, vsync, false);
-	}
-
-	/**
-	 *
-	 * @param title
-	 * @param width
-	 * @param height
-	 */
-	public static void createWindow(final String title, final int width, final int height) {
-		DesktopContext.createWindow(title, width, height, false, false);
-	}
-
-	public static void initGL() {
+	@Override
+	protected void initGL() {
 		Checks.__setglinit(true);
-		Window.create();
-		glfwMakeContextCurrent(Window.__ptr());
-		glfwShowWindow(Window.__ptr());
+		((Window) VGL.display).create();
+		glfwMakeContextCurrent(((Window)VGL.display).__nativePtr());
+		glfwShowWindow(((Window)VGL.display).__nativePtr());
 		GL.createCapabilities();
-		if (Window.isVerticalSyncRequested())
+		if(VGL.display.isVerticalSyncRequested())
 			glfwSwapInterval(1);
 		else
 			glfwSwapInterval(0);
-		VGL.logger.info("VGL " + version + " | OpenGL " + glGetString(GL_VERSION));
-
+		VGL.logger.info("VGL " + VGL.build + " | OpenGL " + glGetString(GL_VERSION));
 	}
 
-	private static boolean f = true;
-
-	public static void startLoop() {
-		Checks.checkIfInitialized();
-		GLFW.glfwSetWindowSize(Window.__ptr(), 1920, 1080);
-		if (f) {
-			f = false;
-			GLFW.glfwSetWindowSize(Window.__ptr(), application.getWindowWidth(), application.getWindowHeight());
-		}
-		((DesktopInputSystem) VGL.input).onGlfwInit();
-		long last = System.currentTimeMillis();
-		long lastTime = System.nanoTime();
-		final double ns = 1000000000.0d / (double) application.getRequestedUPS();
-		double delta = 0d;
-		int fps = 0;
-		int ups = 0;
-		while (!glfwWindowShouldClose(Window.__ptr())) {
-			long now = System.nanoTime();
-			delta += (now - lastTime) / ns;
-			lastTime = now;
-			while (delta >= 1) {
-				try {
-					ProcessManager.get().runOnUpdate();
-					application.update();
-					VGL.errorChannel.supplyChannel();
-					VGL.input.updateDeltas();
-					if (application.getLayout() != null)
-						if (application.getLayout() instanceof LayeredLayout)
-							((LayeredLayout) application.getLayout()).update();
-
-					ups++;
-				} catch (VGLException e) {
-					e.printStackTrace();
-					break;
-				} 
-				delta--;
-			}
-			try {
-				if (application.getLayout() != null)
-					application.getLayout().render();
-				application.render();
-			} catch (VGLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			fps++;
-			if ((System.currentTimeMillis() - last) > 1000) {
-				last += 1000;
-				if (Window.isLoggingFPS())
-					System.out.println("FPS : " + fps + ", UPS : " + ups);
-				fps = 0;
-				ups = 0;
-			}
-			if (Mouse.isInitialized())
-				Mouse.update();
-
-			// glFinish();
-			// glFlush();
-			int error = GL11.glGetError();
-			if (error != GL11.GL_NO_ERROR) {
-				System.out.println("GL_ERROR >> " + error);
-			}
-			glfwSwapBuffers(Window.__ptr());
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			glfwPollEvents();
-		}
-		VertexArray.freeBuffers();
-		NativeUtils.clearOnFinish();
-		try {
-			application.finish();
-		} catch (VGLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		GLFW.glfwDestroyWindow(Window.__ptr());
+	@Override
+	protected void startLoop() throws VGLException{
+		loop(0.0f);
 	}
 
-	public static DesktopContext getContext() {
-		return context;
+	@Override
+	public void toggleLooping() {
+		super.toggleInternalOperations();
 	}
 
-	public static Window getWindow() {
-		if (context == null)
-			throw new NullPointerException("Context >> null");
-		return w;
+	@Override
+	protected void platformSpecificUpdate() {
+		if (application.getLayout() != null)
+			if (application.getLayout() instanceof LayeredLayout)
+				((LayeredLayout) application.getLayout()).update();
 	}
+
 
 }

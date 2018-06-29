@@ -2,10 +2,10 @@ package vgl.main;
 
 import vgl.audio.IAudioPlatform;
 import vgl.core.internal.ErrorChannel;
-import vgl.platform.Application;
-import vgl.platform.Display;
+import vgl.platform.AbstractDisplayDevice;
 import vgl.platform.IFactory;
 import vgl.platform.IGraphicsPlatorm;
+import vgl.platform.IPlatformContext;
 import vgl.platform.input.IPlatformInputDevice;
 import vgl.platform.io.IOSystem;
 import vgl.platform.logging.ILogger;
@@ -24,22 +24,25 @@ public class VGL {
 	/**
 	 * Used for platform independent OpenAL calls
 	 */
-	public static IAudioPlatform        api_afx;
+	public static IAudioPlatform		api_afx;
 
 	public static Application			app;
 
-	public static Display				display;
+	public static AbstractDisplayDevice	display;
 
 	public static IOSystem				io;
 
 	public static IPlatformInputDevice	input;
+	
+	public static IPlatformContext      context;
 
 	public static ILogger				logger;
-	
-	public static IPromptLogger         promptLogger;
-	
-	public static ErrorChannel          errorChannel;
 
-	//	IContext or st.h with pauseLoopMethod
+	public static IPromptLogger			promptLogger;
+
+	public static ErrorChannel			errorChannel;
+
+	public final static String			build	= "0.2a";
+	// IContext or st.h with pauseLoopMethod
 
 }

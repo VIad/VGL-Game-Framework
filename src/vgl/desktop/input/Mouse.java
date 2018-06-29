@@ -37,40 +37,40 @@ public class Mouse {
 	 */
 	private Mouse() {}
 
-	public static void create() {
-		if ((DesktopContext.getContext() == null) || (DesktopContext.getWindow() == null))
-			throw new NullPointerException("Context || window >> null");
-		glfwSetCursorPosCallback(Window.__ptr(), (window, x, y) -> {
-			Mouse.dx = (float) (x - Mouse.x);
-			Mouse.dy = (float) (y - Mouse.y);
-			Mouse.x = (float) x;
-			Mouse.y = (float) y;
-		});
-		glfwSetMouseButtonCallback(Window.__ptr(), (window, button, action, mods) -> {
-			if (button == GLFW_MOUSE_BUTTON_LEFT)
-				leftButtonDown = action == GLFW_PRESS;
-			if (button == GLFW_MOUSE_BUTTON_RIGHT)
-				rightButtonDown = action == GLFW_PRESS;
-		});
-		glfwSetScrollCallback(Window.__ptr(), (window, xOffset, yOffset) -> {
-			mouseWheelDelta = (float) yOffset;
-		});
-		init = true;
-	}
+//	public static void create() {
+//		if ((DesktopContext.getContext() == null) || (DesktopContext.getWindow() == null))
+//			throw new NullPointerException("Context || window >> null");
+//		glfwSetCursorPosCallback(Window.__nativePtr(), (window, x, y) -> {
+//			Mouse.dx = (float) (x - Mouse.x);
+//			Mouse.dy = (float) (y - Mouse.y);
+//			Mouse.x = (float) x;
+//			Mouse.y = (float) y;
+//		});
+//		glfwSetMouseButtonCallback(Window.__nativePtr(), (window, button, action, mods) -> {
+//			if (button == GLFW_MOUSE_BUTTON_LEFT)
+//				leftButtonDown = action == GLFW_PRESS;
+//			if (button == GLFW_MOUSE_BUTTON_RIGHT)
+//				rightButtonDown = action == GLFW_PRESS;
+//		});
+//		glfwSetScrollCallback(Window.__nativePtr(), (window, xOffset, yOffset) -> {
+//			mouseWheelDelta = (float) yOffset;
+//		});
+//		init = true;
+//	}
 
-	public static void setInputMode(final byte inputMode) {
-		if (inputMode == CURSOR_INPUT_MODE) {
-			glfwSetInputMode(Window.__ptr(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-			return;
-		}
-		if (inputMode == CURSOR_HIDDEN_INPUT_MODE) {
-			glfwSetInputMode(Window.__ptr(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-
-			return;
-		}
-		if (inputMode == MOVEMENT_INPUT_MODE)
-			glfwSetInputMode(Window.__ptr(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-	}
+//	public static void setInputMode(final byte inputMode) {
+//		if (inputMode == CURSOR_INPUT_MODE) {
+//			glfwSetInputMode(Window.__nativePtr(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+//			return;
+//		}
+//		if (inputMode == CURSOR_HIDDEN_INPUT_MODE) {
+//			glfwSetInputMode(Window.__nativePtr(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+//
+//			return;
+//		}
+//		if (inputMode == MOVEMENT_INPUT_MODE)
+//			glfwSetInputMode(Window.__nativePtr(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+//	}
 
 	public static float getX() {
 		if (!init)

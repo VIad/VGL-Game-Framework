@@ -6,7 +6,7 @@ import vgl.platform.Platform;
 public class GlobalDetails {
 
 	private static Platform					platform;
-	private static vgl.platform.Application	application;
+	private static vgl.main.Application	application;
 
 	public static int osArchitectueBits() {
 		return platform == Platform.DESKTOP_X64 ? 64 : 32;
@@ -18,7 +18,7 @@ public class GlobalDetails {
 	 *         <strong> DO NOT CALL METHODS OR MODIFY VALUES, METHOD MEANT AS
 	 *         READ-ONLY <strong>
 	 */
-	public static vgl.platform.Application getApplication() {
+	public static vgl.main.Application getApplication() {
 		return application;
 	}
 
@@ -35,7 +35,7 @@ public class GlobalDetails {
 	 * @param application
 	 */
 	@VGLInternal
-	public static void set(vgl.platform.Application application) {
+	public static void set(vgl.main.Application application) {
 		GlobalDetails.application = application;
 	}
 

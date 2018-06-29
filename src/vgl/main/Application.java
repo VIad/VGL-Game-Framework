@@ -1,19 +1,20 @@
-package vgl.platform;
+package vgl.main;
 
 import vgl.core.gfx.layer.ILayout;
 import vgl.core.internal.ErrorChannel;
-import vgl.main.VGL;
 
 abstract public class Application {
 
 	protected static int	instancesOf;
 	private ILayout			layout;
+	protected float fixedUpdateTs;
 
 	public Application() {
 		if (instancesOf > 0)
 			throw new vgl.core.exception.VGLFatalError("VGL currently supports 1 application running concurrently");
 		instancesOf++;
 		VGL.errorChannel = new ErrorChannel();
+		this.UPS = 60;
 	}
 
 	protected int	w_width, w_height;
@@ -56,6 +57,12 @@ abstract public class Application {
 
 	public void fixedUpdate() throws vgl.core.exception.VGLException {
 	}
+	
+	public void setUpdatesPerSecond(int ups) {
+		this.UPS = ups;
+	}
+	
+	abstract public void startApplication();
 
 	abstract protected void initGlobals();
 

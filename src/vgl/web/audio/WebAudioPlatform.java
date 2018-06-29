@@ -1,14 +1,12 @@
 package vgl.web.audio;
 
-import org.lwjgl.openal.AL11;
-
 import com.shc.gwtal.client.openal.AL;
 import com.shc.gwtal.client.openal.AL10;
 import com.shc.gwtal.client.openal.ALContext;
+import com.shc.gwtal.client.webaudio.AudioContext;
+import com.shc.gwtal.client.webaudio.AudioContextException;
 import com.vgl.gwtreq.client.GWTDataView;
 
-import main.java.com.shc.gwtal.client.webaudio.AudioContext;
-import main.java.com.shc.gwtal.client.webaudio.AudioContextException;
 import vgl.audio.IAudioPlatform;
 import vgl.core.buffers.MemoryBuffer;
 import vgl.core.exception.PlatformUnsupportedException;
@@ -16,7 +14,7 @@ import vgl.core.exception.VGLAudioException;
 import vgl.main.VGL;
 import vgl.tools.functional.Functional;
 
-public class WebAudioPlatform implements IAudioPlatform{
+public class WebAudioPlatform implements IAudioPlatform {
 
 	@Override
 	public int alGetError() {
@@ -45,10 +43,8 @@ public class WebAudioPlatform implements IAudioPlatform{
 
 	@Override
 	public void alBufferData(int buffer, int format, MemoryBuffer data, int freq) {
-		AL10.alBufferData(buffer,
-				          format,
-				          ((GWTDataView)data.nativeBufferDetails().getBuffer()).getView().buffer(),
-				          freq);
+		AL10.alBufferData(buffer, format, ((GWTDataView) data.nativeBufferDetails().getBuffer()).getView().buffer(),
+		        freq);
 	}
 
 	@Override
@@ -138,7 +134,8 @@ public class WebAudioPlatform implements IAudioPlatform{
 
 	@Override
 	public void alListener3i(int param, int v0, int v1, int v2) {
-		AL11.alListener3i(param, v0, v1, v2);
+		// AL11.alListener3i(param, v0, v1, v2);
+		AL10.alListener3i(param, v0, v1, v2);
 	}
 
 	@Override
@@ -176,32 +173,38 @@ public class WebAudioPlatform implements IAudioPlatform{
 		return AL10.alGetBufferi(buffer, param);
 	}
 
-	private AudioContext context;
-	private ALContext    alContext;
+	private AudioContext	context;
+	private ALContext		alContext;
+
+	private boolean initialized = false;
 	
 	@Override
 	public void setupAudioContext() {
 		try {
 			context = AudioContext.create();
 		} catch (AudioContextException e) {
-			VGL.errorChannel
-			   .forward(Functional.bind(VGLAudioException::new,
-					                    "Unable to create audio context, check browser support"));
+			VGL.errorChannel.forward(
+			        Functional.bind(VGLAudioException::new, "Unable to create audio context, check browser support"));
 		}
-		
+
 		try {
 			alContext = ALContext.create();
 			AL.setCurrentContext(alContext);
 		} catch (AudioContextException e) {
-			VGL.errorChannel
-			   .forward(Functional.bind(VGLAudioException::new,
-					                    "Unable to create AL context, check browser support"));
+			VGL.errorChannel.forward(
+			        Functional.bind(VGLAudioException::new, "Unable to create AL context, check browser support"));
 		}
+		initialized = true;
 	}
 
 	@Override
 	public void destroyOnExit() {
 		alContext.destroy();
+	}
+
+	@Override
+	public boolean isInitialized() {
+		return initialized;
 	}
 
 }

@@ -4,7 +4,6 @@ import static org.lwjgl.openal.AL10.AL_BUFFER;
 import static org.lwjgl.openal.AL10.AL_GAIN;
 import static org.lwjgl.openal.AL10.AL_PITCH;
 
-import vgl.desktop.audio.AudioSystem;
 import vgl.main.VGL;
 
 //============================================================================
