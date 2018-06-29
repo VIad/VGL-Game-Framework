@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import vgl.audio.Sound;
 import vgl.core.exception.VGLAudioException;
 
 //=============================================================================
@@ -69,7 +70,7 @@ public class AudioManager {
 		findEntryOrThrow(alias).getValue().play();
 	}
 
-	public static vgl.desktop.audio.SoundState getState(String alias) {
+	public static vgl.audio.SoundState getState(String alias) {
 		if (!created)
 			throw new vgl.core.exception.VGLAudioException("AudioManager is not created >> call AudioManager.create()");
 		return findEntryOrThrow(alias).getValue().getState();

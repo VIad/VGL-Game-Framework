@@ -5,12 +5,8 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Random;
 
-import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
-
 import org.lwjgl.opengl.GL11;
 
-import vgl.core.buffers.Buffers;
 import vgl.core.exception.VGLException;
 import vgl.core.gfx.Color;
 import vgl.core.gfx.Image;
@@ -20,7 +16,6 @@ import vgl.core.gfx.renderable.ImageSprite;
 import vgl.core.gfx.renderable.Renderable2D;
 import vgl.core.gfx.shader.ShaderFactory;
 import vgl.core.gfx.shader.ShaderProgram;
-import vgl.desktop.DesktopFactory;
 import vgl.desktop.VGLApplication;
 import vgl.desktop.Window;
 import vgl.desktop.audio.AudioManager;
@@ -28,13 +23,9 @@ import vgl.desktop.audio.AudioSystem;
 import vgl.desktop.gfx.Texture;
 import vgl.desktop.gfx.font.VFont;
 import vgl.desktop.gfx.renderer.Renderer2D;
-import vgl.desktop.input.DesktopInputSystem;
 import vgl.desktop.input.Key;
 import vgl.desktop.input.Keyboard;
 import vgl.desktop.input.Mouse;
-import vgl.desktop.io.DesktopIOSystem;
-import vgl.desktop.utils.DesktopLogger;
-import vgl.main.VGL;
 import vgl.maths.Projection;
 import vgl.maths.vector.Matrix4f;
 import vgl.maths.vector.Vector3f;

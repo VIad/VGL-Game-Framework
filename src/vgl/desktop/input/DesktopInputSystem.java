@@ -22,6 +22,10 @@ public class DesktopInputSystem implements IPlatformInputDevice {
 	private float mouseWheelDelta;
 	
 	public DesktopInputSystem() {
+		
+	}
+	
+	public void onGlfwInit() {
 		glfwSetCursorPosCallback(Window.__ptr(), (window, x, y) -> {
 			dx = (float) (x - x);
 			dy = (float) (y - y);

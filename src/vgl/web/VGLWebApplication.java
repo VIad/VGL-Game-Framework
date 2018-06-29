@@ -10,9 +10,11 @@ import vgl.main.VGL;
 import vgl.platform.Application;
 import vgl.platform.Display;
 import vgl.platform.Platform;
+import vgl.web.audio.WebAudioPlatform;
 import vgl.web.input.WebInputSystem;
 import vgl.web.io.WebIOSystem;
 import vgl.web.utils.WebLogger;
+import vgl.web.utils.WebPromptLogger;
 
 abstract public class VGLWebApplication extends Application {
 
@@ -50,7 +52,9 @@ abstract public class VGLWebApplication extends Application {
 		VGL.display = new Display(w_width, w_height);
 		VGL.factory = new WebFactory();
 		VGL.logger = new WebLogger();
+		VGL.promptLogger = new WebPromptLogger();
 		VGL.api_gfx = new WebGraphicsPlatform();
+		VGL.api_afx = new WebAudioPlatform();
 		VGL.io = new WebIOSystem();
 		VGL.input = new WebInputSystem();
 	}

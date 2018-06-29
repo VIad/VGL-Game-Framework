@@ -11,12 +11,12 @@ import vgl.core.buffers.Buffers;
 import vgl.core.buffers.MemoryBuffer;
 import vgl.core.exception.VGLFatalError;
 import vgl.core.gfx.shader.ShaderType;
-import vgl.platform.GraphicsPlatform;
+import vgl.platform.IGraphicsPlatorm;
 import vgl.platform.gl.GLBufferTarget;
 import vgl.platform.gl.GLPrimitiveMode;
 import vgl.platform.gl.GLTextureType;
 
-public class WebGraphicsPlatform implements GraphicsPlatform {
+public class WebGraphicsPlatform implements IGraphicsPlatorm {
 
 	@Override
 	public int glGenVertexArray() {

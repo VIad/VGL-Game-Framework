@@ -8,5 +8,5 @@ public interface IResourceLoader {
 
 	vgl.core.gfx.font.IFont loadFont(FileDetails file);
 
-	vgl.desktop.audio.Sound loadSound(FileDetails file);
+	vgl.audio.Sound loadSound(FileDetails file);
 }

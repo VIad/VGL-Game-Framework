@@ -1,13 +1,11 @@
-package vgl.desktop.audio;
+package vgl.audio;
 
 import static org.lwjgl.openal.AL10.AL_BUFFER;
 import static org.lwjgl.openal.AL10.AL_GAIN;
 import static org.lwjgl.openal.AL10.AL_PITCH;
-import static org.lwjgl.openal.AL10.alSourcePause;
-import static org.lwjgl.openal.AL10.alSourcePlay;
-import static org.lwjgl.openal.AL10.alSourceStop;
-import static org.lwjgl.openal.AL10.alSourcef;
-import static org.lwjgl.openal.AL10.alSourcei;
+
+import vgl.desktop.audio.AudioSystem;
+import vgl.main.VGL;
 
 //============================================================================
 //Name        : Sound
@@ -30,11 +28,12 @@ public class Sound {
 
 	private SoundState	state;
 
-	public Sound(String file) {
-		if (file.endsWith(".ogg"))
-			soundBuffer = AudioSystem.loadOGG(file);
-		else
-			soundBuffer = AudioSystem.loadSound(file);
+	public Sound(int soundBuffer) {
+//		if (file.endsWith(".ogg"))
+//			soundBuffer = AudioSystem.loadOGG(file);
+//		else
+//			soundBuffer = AudioSystem.loadSound(file);
+		this.soundBuffer = soundBuffer;
 		this.pitch = 1;
 		this.gain = 0.5f;
 		this.state = SoundState.STOPPED;
@@ -48,10 +47,10 @@ public class Sound {
 		currentSourceSlot = AudioSourcePool.queryFreeSourceSlot();
 		if (currentSourceSlot == AudioSourcePool.ASP_NOT_FOUND)
 			return;
-		alSourcei(currentSourceSlot, AL_BUFFER, soundBuffer);
-		alSourcef(currentSourceSlot, AL_GAIN, gain);
-		alSourcef(currentSourceSlot, AL_PITCH, pitch);
-		alSourcePlay(currentSourceSlot);
+		VGL.api_afx.alSourcei(currentSourceSlot, AL_BUFFER, soundBuffer);
+		VGL.api_afx.alSourcef(currentSourceSlot, AL_GAIN, gain);
+		VGL.api_afx.alSourcef(currentSourceSlot, AL_PITCH, pitch);
+		VGL.api_afx.alSourcePlay(currentSourceSlot);
 		this.state = SoundState.PLAYING;
 	}
 
@@ -65,12 +64,12 @@ public class Sound {
 
 	private void releaseHandleInternal() {
 		state = SoundState.STOPPED;
-		alSourceStop(currentSourceSlot);
+		VGL.api_afx.alSourceStop(currentSourceSlot);
 	}
 
 	public void resume() {
 		if (state == SoundState.PAUSED) {
-			alSourcePlay(currentSourceSlot);
+			VGL.api_afx.alSourcePlay(currentSourceSlot);
 			state = SoundState.PLAYING;
 		}
 	}
@@ -83,7 +82,7 @@ public class Sound {
 
 	public void pause() {
 		if (state == SoundState.PLAYING) {
-			alSourcePause(currentSourceSlot);
+			VGL.api_afx.alSourcePause(currentSourceSlot);
 			state = SoundState.PAUSED;
 		}
 	}
@@ -94,7 +93,7 @@ public class Sound {
 
 	public void setGain(float gain) {
 		checks(true, gain);
-		alSourcef(currentSourceSlot, AL_GAIN, gain);
+		VGL.api_afx.alSourcef(currentSourceSlot, AL_GAIN, gain);
 		this.gain = gain;
 	}
 
@@ -108,7 +107,7 @@ public class Sound {
 
 	public void setPitch(float pitch) {
 		checks(false, pitch);
-		alSourcef(currentSourceSlot, AL_PITCH, pitch);
+		VGL.api_afx.alSourcef(currentSourceSlot, AL_PITCH, pitch);
 		this.pitch = pitch;
 	}
 

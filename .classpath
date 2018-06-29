@@ -11,5 +11,6 @@
 	<classpathentry kind="lib" path="C:/libs/common Java libs/lwjgl_util.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="C:/wr/li.jar"/>
+	<classpathentry kind="lib" path="C:/wr/al.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

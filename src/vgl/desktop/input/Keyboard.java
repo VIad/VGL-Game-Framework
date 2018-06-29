@@ -27,7 +27,6 @@ public class Keyboard {
 			throw new NullPointerException("Context || window >> null");
 		keys = new boolean[2000];
 		glfwSetKeyCallback(Window.__ptr(), (window, key, scancode, action, mods) -> {
-			System.out.println(key);
 			if (key > keys.length || key < 0)
 				return;
 			keys[key] = action != GLFW_RELEASE;

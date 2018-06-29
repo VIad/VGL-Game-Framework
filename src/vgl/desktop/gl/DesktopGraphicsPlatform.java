@@ -8,12 +8,12 @@ import org.lwjgl.opengl.GL30;
 
 import vgl.core.buffers.MemoryBuffer;
 import vgl.core.gfx.shader.ShaderType;
-import vgl.platform.GraphicsPlatform;
+import vgl.platform.IGraphicsPlatorm;
 import vgl.platform.gl.GLBufferTarget;
 import vgl.platform.gl.GLPrimitiveMode;
 import vgl.platform.gl.GLTextureType;
 
-public class DesktopGraphicsPlatform implements GraphicsPlatform {
+public class DesktopGraphicsPlatform implements IGraphicsPlatorm {
 
 	@Override
 	public int glGenVertexArray() {

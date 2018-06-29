@@ -6,7 +6,7 @@ import vgl.platform.gl.GLBufferTarget;
 import vgl.platform.gl.GLPrimitiveMode;
 import vgl.platform.gl.GLTextureType;
 
-public interface GraphicsPlatform {
+public interface IGraphicsPlatorm {
 	// Creating Objects
 
 	int glGenVertexArray();

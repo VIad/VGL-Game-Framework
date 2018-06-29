@@ -9,6 +9,11 @@ import org.lwjgl.openal.ALC;
 import org.lwjgl.openal.ALC10;
 import org.lwjgl.openal.ALCCapabilities;
 
+import com.shc.gwtal.client.openal.AudioDecoder;
+
+import vgl.audio.AudioSourcePool;
+import vgl.main.VGL;
+
 //============================================================================
 //Name        : AudioSystem
 //Author      : Vladimir Ivanov
@@ -40,13 +45,7 @@ public class AudioSystem {
 	 */
 	public static void initialize(int sourcePoolSize) {
 		initialized = true;
-		deviceHandle = ALC10.alcOpenDevice((java.nio.ByteBuffer) null);
-		ALCCapabilities deviceCapabilities = ALC.createCapabilities(deviceHandle);
-		alContextHandle = ALC10.alcCreateContext(deviceHandle, (java.nio.IntBuffer) null);
-		if (alContextHandle == NULL)
-			throw new vgl.core.exception.VGLAudioException("Unable to create AL Handle");
-		ALC10.alcMakeContextCurrent(alContextHandle);
-		AL.createCapabilities(deviceCapabilities);
+		VGL.api_afx.setupAudioContext();
 		AudioSourcePool.create(sourcePoolSize);
 		setListener();
 	}
@@ -62,11 +61,11 @@ public class AudioSystem {
 	 * TODO Work on, create a listener class, w/ params
 	 */
 	private static void setListener() {
-		AL10.alListener3f(AL10.AL_POSITION, 0f, 0f, 0f);
-		AL10.alListener3f(AL10.AL_VELOCITY, 0f, 0f, 0f);
+		VGL.api_afx.alListener3f(AL10.AL_POSITION, 0f, 0f, 0f);
+		VGL.api_afx.alListener3f(AL10.AL_VELOCITY, 0f, 0f, 0f);
 	}
 
-	static int loadOGG(String file) {
+	public static int loadOGG(String file) {
 		OggReader reader = new OggReader(file);
 		int buffer = AL10.alGenBuffers();
 		buffers.add(buffer);
@@ -74,7 +73,7 @@ public class AudioSystem {
 		return buffer;
 	}
 
-	static int loadSound(String file) {
+	public static int loadSound(String file) {
 		int buffer = AL10.alGenBuffers();
 		buffers.add(buffer);
 		TMWaveData waveFile = TMWaveData.create(file);
@@ -88,9 +87,8 @@ public class AudioSystem {
 	 * using audio if you have initialized the AudioSystem to clean up after usage
 	 */
 	public static void destroy() {
-		buffers.forEach(AL10::alDeleteBuffers);
-		ALC10.alcDestroyContext(alContextHandle);
-		ALC10.alcCloseDevice(deviceHandle);
+		buffers.forEach(VGL.api_afx::alDeleteBuffers);
+		VGL.api_afx.destroyOnExit();
 		AudioSourcePool.destroy();
 		initialized = false;
 	}

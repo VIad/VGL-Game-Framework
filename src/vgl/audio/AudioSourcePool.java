@@ -1,17 +1,10 @@
-package vgl.desktop.audio;
+package vgl.audio;
 
-import static org.lwjgl.openal.AL10.AL_PAUSED;
-import static org.lwjgl.openal.AL10.AL_PLAYING;
-import static org.lwjgl.openal.AL10.AL_POSITION;
-import static org.lwjgl.openal.AL10.AL_SOURCE_STATE;
-import static org.lwjgl.openal.AL10.alGenSources;
-import static org.lwjgl.openal.AL10.alGetSourcei;
-import static org.lwjgl.openal.AL10.alSource3f;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.lwjgl.openal.AL10;
+import com.shc.gwtal.client.openal.AL10;
 
 import vgl.core.annotation.VGLInternal;
 //============================================================================
@@ -22,6 +15,7 @@ import vgl.core.annotation.VGLInternal;
 //Description : Basic AL Source pool implementation with ability to query 
 //free source slots
 //============================================================================
+import vgl.main.VGL;
 
 /**
  * Source pool implementation for playing audio
@@ -43,13 +37,13 @@ public class AudioSourcePool {
 
 	static void createSources() {
 		for (int i = 0; i < POOL_SIZE; i++) {
-			int sourceId = alGenSources();
-			alSource3f(sourceId, AL_POSITION, 0f, 0f, 0f);
+			int sourceId = VGL.api_afx.alGenSources();
+			VGL.api_afx.alSource3f(sourceId, AL10.AL_POSITION, 0f, 0f, 0f);
 			sourcesHandle.add(sourceId);
 		}
 	}
 
-	static void create(int poolSize) {
+	public static void create(int poolSize) {
 		AudioSourcePool.POOL_SIZE = poolSize;
 		createSources();
 	}
@@ -58,8 +52,8 @@ public class AudioSourcePool {
 		create(10);
 	}
 
-	static void destroy() {
-		sourcesHandle.forEach(AL10::alDeleteSources);
+	public static void destroy() {
+		sourcesHandle.forEach(VGL.api_afx::alDeleteSources);
 	}
 
 	/**
@@ -70,8 +64,8 @@ public class AudioSourcePool {
 	@VGLInternal
 	public static int queryFreeSourceSlot() {
 		return sourcesHandle.stream()
-		                    .filter(source -> alGetSourcei(source, AL_SOURCE_STATE) != AL_PAUSED)
-		                    .filter(source -> alGetSourcei(source, AL_SOURCE_STATE) != AL_PLAYING)
+		                    .filter(source -> VGL.api_afx.alGetSourcei(source, AL10.AL_SOURCE_STATE) != AL10.AL_PAUSED)
+		                    .filter(source -> VGL.api_afx.alGetSourcei(source, AL10.AL_SOURCE_STATE) != AL10.AL_PLAYING)
 		                    .findFirst()
 		                    .orElse(ASP_NOT_FOUND);
 	}

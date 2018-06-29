@@ -1,4 +1,6 @@
-package vgl.platform;
+package vgl.platform.logging;
+
+import vgl.platform.LogLevel;
 
 public interface ILogger {
 

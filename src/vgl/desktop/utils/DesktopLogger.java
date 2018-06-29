@@ -1,18 +1,31 @@
 package vgl.desktop.utils;
 
-import vgl.platform.ILogger;
 import vgl.platform.LogLevel;
+import vgl.platform.logging.ILogger;
 
 public class DesktopLogger implements ILogger {
 
 	private static boolean	def_ostream_used	= true;
-	private static String	INFO_PREFIX			= "[VGL::INFO]    ";
-	private static String	WARN_PREFIX			= "[VGL::WARN]    ";
-	private static String	ERROR_PREFIX		= "[VGL::ERROR]   ";
-	private static String	CRITICAL_PREFIX		= "[VGL::CRITICAL]";
-	private static String	indent				= "  ";
+	private String			INFO_PREFIX;
+	private String			WARN_PREFIX;
+	private String			ERROR_PREFIX;
+	private String			CRITICAL_PREFIX;
+	private String			indent;	
 
+	
+	private String name;
+	
+	public DesktopLogger(String name) {
+		this.name = name;
+		INFO_PREFIX =      "["+name+"::INFO]    ";
+		WARN_PREFIX =      "["+name+"::WARN]    ";
+		ERROR_PREFIX =     "["+name+"::ERROR]   ";
+		CRITICAL_PREFIX =  "["+name+"::CRITICAL]";
+		indent = "  ";
+	}
+	
 	public DesktopLogger() {
+		this("VGL");
 	}
 
 	@Override
@@ -81,7 +94,7 @@ public class DesktopLogger implements ILogger {
 		for (int i = 0; i < newSpace; i++) {
 			newIndent.append(' ');
 		}
-		DesktopLogger.indent = newIndent.toString();
+		indent = newIndent.toString();
 	}
 
 	@Override
@@ -93,16 +106,16 @@ public class DesktopLogger implements ILogger {
 			default:
 				throw new vgl.core.exception.VGLFatalError("Not possible");
 			case CRITICAL:
-				DesktopLogger.CRITICAL_PREFIX = newPrefix;
+				CRITICAL_PREFIX = newPrefix;
 				break;
 			case ERROR:
-				DesktopLogger.ERROR_PREFIX = newPrefix;
+				ERROR_PREFIX = newPrefix;
 				break;
 			case INFO:
-				DesktopLogger.INFO_PREFIX = newPrefix;
+				INFO_PREFIX = newPrefix;
 				break;
 			case WARN:
-				DesktopLogger.WARN_PREFIX = newPrefix;
+				WARN_PREFIX = newPrefix;
 				break;
 
 		}

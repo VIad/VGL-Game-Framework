@@ -132,8 +132,8 @@ public class Image implements IResource{
 	
 	public static Image fromColor(int width, int height, Color color) {
 		Image image = new Image(width, height, color.hasTransparency() ?
-				                                     Image.Format.RGB 
-				                                   : Image.Format.ARGB);
+				                                     Image.Format.ARGB 
+				                                   : Image.Format.RGB);
 		for(int y = 0; y < height; y ++) {
 			for(int x = 0; x < width; x ++) {
 				image.setPixel(x, y, color);

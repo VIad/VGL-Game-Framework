@@ -28,7 +28,10 @@ public class Display {
 	}
 	
 	public void setClearColor(Color color) {
-		this.clearColor = color;
-		VGL.api_gfx.glClearColor(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+		if (color == null)
+			this.clearColor = Color.BLACK;
+		else
+			this.clearColor = color;
+		VGL.api_gfx.glClearColor(clearColor.getRed(), clearColor.getGreen(), clearColor.getBlue(), clearColor.getAlpha());
 	}
 }

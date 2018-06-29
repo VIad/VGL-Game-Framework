@@ -1,6 +1,8 @@
 package vgl.platform;
 
 import vgl.core.gfx.layer.ILayout;
+import vgl.core.internal.ErrorChannel;
+import vgl.main.VGL;
 
 abstract public class Application {
 
@@ -11,6 +13,7 @@ abstract public class Application {
 		if (instancesOf > 0)
 			throw new vgl.core.exception.VGLFatalError("VGL currently supports 1 application running concurrently");
 		instancesOf++;
+		VGL.errorChannel = new ErrorChannel();
 	}
 
 	protected int	w_width, w_height;

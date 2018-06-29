@@ -1,4 +1,4 @@
-package vgl.desktop.audio;
+package vgl.audio;
 
 import org.lwjgl.openal.AL10;
 

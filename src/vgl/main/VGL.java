@@ -1,12 +1,15 @@
 package vgl.main;
 
+import vgl.audio.IAudioPlatform;
+import vgl.core.internal.ErrorChannel;
 import vgl.platform.Application;
 import vgl.platform.Display;
 import vgl.platform.IFactory;
-import vgl.platform.GraphicsPlatform;
-import vgl.platform.ILogger;
+import vgl.platform.IGraphicsPlatorm;
 import vgl.platform.input.IPlatformInputDevice;
 import vgl.platform.io.IOSystem;
+import vgl.platform.logging.ILogger;
+import vgl.platform.logging.IPromptLogger;
 
 public class VGL {
 
@@ -15,9 +18,13 @@ public class VGL {
 	 */
 	public static IFactory				factory;
 	/**
-	 * GFXPlatform Platform independent OpenGL calls
+	 * Used for platform independent OpenGL calls
 	 */
-	public static GraphicsPlatform		api_gfx;
+	public static IGraphicsPlatorm		api_gfx;
+	/**
+	 * Used for platform independent OpenAL calls
+	 */
+	public static IAudioPlatform        api_afx;
 
 	public static Application			app;
 
@@ -28,5 +35,11 @@ public class VGL {
 	public static IPlatformInputDevice	input;
 
 	public static ILogger				logger;
+	
+	public static IPromptLogger         promptLogger;
+	
+	public static ErrorChannel          errorChannel;
+
+	//	IContext or st.h with pauseLoopMethod
 
 }

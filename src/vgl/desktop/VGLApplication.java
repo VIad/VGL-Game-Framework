@@ -2,12 +2,14 @@ package vgl.desktop;
 
 import vgl.core.exception.VGLException;
 import vgl.core.internal.GlobalDetails;
+import vgl.desktop.audio.DesktopAudioPlatform;
 import vgl.desktop.gl.DesktopGraphicsPlatform;
 import vgl.desktop.input.DesktopInputSystem;
 import vgl.desktop.input.Keyboard;
 import vgl.desktop.input.Mouse;
 import vgl.desktop.io.DesktopIOSystem;
 import vgl.desktop.utils.DesktopLogger;
+import vgl.desktop.utils.DesktopPromptLogger;
 import vgl.main.VGL;
 import vgl.platform.Application;
 import vgl.platform.Display;
@@ -78,10 +80,12 @@ abstract public class VGLApplication extends Application {
 	protected void initGlobals() {
 		VGL.factory = new DesktopFactory();
 		VGL.logger = new DesktopLogger();
+		VGL.promptLogger = new DesktopPromptLogger();
 		VGL.display = new Display(w_width, w_height);
 		VGL.api_gfx = new DesktopGraphicsPlatform();
+		VGL.api_afx = new DesktopAudioPlatform();
 		VGL.io = new DesktopIOSystem();
-//		VGL.input = new DesktopInputSystem();
+		VGL.input = new DesktopInputSystem();
 		VGL.app = (Application) this;
 	}
 

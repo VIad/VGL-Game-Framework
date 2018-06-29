@@ -28,6 +28,7 @@ import vgl.core.gfx.layer.LayeredLayout;
 import vgl.core.internal.Checks;
 import vgl.core.internal.ProcessManager;
 import vgl.desktop.gl.VertexArray;
+import vgl.desktop.input.DesktopInputSystem;
 import vgl.desktop.input.Mouse;
 import vgl.main.VGL;
 import vgl.natives.NativeUtils;
@@ -36,11 +37,12 @@ public class DesktopContext {
 
 	private static final String		version	= "0.1";
 
-	private static DesktopContext		context;
+	private static DesktopContext	context;
 
 	private static VGLApplication	application;
 
 	private static Window			w;
+
 	/**
 	 * User of the API should not access the constructor
 	 */
@@ -115,6 +117,7 @@ public class DesktopContext {
 			f = false;
 			GLFW.glfwSetWindowSize(Window.__ptr(), application.getWindowWidth(), application.getWindowHeight());
 		}
+		((DesktopInputSystem) VGL.input).onGlfwInit();
 		long last = System.currentTimeMillis();
 		long lastTime = System.nanoTime();
 		final double ns = 1000000000.0d / (double) application.getRequestedUPS();
@@ -129,6 +132,7 @@ public class DesktopContext {
 				try {
 					ProcessManager.get().runOnUpdate();
 					application.update();
+					VGL.errorChannel.supplyChannel();
 					VGL.input.updateDeltas();
 					if (application.getLayout() != null)
 						if (application.getLayout() instanceof LayeredLayout)
@@ -136,9 +140,9 @@ public class DesktopContext {
 
 					ups++;
 				} catch (VGLException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}
+					break;
+				} 
 				delta--;
 			}
 			try {
