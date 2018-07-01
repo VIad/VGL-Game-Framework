@@ -1,10 +1,12 @@
 package vgl.web;
 
+import com.gargoylesoftware.htmlunit.javascript.host.arrays.DataView;
 import com.vgl.gwtreq.client.GWTArrayBuffer;
 import com.vgl.gwtreq.client.GWTDataView;
 
 import vgl.core.buffers.BufferDetails;
 import vgl.core.buffers.MemoryBuffer;
+import vgl.main.VGL;
 
 public class WebMemoryBuffer extends MemoryBuffer {
 
@@ -27,18 +29,16 @@ public class WebMemoryBuffer extends MemoryBuffer {
 		this.dataView = new GWTDataView(buffer);
 		this.details = new BufferDetails(dataView, capacity);
 	}
-	
+
 	public WebMemoryBuffer(GWTArrayBuffer arrayBuffer) {
 		super(0);
-		if(endian == 0) {
+		if (endian == 0) {
 			endian = isLittleEndian() ? LITTLE_ENDIAN : BIG_ENDIAN;
 		}
 		this.buffer = arrayBuffer;
 		this.dataView = new GWTDataView(buffer);
 		this.details = new BufferDetails(dataView, capacity);
 	}
-	
-	
 
 	@Override
 	public WebMemoryBuffer putInt(int index, int value) {
@@ -80,7 +80,10 @@ public class WebMemoryBuffer extends MemoryBuffer {
 
 	@Override
 	public void free() {
-		
+		this.dataView = null;
+		this.buffer = null;
+		if (details.getSizeBytes() >= 1024 * 1024)
+			VGL.logger.warn("Deallocating memory chunk [" + details.getSizeBytes() + "] -> " + this);
 	}
 
 	private native boolean isLittleEndian() /*-{

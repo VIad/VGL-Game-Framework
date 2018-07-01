@@ -1,8 +1,9 @@
 package vgl.web;
 
+import vgl.main.VGL;
 import vgl.platform.AbstractDisplayDevice;
 
-public class WebDisplay extends AbstractDisplayDevice{
+public class WebDisplay extends AbstractDisplayDevice {
 
 	public WebDisplay(String title, int width, int height, boolean vsync, boolean fullscreen) {
 		super(title, width, height, vsync, fullscreen);
@@ -11,14 +12,13 @@ public class WebDisplay extends AbstractDisplayDevice{
 
 	@Override
 	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
-		
+//		this.nResize(width, height, ((VGLWebApplication) VGL.app).renderTargetID);
 	}
-	
+
 	private native void nResize(int newWidth, int newHeight, String canvasID);/*-{
 		var canvas = document.getElementById(canvasID);
 		canvas.width = newWidth;
 		canvas.height = newHeight;
 	}-*/
-
+	
 }

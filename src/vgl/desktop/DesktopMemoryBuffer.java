@@ -62,6 +62,8 @@ public class DesktopMemoryBuffer extends MemoryBuffer {
 	
 	@Override
 	public void free() {
+		if(direct.capacity() > 1024 * 1024)
+			VGL.logger.warn("Deallocating memory chunk ["+direct.capacity()+" bytes] -> " +this);
 		MemoryUtil.memFree(direct);
 	}
 	

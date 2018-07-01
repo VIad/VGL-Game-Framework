@@ -102,7 +102,7 @@ public class DesktopGraphicsPlatform implements IGraphicsPlatorm {
 
 	@Override
 	public void glBindTexture(GLTextureType type, int texObjectID) {
-		GL11.glBindTexture(type.nativeGL(), texObjectID);
+		GL11.glBindTexture(type.gl(), texObjectID);
 	}
 
 	@Override
@@ -129,7 +129,9 @@ public class DesktopGraphicsPlatform implements IGraphicsPlatorm {
 	public void glTexImage2D(int target, int level, int internalF, int width, int height, int border, int format,
 	        int type, MemoryBuffer data) {
 		GL11.glTexImage2D(target, level, internalF, width, height, border, format, type,
-		        ((java.nio.ByteBuffer) data.nativeBufferDetails().getBuffer()));
+				data != null ? 
+		        ((java.nio.ByteBuffer) data.nativeBufferDetails().getBuffer()) 
+		        : null);
 	}
 
 	@Override

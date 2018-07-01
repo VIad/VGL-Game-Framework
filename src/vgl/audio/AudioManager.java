@@ -1,11 +1,13 @@
-package vgl.desktop.audio;
+package vgl.audio;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import vgl.audio.Sound;
+import com.shc.gwtal.client.openal.AL10;
+
 import vgl.core.exception.VGLAudioException;
+import vgl.main.VGL;
 
 //=============================================================================
 //Name        : AudioManager
@@ -31,7 +33,7 @@ public class AudioManager {
 	 * {@link VGLAudioException} will be thrown</b>
 	 */
 	public static void create() {
-		if (!AudioSystem.isInitialized()) {
+		if (!VGL.api_afx.isInitialized()) {
 			throw new vgl.core.exception.VGLAudioException(
 			        "AudioSystem is not initialized >> call AudioSystem.initialize()");
 		}
@@ -115,6 +117,7 @@ public class AudioManager {
 		Sound s = mapEntry.getValue();
 		s.setGain(newGain);
 		s.setPitch(newPitch);
+		
 		return s;
 	}
 

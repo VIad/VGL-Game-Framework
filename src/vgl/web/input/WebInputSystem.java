@@ -4,9 +4,9 @@ import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.dom.client.NativeEvent;
 
 import vgl.core.exception.VGLRuntimeException;
+import vgl.core.input.IPlatformInputDevice;
 import vgl.desktop.input.Mouse;
 import vgl.main.VGL;
-import vgl.platform.input.IPlatformInputDevice;
 import vgl.platform.input.PlatformSpecificMapping;
 import vgl.web.VGLWebApplication;
 

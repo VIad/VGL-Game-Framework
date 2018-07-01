@@ -1,6 +1,7 @@
 package vgl.core.gfx.renderable;
 
-import vgl.desktop.gfx.Texture;
+
+import vgl.core.gfx.gl.Texture;
 import vgl.maths.vector.Vector2f;
 
 public class ImageSprite extends Renderable2D {

@@ -4,7 +4,10 @@ import static org.lwjgl.openal.AL10.AL_BUFFER;
 import static org.lwjgl.openal.AL10.AL_GAIN;
 import static org.lwjgl.openal.AL10.AL_PITCH;
 
+import com.shc.gwtal.client.openal.AL10;
+
 import vgl.main.VGL;
+import vgl.tools.IResource;
 
 //============================================================================
 //Name        : Sound
@@ -15,7 +18,7 @@ import vgl.main.VGL;
 //supporting operations such as playback, setting pitch and gain
 //TODO        : Add pause, loop, remove the source details from here
 //============================================================================
-public class Sound {
+public class Sound implements IResource{
 
 	private int			soundBuffer;
 
@@ -24,14 +27,13 @@ public class Sound {
 	private float		gain;
 
 	private int			currentSourceSlot;
+	
+	private boolean disposed;
 
 	private SoundState	state;
 
 	public Sound(int soundBuffer) {
-//		if (file.endsWith(".ogg"))
-//			soundBuffer = AudioSystem.loadOGG(file);
-//		else
-//			soundBuffer = AudioSystem.loadSound(file);
+
 		this.soundBuffer = soundBuffer;
 		this.pitch = 1;
 		this.gain = 0.5f;
@@ -40,6 +42,7 @@ public class Sound {
 
 	// TODO Edit source properties on query success
 	public void play() {
+		validate();
 		if (state == SoundState.PAUSED) {
 			releaseHandleInternal();
 		}
@@ -61,25 +64,36 @@ public class Sound {
 			throw new vgl.core.exception.VGLAudioException("Value must be greater than 0 , entered >> " + val);
 	}
 
+
 	private void releaseHandleInternal() {
 		state = SoundState.STOPPED;
 		VGL.api_afx.alSourceStop(currentSourceSlot);
 	}
 
 	public void resume() {
+		validate();
 		if (state == SoundState.PAUSED) {
 			VGL.api_afx.alSourcePlay(currentSourceSlot);
 			state = SoundState.PLAYING;
 		}
 	}
+	
+	//TODO
+	public void loop() {
+		validate();
+//		play();
+//		VGL.api_afx.alSourcei(currentSourceSlot, AL10.AL_LOOPING, AL10.AL_TRUE);
+	}
 
 	public void stop() {
+		validate();
 		if (state != SoundState.STOPPED) {
 			releaseHandleInternal();
 		}
 	}
 
 	public void pause() {
+		validate();
 		if (state == SoundState.PLAYING) {
 			VGL.api_afx.alSourcePause(currentSourceSlot);
 			state = SoundState.PAUSED;
@@ -87,27 +101,49 @@ public class Sound {
 	}
 
 	public float getGain() {
+		validate();
 		return gain;
 	}
 
 	public void setGain(float gain) {
+		validate();
 		checks(true, gain);
 		VGL.api_afx.alSourcef(currentSourceSlot, AL_GAIN, gain);
 		this.gain = gain;
 	}
 
+	public int getCurrentSourceSlot() {
+		validate();
+		return currentSourceSlot;
+	}
+	
 	public SoundState getState() {
+		validate();
 		return state;
 	}
 
 	public float getPitch() {
+		validate();
 		return pitch;
 	}
 
 	public void setPitch(float pitch) {
+		validate();
 		checks(false, pitch);
 		VGL.api_afx.alSourcef(currentSourceSlot, AL_PITCH, pitch);
 		this.pitch = pitch;
+	}
+
+	@Override
+	public void releaseMemory() {
+		validate();
+		VGL.api_afx.alDeleteBuffers(soundBuffer);
+		this.disposed = true;
+	}
+
+	@Override
+	public boolean isDisposed() {
+		return disposed;
 	}
 
 }

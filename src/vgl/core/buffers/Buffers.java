@@ -1,5 +1,6 @@
 package vgl.core.buffers;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.function.IntFunction;
 import java.util.stream.DoubleStream;
@@ -63,7 +64,19 @@ abstract public class Buffers {
 		return memBuffer;
 	}
 
-	
+	public static MemoryBuffer combine(MemoryBuffer... buffers) {
+		int capacity = Arrays.stream(buffers)
+				             .mapToInt(b -> b.capacity())
+				             .sum();
+		MemoryBuffer combined = VGL.factory.dataBuffer(capacity);
+		int index = 0;
+		for(MemoryBuffer buffer : buffers) {
+			for(int i = 0; i < buffer.capacity(); i++) {				
+				combined.putByte(index++, buffer.readByte(i));
+			}
+		}
+		return combined;
+	}
 
 	public static <T> Iterator<T> iterator(TypedBuffer<T> buffer) {
 		return new BufferIterator<>(buffer);

@@ -18,12 +18,12 @@ public abstract class AbstractContext<APP extends Application> {
 
 	public AbstractContext(APP app) {
 		this.application = app;
-		this.ns = 1000.0d / (double) application.getRequestedUPS();
+		this.ns = 1000000000.0d / (double) application.getRequestedUPS();
 		createContext();
 	}
 
 	public void setRequestedUPS(int ups) {
-		this.ns = 1000.0d / (double) ups;
+		this.ns = 1000000000.0d / (double) ups;
 	}
 
 	public void updateApplicationObject(APP app) {
@@ -33,39 +33,38 @@ public abstract class AbstractContext<APP extends Application> {
 	public void setFixedUpdateTS(float ts) {
 		float actual = 1000.0f * ts;
 		this.futs = (long) actual;
-		System.out.println("FUTS :s: " + futs);
+		VGL.logger.info("Fixed update timestamp now "+futs + " ms");
 	}
 
-	private long	futs			= 1000;
+	protected long		futs			= 1000;
 
-	private long	lastFixedUpdate;
+	private long		lastFixedUpdate;
 
-	private boolean	first			= true;
+	private boolean		first			= true;
 
-	long			last;
-	long			lastTime;
-	double			ns;
-	double			delta			= 0d;
-	int				fps				= 0;
-	int				ups				= 0;
+	long				last;
+	long				lastTime;
+	protected double	ns;
+	double				delta			= 0d;
+	protected int		fps				= 0;
+	protected int		ups				= 0;
 
-	private boolean	firstTimeCheck	= true;
+	private boolean		firstTimeCheck	= true;
 
 	protected void loop(@UnusedParameter(reason = "Required for requesting animation frames in JS") double unused)
 	        throws VGLException {
 		if (firstTimeCheck) {
 			last = System.currentTimeMillis();
-			lastTime = System.currentTimeMillis();
+			lastTime = platformCurrentTime();
 			lastFixedUpdate = System.currentTimeMillis();
 			firstTimeCheck = false;
 		}
-		VGL.logger.warn("Actually here");
 		preLoop();
 		first = true;
 		while (!shouldStop() || first) {
 			if (first)
 				first = false;
-			long now = System.currentTimeMillis();
+			long now = platformCurrentTime();
 			delta += (now - lastTime) / ns;
 			lastTime = now;
 			while (delta >= 1) {
@@ -116,6 +115,10 @@ public abstract class AbstractContext<APP extends Application> {
 	protected abstract void startLoop() throws VGLException;
 
 	protected abstract void initGL();
+	
+	protected long platformCurrentTime() {
+		return System.currentTimeMillis();
+	}
 
 	protected abstract void preLoop();
 

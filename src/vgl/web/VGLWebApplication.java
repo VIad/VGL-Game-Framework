@@ -1,9 +1,12 @@
 package vgl.web;
 
 import com.google.gwt.user.client.Window;
+import com.shc.gwtal.client.openal.AudioDecoder;
 import com.vgl.gwtreq.client.Dim;
+import com.vgl.gwtreq.client.GWTDataView;
 import com.vgl.gwtreq.client.VGWT;
 
+import vgl.audio.Sound;
 import vgl.core.exception.VGLException;
 import vgl.core.internal.GlobalDetails;
 import vgl.main.Application;
@@ -39,40 +42,47 @@ abstract public class VGLWebApplication extends Application {
 			try {
 				context.loop(timestamp);
 			} catch (VGLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				VGL.errorChannel
+				   .forward(() -> e);
 			}
 		});
-		VGWT.requestAnimation();
+		
+	}
+	
+	public void decodeAndPlayTest() {
+		VGL.io.readBytes(VGL.io.file("http://localhost/net/bet.ogg"), buffer -> {
+			AudioDecoder.decodeAudio(((GWTDataView)buffer.nativeBufferDetails().getBuffer()).getView().buffer(), sb -> {
+				Sound s = new Sound(sb);
+				s.setPitch(5f);
+				s.play();
+			}, error -> {
+				Window.alert(error);
+			});
+		});
 	}
 	
 	@Override
 	public void setUpdatesPerSecond(int ups) {
 		super.setUpdatesPerSecond(ups);
-//		this.context.updateApplicationObject(this);
-//		this.context.setRequestedUPS(ups);
+		this.context.updateApplicationObject(this);
+		this.context.setRequestedUPS(ups);
 	}
 	
 	@Override
 	public void setFixedUpdateTimestamp(float seconds) {
-//		this.context.setFixedUpdateTS(seconds);
+		this.context.setFixedUpdateTS(seconds);
 		this.fixedUpdateTs = seconds;
 	}
 	
 	@Override
 	public void startApplication() {
-//		try {
-//			context.startLoop();
-//		} catch (VGLException e) {
-//			VGL.errorChannel
-//			   .forward(() -> e);
-//		}
+		VGWT.requestAnimation();
 	}
 
 	@Override
 	protected void initGlobals() {
 		VGL.app = (Application) this;
-//		VGL.context = this.context;
+		VGL.context = this.context;
 		VGL.display = new WebDisplay("display",w_width, w_height, true, false);
 		VGL.factory = new WebFactory();
 		VGL.logger = new WebLogger();

@@ -28,6 +28,7 @@
 	<source path='core/geom'></source>
 	<source path='core/gfx'></source>
 	<source path='core/internal'></source>
+	<source path='core/input'></source>
 	<source path='audio'></source>
 	<source path='main'></source>
 	<source path='maths'></source>

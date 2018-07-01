@@ -1,6 +1,8 @@
 package vgl.desktop.audio;
 
 import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -15,11 +17,11 @@ import org.lwjgl.openal.AL10;
 
 public class TMWaveData {
 
-	final int						format;
-	final int						samplerate;
-	final int						totalBytes;
-	final int						bytesPerFrame;
-	final ByteBuffer				data;
+	public final int						format;
+	public final int						samplerate;
+	public final int						totalBytes;
+	public final int						bytesPerFrame;
+	public final ByteBuffer				data;
 
 	private final AudioInputStream	audioStream;
 	private final byte[]			dataArray;
@@ -37,7 +39,7 @@ public class TMWaveData {
 		loadData();
 	}
 
-	protected void dispose() {
+	public void dispose() {
 		try {
 			audioStream.close();
 			data.clear();
@@ -59,13 +61,13 @@ public class TMWaveData {
 		return data;
 	}
 
-	public static TMWaveData create(String file) {
-		InputStream stream = Class.class.getResourceAsStream("/" + file);
-		if (stream == null) {
-			System.err.println("Couldn't find file: " + file);
-			return null;
-		}
-		InputStream bufferedInput = new BufferedInputStream(stream);
+	public static TMWaveData create(String file) throws FileNotFoundException {
+//		InputStream stream = Class.class.getResourceAsStream("/" + file);
+//		if (stream == null) {
+//			System.err.println("Couldn't find file: " + file);
+//			return null;
+//		}
+		InputStream bufferedInput = new BufferedInputStream(new FileInputStream(file));
 		AudioInputStream audioStream = null;
 		try {
 			audioStream = AudioSystem.getAudioInputStream(bufferedInput);

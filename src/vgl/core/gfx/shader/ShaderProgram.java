@@ -24,6 +24,10 @@ abstract public class ShaderProgram extends Shader {
 	public void bindAttribute(int attribute, String variableName) {
 		VGL.api_gfx.glBindAttribLocation(programID, attribute, variableName);
 	}
+	
+	public int getAttribLocation(String attrib) {
+		return VGL.api_gfx.glGetAttributeLocation(programID, attrib);
+	}
 
 	@Override
 	protected int createProgram() {

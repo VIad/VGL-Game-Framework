@@ -25,6 +25,11 @@ public class ErrorChannel {
 		return this;
 	}
 	
+	public ErrorChannel forward(Throwable th) {
+		this.errors.add(th);
+		return this;
+	}
+	
 	public void setErrorHandler(ErrorChannelHandler ech) {
 		this.errorHandler = ech;
 	}

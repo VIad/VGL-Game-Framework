@@ -12,9 +12,9 @@ import static org.lwjgl.glfw.GLFW.glfwSetInputMode;
 import static org.lwjgl.glfw.GLFW.glfwSetMouseButtonCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetScrollCallback;
 
+import vgl.core.input.IPlatformInputDevice;
 import vgl.desktop.Window;
 import vgl.main.VGL;
-import vgl.platform.input.IPlatformInputDevice;
 
 public class DesktopInputSystem implements IPlatformInputDevice {
 

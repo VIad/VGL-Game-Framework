@@ -1,12 +1,12 @@
 package vgl.main;
 
 import vgl.audio.IAudioPlatform;
+import vgl.core.input.IPlatformInputDevice;
 import vgl.core.internal.ErrorChannel;
 import vgl.platform.AbstractDisplayDevice;
 import vgl.platform.IFactory;
 import vgl.platform.IGraphicsPlatorm;
 import vgl.platform.IPlatformContext;
-import vgl.platform.input.IPlatformInputDevice;
 import vgl.platform.io.IOSystem;
 import vgl.platform.logging.ILogger;
 import vgl.platform.logging.IPromptLogger;

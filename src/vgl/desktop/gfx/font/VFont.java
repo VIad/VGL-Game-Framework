@@ -22,7 +22,7 @@ public class VFont implements IFont {
 		}
 	}
 
-	private Texture						fontTexture;
+	private vgl.core.gfx.gl.Texture						fontTexture;
 	private final Map<Character, Glyph>	fontMap;
 	private int							originalFontSize;
 	private int							charHeight;
@@ -90,10 +90,10 @@ public class VFont implements IFont {
 		}
 		this.charHeight = fm.getHeight();
 		this.originalFontSize = awtFont.getSize();
-		this.fontTexture = new Texture(atlas);
+//		this.fontTexture = new Texture(atlas);
 	}
 
-	public Texture getFontTexture() {
+	public vgl.core.gfx.gl.Texture getFontTexture() {
 		return fontTexture;
 	}
 

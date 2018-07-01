@@ -1,4 +1,4 @@
-package vgl.platform.input;
+package vgl.core.input;
 
 import vgl.core.annotation.VGLInternal;
 

@@ -50,6 +50,8 @@ public class DesktopContext extends AbstractContext<VGLApplication> implements I
 	protected void postLoop() throws VGLException {
 		VertexArray.freeBuffers();
 		NativeUtils.clearOnFinish();
+		if(VGL.api_afx.isInitialized())
+			VGL.api_afx.destroyOnExit();
 		application.finish();
 		glfwDestroyWindow(((Window)VGL.display).__nativePtr());
 	}
@@ -78,6 +80,11 @@ public class DesktopContext extends AbstractContext<VGLApplication> implements I
 			throw new VGLFatalError("Unable to init GLFW >> Shutting down !");
 		GLFWErrorCallback.createPrint(System.err).set();
 		glfwDefaultWindowHints();
+	}
+	
+	@Override
+	protected long platformCurrentTime() {
+		return System.nanoTime();
 	}
 
 

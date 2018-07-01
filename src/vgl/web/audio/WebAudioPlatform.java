@@ -7,6 +7,7 @@ import com.shc.gwtal.client.webaudio.AudioContext;
 import com.shc.gwtal.client.webaudio.AudioContextException;
 import com.vgl.gwtreq.client.GWTDataView;
 
+import vgl.audio.AudioSourcePool;
 import vgl.audio.IAudioPlatform;
 import vgl.core.buffers.MemoryBuffer;
 import vgl.core.exception.PlatformUnsupportedException;
@@ -194,6 +195,7 @@ public class WebAudioPlatform implements IAudioPlatform {
 			VGL.errorChannel.forward(
 			        Functional.bind(VGLAudioException::new, "Unable to create AL context, check browser support"));
 		}
+		AudioSourcePool.create(10);
 		initialized = true;
 	}
 

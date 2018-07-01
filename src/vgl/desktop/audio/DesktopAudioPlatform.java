@@ -10,6 +10,7 @@ import org.lwjgl.openal.ALC;
 import org.lwjgl.openal.ALC10;
 import org.lwjgl.openal.ALCCapabilities;
 
+import vgl.audio.AudioSystem;
 import vgl.audio.IAudioPlatform;
 import vgl.core.buffers.MemoryBuffer;
 

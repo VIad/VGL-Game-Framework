@@ -65,6 +65,18 @@ public class Image implements IResource{
 		return this;
 	}
 	
+	public static Image copy(Image src, Image.Format format, boolean destroySrc) {
+		Image image = new Image(src.width, src.height, format);
+		for(int y = 0; y < src.getHeight(); y++) {
+			for(int x = 0; x < src.getWidth(); x++) {
+				image.setPixel(x, y, src.getPixel(x, y));
+			}
+		}
+		if(destroySrc)
+			src.releaseMemory();
+		return image;
+	}
+	
 	private void setPixelFormat0(int x, int y, Color pixel) {
 		if(closed)
 			throw new IllegalStateException("All resources allocated with this image object have been released");
@@ -180,5 +192,49 @@ public class Image implements IResource{
 		this.pixels.getBuffer().free();
 		this.pixels = null;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (closed ? 1231 : 1237);
+		result = prime * result + ((dataFormat == null) ? 0 : dataFormat.hashCode());
+		result = prime * result + height;
+		result = prime * result + loadedHeight;
+		result = prime * result + loadedWidth;
+		result = prime * result + width;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Image other = (Image) obj;
+		if (closed != other.closed)
+			return false;
+		if (dataFormat != other.dataFormat)
+			return false;
+		if (height != other.height)
+			return false;
+		if (loadedHeight != other.loadedHeight)
+			return false;
+		if (loadedWidth != other.loadedWidth)
+			return false;
+		if (width != other.width)
+			return false;
+		return true;
+	}
+
+	@Override
+	public boolean isDisposed() {
+		return closed;
+	}
+	
+	
 
 }

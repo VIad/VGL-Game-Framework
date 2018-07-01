@@ -3,6 +3,7 @@ package vgl.web;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.Document;
+import com.shc.gwtal.client.openal.AudioDecoder;
 import com.shc.webgl4j.client.WebGL10;
 import com.shc.webgl4j.client.WebGL20;
 import com.shc.webgl4j.client.WebGLContext;
@@ -27,11 +28,17 @@ public class WContext extends AbstractContext<VGLWebApplication> implements IPla
 
 	public WContext(VGLWebApplication app) {
 		super(app);
+		this.ns = 1000.0d / (double) app.getRequestedUPS();
 	}
 
 	@Override
 	public void toggleLooping() {
 		super.toggleInternalOperations();
+	}
+
+	@Override
+	public void setRequestedUPS(int ups) {
+		this.ns = 1000.0d / (double) ups;
 	}
 
 	@Override
@@ -44,24 +51,38 @@ public class WContext extends AbstractContext<VGLWebApplication> implements IPla
 		application.set(new Dim(ce.getWidth(), ce.getHeight()));
 		this.details = new CanvasDetails(ce);
 	}
-	
-	private long last = System.currentTimeMillis();
-	
+
+	private long	last	= System.currentTimeMillis();
+	private long	lastTimeFixedUpdate = System.currentTimeMillis();
+	private boolean	first	= true;
+
 	@Override
-	public void loop(@UnusedParameter(reason = "Required for requesting animation frames in JS") double unused) throws VGLException {
+	public void loop(@UnusedParameter(reason = "Required for requesting animation frames in JS") double unused)
+	        throws VGLException {
 		try {
+			ups++;
 			ProcessManager.get().runOnUpdate();
-			if (System.currentTimeMillis() > last) {
-				last = System.currentTimeMillis() + 1000;
-				application.fixedUpdate();
-			}
 			application.update();
 			VGL.input.updateDeltas();
+			if ((System.currentTimeMillis() - last) > 1000) {
+				last += 1000;
+				if (VGL.display.isDisplayingFps())
+					VGL.logger.info("FPS : " + fps + ", UPS : " + ups);
+				fps = ups = 0;
+			}
+			if ((System.currentTimeMillis() - lastTimeFixedUpdate) > futs) {
+				lastTimeFixedUpdate = System.currentTimeMillis();
+				application.fixedUpdate();
+			}
+			loopEnd();
 			application.render();
+			fps++;
 		} catch (VGLException e) {
-
+			VGL.errorChannel.forward(() -> e);
 		}
-		VGWT.requestAnimation();
+		if (!shouldStop()) {
+			VGWT.requestAnimation();
+		}
 	}
 
 	@Override
@@ -90,7 +111,7 @@ public class WContext extends AbstractContext<VGLWebApplication> implements IPla
 
 	@Override
 	protected void loopEnd() {
-		WebGL10.glClear(WebGL10.GL_COLOR_BUFFER_BIT | WebGL10.GL_DEPTH_BUFFER_BIT);
+		WebGL10.glClear(WebGL10.GL_COLOR_BUFFER_BIT);
 	}
 
 	@Override
@@ -104,7 +125,7 @@ public class WContext extends AbstractContext<VGLWebApplication> implements IPla
 
 	@Override
 	protected boolean shouldStop() {
-		return true;
+		return false;
 	}
 
 	public Canvas display() {
@@ -115,11 +136,10 @@ public class WContext extends AbstractContext<VGLWebApplication> implements IPla
 		return details;
 	}
 
-
 	@Override
 	protected void platformSpecificUpdate() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

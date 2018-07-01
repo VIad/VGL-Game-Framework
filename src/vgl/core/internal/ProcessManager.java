@@ -25,13 +25,14 @@ public class ProcessManager {
 		return instance;
 	}
 
-	public ProcessManager runNextUpdate(final Runnable runnable) {
+	public synchronized ProcessManager runNextUpdate(final Runnable runnable) {
+		System.out.println("here ");
 		InternalHandle.getHandle().enqueueOnUpdate(runnable);
 		return this;
 	}
 
 	@VGLInternal
-	public void runOnUpdate() {
+	public synchronized void runOnUpdate() {
 		InternalHandle.getHandle().getOnUpdateQueue().removeIf((r) -> {
 			r.run();
 			return true;

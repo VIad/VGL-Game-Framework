@@ -6,7 +6,7 @@ public enum GLTextureType {
 
 	TEXTURE_2D, TEXTURE_CUBE_MAP;
 
-	public int nativeGL() {
+	public int gl() {
 		switch (this)
 		{
 			case TEXTURE_2D:

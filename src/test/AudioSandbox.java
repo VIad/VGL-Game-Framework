@@ -2,10 +2,10 @@ package test;
 
 import java.io.IOException;
 
+import vgl.audio.AudioManager;
+import vgl.audio.AudioSystem;
 import vgl.audio.Sound;
 import vgl.core.internal.gpu_device_l;
-import vgl.desktop.audio.AudioManager;
-import vgl.desktop.audio.AudioSystem;
 
 public class AudioSandbox {
 

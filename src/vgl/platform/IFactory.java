@@ -3,10 +3,13 @@ package vgl.platform;
 import vgl.core.buffers.MemoryBuffer;
 import vgl.platform.io.FileDetails;
 import vgl.platform.logging.ILogger;
+import vgl.tools.IResourceLoader;
 
 public interface IFactory {
 
-	 public MemoryBuffer dataBuffer(int byteCapacity);
+	 MemoryBuffer dataBuffer(int byteCapacity);
 
-	 public ILogger newLogger(String name);
+	 ILogger newLogger(String name);
+	 
+	 IResourceLoader createResourceLoader();
 }

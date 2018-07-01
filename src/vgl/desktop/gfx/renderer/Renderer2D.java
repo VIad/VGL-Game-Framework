@@ -13,14 +13,13 @@ import vgl.core.gfx.Color;
 import vgl.core.gfx.font.Glyph;
 import vgl.core.gfx.font.IFont;
 import vgl.core.gfx.gl.IndexBuffer;
+import vgl.core.gfx.gl.Texture;
 import vgl.core.gfx.render.IRenderer2D;
 import vgl.core.gfx.render.VertexLayout;
 import vgl.core.gfx.renderable.ColoredSprite;
 import vgl.core.gfx.renderable.ImageSprite;
 import vgl.core.gfx.renderable.Renderable2D;
 import vgl.core.internal.Checks;
-import vgl.desktop.Window;
-import vgl.desktop.gfx.Texture;
 import vgl.main.VGL;
 import vgl.maths.vector.Matrix4f;
 import vgl.maths.vector.Vector2f;
@@ -123,7 +122,7 @@ final public class Renderer2D implements IRenderer2D {
 		if (glTexture == null)
 			return 0.0f;
 		float ts = 0.0f;
-		final int texture = glTexture.getTextureID();
+		final int texture = glTexture.getID();
 		boolean found = false;
 		for (int i = 0; i < textureSlots.size(); i++) {
 			if (textureSlots.get(i) == texture) {

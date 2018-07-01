@@ -3,6 +3,7 @@ package vgl.web;
 import java.util.Arrays;
 
 import com.google.gwt.typedarrays.shared.ArrayBufferView;
+import com.google.gwt.typedarrays.shared.Uint8Array;
 import com.shc.webgl4j.client.WebGL10;
 import com.shc.webgl4j.client.WebGL20;
 import com.vgl.gwtreq.client.GWTDataView;
@@ -11,6 +12,7 @@ import vgl.core.buffers.Buffers;
 import vgl.core.buffers.MemoryBuffer;
 import vgl.core.exception.VGLFatalError;
 import vgl.core.gfx.shader.ShaderType;
+import vgl.main.VGL;
 import vgl.platform.IGraphicsPlatorm;
 import vgl.platform.gl.GLBufferTarget;
 import vgl.platform.gl.GLPrimitiveMode;
@@ -113,7 +115,7 @@ public class WebGraphicsPlatform implements IGraphicsPlatorm {
 
 	@Override
 	public void glBindTexture(GLTextureType type, int texObjectID) {
-		WebGL10.glBindTexture(type.nativeGL(), texObjectID);
+		WebGL10.glBindTexture(type.gl(), texObjectID);
 	}
 
 	@Override
@@ -139,15 +141,13 @@ public class WebGraphicsPlatform implements IGraphicsPlatorm {
 	@Override
 	public void glTexImage2D(int target, int level, int internalF, int width, int height, int border, int format,
 	        int type, MemoryBuffer data) {
-		WebGL10.glTexImage2D(target,
-				             level,
-				             internalF,
-				             width,
-				             height,
-				             border,
-				             format,
-				             type,
-		                     ((GWTDataView) data.nativeBufferDetails().getBuffer()).getView());
+		WebGL10.glTexImage2D(target, level, internalF, width, height, border, format, type,
+		        data != null ? ((GWTDataView) data.nativeBufferDetails().getBuffer()).getView() : null);
+	}
+
+	public void glTexImage2D(int target, int level, int internalF, int width, int height, int border, int format,
+	        int type, ArrayBufferView data) {
+		WebGL10.glTexImage2D(target, level, internalF, width, height, border, format, type, data);
 	}
 
 	@Override

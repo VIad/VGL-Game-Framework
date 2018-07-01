@@ -1,6 +1,6 @@
 package vgl.core.gfx.font;
 
-import vgl.desktop.gfx.Texture;
+import vgl.core.gfx.gl.Texture;
 
 public interface IFont {
 

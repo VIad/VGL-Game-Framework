@@ -7,25 +7,23 @@ import java.util.Random;
 
 import org.lwjgl.opengl.GL11;
 
+import vgl.audio.AudioManager;
+import vgl.audio.AudioSystem;
 import vgl.core.exception.VGLException;
 import vgl.core.gfx.Color;
 import vgl.core.gfx.Image;
 import vgl.core.gfx.camera.PerspectiveCamera;
+import vgl.core.gfx.gl.Texture;
 import vgl.core.gfx.renderable.ColoredSprite;
 import vgl.core.gfx.renderable.ImageSprite;
 import vgl.core.gfx.renderable.Renderable2D;
 import vgl.core.gfx.shader.ShaderFactory;
 import vgl.core.gfx.shader.ShaderProgram;
 import vgl.desktop.VGLApplication;
-import vgl.desktop.Window;
-import vgl.desktop.audio.AudioManager;
-import vgl.desktop.audio.AudioSystem;
-import vgl.desktop.gfx.Texture;
 import vgl.desktop.gfx.font.VFont;
 import vgl.desktop.gfx.renderer.Renderer2D;
 import vgl.desktop.input.Key;
 import vgl.desktop.input.Keyboard;
-import vgl.desktop.input.Mouse;
 import vgl.main.VGL;
 import vgl.maths.Projection;
 import vgl.maths.vector.Matrix4f;
@@ -341,7 +339,6 @@ public class Test extends VGLApplication {
 	public void finish() throws VGLException {
 		System.out.println("Cleanup");
 		Texture.cleanTextureCache();
-		AudioManager.destroy();
 	}
 
 	@Override

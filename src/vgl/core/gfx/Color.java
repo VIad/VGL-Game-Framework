@@ -383,10 +383,10 @@ public final class Color implements java.io.Serializable, Comparable<Color> {
 		int g = (int) (this.g * 255f);
 		int b = (int) (this.b * 255f);
 		return 
-				  ((r & 0xff) << 24)
-				| ((g & 0xff) << 16)
-				| ((b & 0xff) << 8)
-				| ((a & 0xff) << 0);
+				  ((r & 0xff) << 0)
+				| ((g & 0xff) << 8)
+				| ((b & 0xff) << 16)
+				| ((a & 0xff) << 24);
 	}
 	
 	public boolean hasTransparency() {

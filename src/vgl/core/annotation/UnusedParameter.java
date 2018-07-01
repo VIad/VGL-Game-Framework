@@ -8,7 +8,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 @Retention(CLASS)
-@Target({ PARAMETER, TYPE_PARAMETER })
+@Target({ PARAMETER, TYPE_PARAMETER})
 public @interface UnusedParameter {
 	
 	String reason();
