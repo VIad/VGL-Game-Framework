@@ -9,13 +9,17 @@ import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 
+import vgl.core.annotation.SupportedPlatforms;
+import vgl.core.gfx.font.FontSpecifics;
 import vgl.core.gfx.font.Glyph;
 import vgl.core.gfx.font.IFont;
 import vgl.core.internal.Checks;
-import vgl.desktop.gfx.Texture;
+import vgl.platform.Platform;
 
 public class VFont implements IFont {
 
+	private final static char[] FONT_SUPPORTED_CHARACTERS = new char[95];
+	
 	static {
 		for (char i = 32; i < 127; i++) {
 			FONT_SUPPORTED_CHARACTERS[i - 32] = i;
@@ -61,15 +65,15 @@ public class VFont implements IFont {
 		for (char c : FONT_SUPPORTED_CHARACTERS) {
 			float advance = fm.charWidth(c);
 			g2d.drawString("" + c, currentX, currentRow - fontHeight / 5);
-			fontMap.put(c,
-			        new Glyph(
-			                atlasW,
-			                atlasH,
-			                advance,
-			                currentX,
-			                currentRow - fontHeight,
-			                currentX + advance,
-			                currentRow));
+//			fontMap.put(c,
+//			        new Glyph(
+//			                atlasW,
+//			                atlasH,
+//			                advance,
+//			                currentX,
+//			                currentRow - fontHeight,
+//			                currentX + advance,
+//			                currentRow));
 			// Glyph g = fontMap.get(c);
 			// Rectangle rect = new Rectangle(
 			// (int) (g.getU0() * atlasW),
@@ -111,5 +115,17 @@ public class VFont implements IFont {
 
 	public int getCharHeight() {
 		return charHeight;
+	}
+
+	@Override
+	public Glyph getGlyph(int charCode) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public FontSpecifics getFontSpecifics() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

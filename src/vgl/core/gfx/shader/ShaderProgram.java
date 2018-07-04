@@ -11,13 +11,14 @@ import vgl.maths.vector.Vector2f;
 import vgl.maths.vector.Vector3f;
 import vgl.maths.vector.Vector4f;
 import vgl.platform.gl.Shader;
+import vgl.tools.ShaderTools;
 
 abstract public class ShaderProgram extends Shader {
 
 	protected static MemoryBuffer buffer4f = VGL.factory.dataBuffer(16 * 4);
 
 	public ShaderProgram(String vertexSource, String fragmentSource) {
-		super(vertexSource, fragmentSource);
+		super(vertexSource,fragmentSource);
 	}
 
 	@Override
@@ -121,7 +122,6 @@ abstract public class ShaderProgram extends Shader {
 	@Override
 	public void uniform1fv(String uniformName, float[] data) {
 		VGL.api_gfx.glUniform1fv(findUniform(uniformName), data);
-
 	}
 
 	@Override
@@ -141,6 +141,27 @@ abstract public class ShaderProgram extends Shader {
 		if (value)
 			toLoad = 1;
 		VGL.api_gfx.glUniform1f(findUniform(uniformName), toLoad);
+	}
+	
+	public static ShaderProgram create(String vsSource, String fsSource) {
+		final ShaderTokener tokener = new ShaderTokener(vsSource, fsSource);
+		
+		return new ShaderProgram(tokener.getVertexSourceSafe(), tokener.getFragmentSourceSafe()) {
+			
+			@Override
+			public void getAllUniformLocations() {
+				tokener.getData()
+				       .uniforms
+				       .forEach(uniformDecl -> findUniform(uniformDecl.getName()));
+			}
+			
+			@Override
+			public void bindVertexShaderInputAttribs() {
+				tokener.getData()
+				       .attributes
+				       .forEach(attribute -> bindAttribute(attribute.getIndex(), attribute.getName()));
+			}
+		};
 	}
 
 }

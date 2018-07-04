@@ -28,7 +28,11 @@ import vgl.desktop.audio.TMWaveData;
 import vgl.desktop.tools.async.VoidWorker;
 import vgl.main.VGL;
 import vgl.maths.vector.Matrix4f;
+import vgl.tools.IResource;
+import vgl.tools.ISpecifier;
+import vgl.tools.IResource.ResourceState;
 import vgl.tools.functional.callback.Callback;
+import vgl.tools.managers.Managers;
 
 abstract public class DesktopSpecific {
 
@@ -43,6 +47,7 @@ abstract public class DesktopSpecific {
 					result.setPixel(x, y, Color.fromARGB(buffered.getRGB(x, y)));
 				}
 			}
+			((ISpecifier<IResource.ResourceState>) result).specify(ResourceState.AVAILABLE);
 			return result;
 		}
 		
@@ -267,4 +272,12 @@ abstract public class DesktopSpecific {
 		}
 	}
 
+	abstract public static class RuntimeFontFactory{
+		
+//		public static IFont makeFont() {
+//			
+//		}
+		
+	}
+	
 }

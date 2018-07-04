@@ -14,6 +14,10 @@ abstract public class Application {
 			throw new vgl.core.exception.VGLFatalError("VGL currently supports 1 application running concurrently");
 		instancesOf++;
 		VGL.errorChannel = new ErrorChannel();
+		VGL.errorChannel
+		   .setErrorHandler(error -> {
+			   error.printStackTrace();
+		   });
 		this.UPS = 60;
 	}
 

@@ -2,34 +2,24 @@ package vgl.core.gfx.font;
 
 public class Glyph {
 
-	private float	advance;
-	private float	u0, v0, u1, v1;
+	public int id, x, y, width, height, xoffset, yoffset, xadvance, page;
 
-	public Glyph(int atlasW, int atlasH, float advance, float u0, float v0, float u1, float v1) {
-		this.advance = advance;
-		this.u0 = u0 / (float) atlasW * 1.0f;
-		this.v0 = v0 / (float) atlasH * 1.0f;
-		this.u1 = u1 / (float) atlasW * 1.0f;
-		this.v1 = v1 / (float) atlasH * 1.0f;
+	public Glyph(int id, int x, int y, int width, int height, int xoffset, int yoffset, int xadvance, int page) {
+		super();
+		this.id = id;
+		this.x = x;
+		this.y = y;
+		this.width = width;
+		this.height = height;
+		this.xoffset = xoffset;
+		this.yoffset = yoffset;
+		this.xadvance = xadvance;
+		this.page = page;
 	}
 
-	public float getAdvance() {
-		return advance;
-	}
-
-	public float getU0() {
-		return u0;
-	}
-
-	public float getU1() {
-		return u1;
-	}
-
-	public float getV0() {
-		return v0;
-	}
-
-	public float getV1() {
-		return v1;
+	@Override
+	public String toString() {
+		return "Glyph [id=" + id + ", x=" + x + ", y=" + y + ", width=" + width + ", height=" + height + ", xoffset="
+		        + xoffset + ", yoffset=" + yoffset + ", xadvance=" + xadvance + ", page=" + page + "]";
 	}
 }

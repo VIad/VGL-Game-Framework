@@ -13,13 +13,11 @@ public class Async {
 
 	public static void invoke(float time, Object obj, String methodName) {
 		int t = (int) (time * 1000f);
-		System.out.println(t);
 		new AsynchronousInvokation(t, obj, methodName);
 	}
 
 	public static void invokeStatic(float time, Class<?> clazz, String methodName) {
 		int t = (int) (time * 1000f);
-		System.out.println(t);
 		new AsynchronousInvokation(t, clazz, methodName);
 	}
 
@@ -30,7 +28,6 @@ public class Async {
 				@Override
 				public void run() {
 					AsynchronousInvokation.this.invokeStatic(clazz, methodName);
-					System.out.println("here");
 					t.cancel();
 				}
 			}, time);
@@ -42,7 +39,6 @@ public class Async {
 				@Override
 				public void run() {
 					AsynchronousInvokation.this.invoke(obj, methodName);
-					System.out.println("here");
 					t.cancel();
 				}
 			}, time);

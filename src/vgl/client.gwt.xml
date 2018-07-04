@@ -21,8 +21,12 @@
 	<!-- Other module inherits -->
 
 	<!-- Specify the paths for translatable code -->
+	<source path='desktop/tools'>
+		<exclude name="**/DesktopResourceLoader.java" />
+		<exclude name="**/Reflection.java" />
+	</source>
 	<source path='core/annotation'></source>
-	<source path='core/audio/al'></source>
+	<source path='core/audio'></source>
 	<source path='core/buffers'></source>
 	<source path='core/exception'></source>
 	<source path='core/geom'></source>

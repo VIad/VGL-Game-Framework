@@ -28,6 +28,11 @@ public class DesktopPromptLogger implements IPromptLogger{
 				                                                .collect(Collectors.joining("\n")));
 	}
 
+	@Override
+	public String getInputMessageBox(String message) {
+		return JOptionPane.showInputDialog(message);
+	}
+
 	
 
 	

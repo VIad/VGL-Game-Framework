@@ -1,6 +1,8 @@
 package vgl.platform.io;
 
 import vgl.core.buffers.MemoryBuffer;
+import vgl.core.gfx.Image;
+import vgl.tools.functional.callback.BinaryCallback;
 import vgl.tools.functional.callback.Callback;
 
 abstract public class IOSystem {
@@ -16,5 +18,7 @@ abstract public class IOSystem {
 	abstract public FileDetails file(String file);
 	
 	abstract public void memset(MemoryBuffer buffer, int data);
+	
+	abstract public void readImage(FileDetails file, BinaryCallback<Image, Throwable> result);
 
 }

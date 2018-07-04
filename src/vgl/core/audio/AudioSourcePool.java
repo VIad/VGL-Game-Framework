@@ -1,4 +1,4 @@
-package vgl.audio;
+package vgl.core.audio;
 
 
 import java.util.ArrayList;

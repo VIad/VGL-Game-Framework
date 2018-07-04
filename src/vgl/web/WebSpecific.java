@@ -15,6 +15,9 @@ import vgl.core.gfx.Color;
 import vgl.core.gfx.Image;
 import vgl.main.VGL;
 import vgl.platform.io.FileDetails;
+import vgl.tools.IResource;
+import vgl.tools.ISpecifier;
+import vgl.tools.IResource.ResourceState;
 import vgl.tools.functional.callback.BinaryCallback;
 import vgl.tools.functional.callback.Callback;
 
@@ -53,7 +56,7 @@ abstract public class WebSpecific {
 					                pixels.getBlueAt(x, y) / 255f,
 					                pixels.getAlphaAt(x, y) / 255f));
 			}
-
+			((ISpecifier<IResource.ResourceState>)image).specify(ResourceState.AVAILABLE);
 			onComplete.invoke(image);
 		}
 		

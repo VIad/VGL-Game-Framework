@@ -2,6 +2,7 @@ package vgl.tools;
 
 import vgl.audio.Sound;
 import vgl.core.gfx.Image;
+import vgl.core.gfx.font.BMFont;
 import vgl.core.gfx.gl.Texture;
 import vgl.main.VGL;
 import vgl.platform.io.FileDetails;
@@ -16,6 +17,8 @@ public interface IResourceLoader {
 	void loadImage(FileDetails imageFile, Callback<Image> image, Callback<Throwable> error, ILoadOption... options);
 
 	void loadSound(FileDetails soundFile, Callback<Sound> sound, Callback<Throwable> error);
+	
+	void loadFont(FileDetails fntFile, Callback<BMFont> font, Callback<Throwable> error);
 
 	void loadTexture(FileDetails imageFile, BinaryCallback<Texture, Image> result, Callback<Throwable> error);
 
@@ -25,6 +28,10 @@ public interface IResourceLoader {
 
 	default void loadSound(FileDetails soundFile, Callback<Sound> sound) {
 		loadSound(soundFile, sound, VGL.errorChannel::forward);
+	}
+	
+	default void loadFont(FileDetails fntFile, Callback<BMFont> result) {
+		loadFont(fntFile, result, VGL.errorChannel::forward);
 	}
 
 	default void loadTexture(FileDetails imageFile, BinaryCallback<Texture, Image> result) {

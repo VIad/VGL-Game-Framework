@@ -12,4 +12,6 @@ public interface IPromptLogger {
 	
 	void promptError(Supplier<StackTraceElement[]> error);
 	
+	String getInputMessageBox(String message);
+	
 }

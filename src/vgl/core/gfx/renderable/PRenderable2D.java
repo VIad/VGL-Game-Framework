@@ -1,5 +1,8 @@
 package vgl.core.gfx.renderable;
 
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWErrorCallbackI;
+
 import vgl.core.annotation.VGLInternal;
 import vgl.core.geom.Transform2D;
 

@@ -11,12 +11,13 @@ import vgl.core.internal.GlobalDetails;
 import vgl.main.VGL;
 import vgl.platform.Platform;
 import vgl.platform.gl.GLTextureType;
-import vgl.platform.gl.GLTypes;
+import vgl.platform.gl.Primitive;
 import vgl.tools.IResource;
+import vgl.tools.ISpecifier;
 import vgl.web.WebGraphicsPlatform;
 import vgl.web.WebSpecific;
 
-public class Texture implements IResource{
+public class Texture implements IResource, ISpecifier<IResource.ResourceState>{
 
 	int	width, height;
 
@@ -25,6 +26,8 @@ public class Texture implements IResource{
 	private boolean isDisposed;
 
 	private static int currentlyActive;
+	
+	private ResourceState state;
 	
 	public Texture(int width, int height) {
 		this.textureID = VGL.api_gfx.glGenTexture();
@@ -61,7 +64,7 @@ public class Texture implements IResource{
 		   	 ArrayBufferView pixels = WebSpecific.JS
 			 		                             .copy(actual.getPixels().getBuffer());
 			((WebGraphicsPlatform) VGL.api_gfx).glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, image.getWidth(),
-			        image.getHeight(), 0, GL11.GL_RGBA, GLTypes.UNSIGNED_BYTE, pixels);
+			        image.getHeight(), 0, GL11.GL_RGBA, Primitive.UNSIGNED_BYTE.toGLType(), pixels);
 			return;
 		}
 		VGL.api_gfx
@@ -72,11 +75,12 @@ public class Texture implements IResource{
 				         tex.height,
 				         0,
 				         GL11.GL_RGBA,
-				         GLTypes.UNSIGNED_BYTE,
+				         Primitive.UNSIGNED_BYTE.toGLType(),
 				         image != null ? 
 				         actual.getPixels().getBuffer() : null);
 		if (!actual.equals(image))
 			actual.releaseMemory();
+		tex.specify(ResourceState.AVAILABLE);
 	}
 	
 	public static void setActiveTextureUnit(int textureUnit) {
@@ -120,6 +124,7 @@ public class Texture implements IResource{
 	public void releaseMemory() {
 		validate();
 		VGL.api_gfx.glDeleteTexture(textureID);
+		specify(ResourceState.DISPOSED);
 		this.isDisposed = true;
 	}
 
@@ -141,5 +146,15 @@ public class Texture implements IResource{
 	@Override
 	public boolean isDisposed() {
 		return isDisposed;
+	}
+
+	@Override
+	public synchronized ResourceState getResourceState() {
+		return state;
+	}
+
+	@Override
+	public synchronized void specify(ResourceState t) {
+		this.state =t;
 	}
 }

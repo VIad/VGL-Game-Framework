@@ -4,17 +4,20 @@ import vgl.core.buffers.MemoryBufferInt;
 import vgl.core.exception.VGLGraphicsException;
 import vgl.core.exception.VGLRuntimeException;
 import vgl.tools.IResource;
+import vgl.tools.ISpecifier;
 
 /**
  * Currently takes an insane amount of memory, optimisation required ASAP
  */
-public class Image implements IResource{
+public class Image implements IResource, ISpecifier<IResource.ResourceState>{
 
 	private int width, height, loadedWidth, loadedHeight;
 	
 	private boolean closed;
 	
 	private Image.Format dataFormat;
+	
+	private IResource.ResourceState state = ResourceState.UNAVAILABLE;
 	
 	public static enum Format{
 		RGBA,
@@ -74,6 +77,7 @@ public class Image implements IResource{
 		}
 		if(destroySrc)
 			src.releaseMemory();
+		image.state = ResourceState.AVAILABLE;
 		return image;
 	}
 	
@@ -189,6 +193,7 @@ public class Image implements IResource{
 		if(closed)
 			throw new IllegalStateException("All resources allocated with this image object have been released");
 		closed = true;
+		this.state = ResourceState.DISPOSED;
 		this.pixels.getBuffer().free();
 		this.pixels = null;
 	}
@@ -234,7 +239,15 @@ public class Image implements IResource{
 	public boolean isDisposed() {
 		return closed;
 	}
-	
-	
+
+	@Override
+	public synchronized ResourceState getResourceState() {
+		return state;
+	}
+
+	@Override
+	public synchronized void specify(ResourceState t) {
+		this.state = t;
+	}
 
 }

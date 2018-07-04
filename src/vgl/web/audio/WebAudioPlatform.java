@@ -7,8 +7,8 @@ import com.shc.gwtal.client.webaudio.AudioContext;
 import com.shc.gwtal.client.webaudio.AudioContextException;
 import com.vgl.gwtreq.client.GWTDataView;
 
-import vgl.audio.AudioSourcePool;
-import vgl.audio.IAudioPlatform;
+import vgl.core.audio.AudioSourcePool;
+import vgl.core.audio.IAudioPlatform;
 import vgl.core.buffers.MemoryBuffer;
 import vgl.core.exception.PlatformUnsupportedException;
 import vgl.core.exception.VGLAudioException;

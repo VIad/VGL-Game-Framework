@@ -13,10 +13,14 @@ import org.lwjgl.system.MemoryUtil;
 
 import vgl.core.buffers.Buffers;
 import vgl.core.buffers.MemoryBuffer;
+import vgl.core.gfx.Image;
+import vgl.desktop.DesktopSpecific;
 import vgl.desktop.tools.async.VoidWorker;
+import vgl.main.VGL;
 import vgl.platform.io.FileDetails;
 import vgl.platform.io.IOSystem;
 import vgl.platform.io.ReadOption;
+import vgl.tools.functional.callback.BinaryCallback;
 import vgl.tools.functional.callback.Callback;
 
 public class DesktopIOSystem extends IOSystem {
@@ -71,6 +75,18 @@ public class DesktopIOSystem extends IOSystem {
 	@Override
 	public void memset(MemoryBuffer buffer, int data) {
 		MemoryUtil.memSet(((ByteBuffer) buffer.nativeBufferDetails().getBuffer()), data);
+	}
+
+	@Override
+	public void readImage(FileDetails file, BinaryCallback<Image, Throwable> result) {
+		new VoidWorker<>(file, f -> {
+			try {
+				result.invoke(DesktopSpecific.FileLoading
+						                     .loadImage0(file.absolutePath()), null);
+			} catch (Throwable e) {
+				result.invoke(null, e);
+			}
+		}).start(); 
 	}
 
 }

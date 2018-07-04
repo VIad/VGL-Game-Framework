@@ -10,8 +10,8 @@ import org.lwjgl.openal.ALC;
 import org.lwjgl.openal.ALC10;
 import org.lwjgl.openal.ALCCapabilities;
 
-import vgl.audio.AudioSystem;
-import vgl.audio.IAudioPlatform;
+import vgl.core.audio.AudioSystem;
+import vgl.core.audio.IAudioPlatform;
 import vgl.core.buffers.MemoryBuffer;
 
 public class DesktopAudioPlatform implements IAudioPlatform{

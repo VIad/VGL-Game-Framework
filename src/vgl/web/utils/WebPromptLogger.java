@@ -12,14 +12,17 @@ public class WebPromptLogger implements IPromptLogger {
 
 	@Override
 	public void promptMessage(String message) {
-		// TODO Auto-generated method stub
-		
+		Window.alert(message);
 	}
 
 	@Override
 	public void promptError(Supplier<StackTraceElement[]> error) {
-		// TODO Auto-generated method stub
-		
+		Window.alert("");
+	}
+
+	@Override
+	public String getInputMessageBox(String message) {
+		return Window.prompt(message, "");
 	}
 
 	

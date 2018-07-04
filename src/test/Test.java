@@ -7,12 +7,13 @@ import java.util.Random;
 
 import org.lwjgl.opengl.GL11;
 
-import vgl.audio.AudioManager;
-import vgl.audio.AudioSystem;
+import vgl.core.audio.AudioManager;
+import vgl.core.audio.AudioSystem;
 import vgl.core.exception.VGLException;
 import vgl.core.gfx.Color;
 import vgl.core.gfx.Image;
 import vgl.core.gfx.camera.PerspectiveCamera;
+import vgl.core.gfx.font.BMFont;
 import vgl.core.gfx.gl.Texture;
 import vgl.core.gfx.renderable.ColoredSprite;
 import vgl.core.gfx.renderable.ImageSprite;
@@ -29,6 +30,7 @@ import vgl.maths.Projection;
 import vgl.maths.vector.Matrix4f;
 import vgl.maths.vector.Vector3f;
 import vgl.maths.vector.VectorMaths;
+import vgl.utils.ResourceLoader;
 
 public class Test extends VGLApplication {
 
@@ -92,30 +94,30 @@ public class Test extends VGLApplication {
 	private static VFont		font;
 
 	public static void main(final String[] args) throws Exception {
-//		VGL.factory = new DesktopFactory();
-//		VGL.io = new DesktopIOSystem();
-//		VGL.logger = new DesktopLogger();
-//		VGL.input = new DesktopInputSystem();
-		
-//		
-//		Image image = Image.fromColor(1500, 1500, Color.BROWN, 1f);
-//		for(int x = 50; x < 150;x++) {
-//			for(int y = 0; y < image.getHeight();y++) {
-//				image.setPixel(x, y, Color.BLACK);
-//			}
-//		}
-//		Image subImage = image.createSubImage(40, 0, 300,300);
-//		JOptionPane.showMessageDialog(null, new ImageIcon(imageToBufferedImage(subImage)));
-		
+		// VGL.factory = new DesktopFactory();
+		// VGL.io = new DesktopIOSystem();
+		// VGL.logger = new DesktopLogger();
+		// VGL.input = new DesktopInputSystem();
+
+		//
+		// Image image = Image.fromColor(1500, 1500, Color.BROWN, 1f);
+		// for(int x = 50; x < 150;x++) {
+		// for(int y = 0; y < image.getHeight();y++) {
+		// image.setPixel(x, y, Color.BLACK);
+		// }
+		// }
+		// Image subImage = image.createSubImage(40, 0, 300,300);
+		// JOptionPane.showMessageDialog(null, new
+		// ImageIcon(imageToBufferedImage(subImage)));
+
 		engineTest();
 	}
 
-	
 	private static BufferedImage imageToBufferedImage(Image image) {
 		System.out.println(image);
 		BufferedImage result = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
-		for(int x = 0; x < result.getWidth(); x ++) {
-			for(int y = 0; y < result.getHeight(); y ++) {
+		for (int x = 0; x < result.getWidth(); x++) {
+			for (int y = 0; y < result.getHeight(); y++) {
 				result.setRGB(x, y, image.getPixel(x, y).getARGB());
 			}
 		}
@@ -125,10 +127,12 @@ public class Test extends VGLApplication {
 	static Texture	tex;
 	static Texture	tex2;
 	static Texture	tex3;
+	static BMFont	def_font;
 
 	private static void engineTest() {
 		VGLApplication app = new Test("Test", 1280, 720);
 		app.setVerticalSynchronized(false);
+		app.setResizable(true);
 		app.setFixedUpdateTimestamp(2f);
 		app.setUpdatesPerSecond(100);
 		app.startApplication();
@@ -143,7 +147,7 @@ public class Test extends VGLApplication {
 	@Override
 	public void init() throws VGLException {
 		VGL.display.setDisplayFps(true);
-		
+
 		AudioSystem.initialize(100);
 		AudioManager.create();
 
@@ -160,14 +164,22 @@ public class Test extends VGLApplication {
 			        new Color(rand.nextInt(0xffffff)),
 			        new Color(rand.nextInt(0xffffff)),
 			        new Color(rand.nextInt(0xffffff))));
-		tex = new Texture("resources/1.png");
-		tex2 = new Texture("resources/0.png");
-		tex3 = new Texture("resources/1.jpg");
+		// tex = new Texture("resources/1.png");
+		// tex2 = new Texture("resources/0.png");
+		// tex3 = new Texture("resources/1.jpg");
 
+		ResourceLoader.get().loadTexture(VGL.io.file("resources/1.png"), texture -> tex = texture);
+		ResourceLoader.get().loadTexture(VGL.io.file("resources/0.png"), texture -> tex2 = texture);
+		ResourceLoader.get().loadTexture(VGL.io.file("resources/1.jpg"), texture -> tex3 = texture);
+		ResourceLoader.get().loadFont(VGL.io.file("resources/fonts/font_test.fnt"), font -> {
+			def_font = font;
+		});
+		ResourceLoader.get().begin();
 		VGL.display.setClearColor(Color.BLACK);
 
 		defaultShader = ShaderFactory.batch2DGLSL();
 		defaultShader.start();
+		
 		defaultShader.uniform1iv("textures", new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
 		        18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 });
 		// projMat = Matrix4f.orthographic(0, 16, 9, 0, -1, 1);
@@ -235,10 +247,10 @@ public class Test extends VGLApplication {
 		        new Color(rand.nextInt(0xffffff))));
 		System.out.println("Rendering >> " + sprites.size() + " sprites !");
 
-//		Window.updateOnResize(true);
-//		Window.logFps(true);
+		// Window.updateOnResize(true);
+		// Window.logFps(true);
 		Keyboard.create();
-//		Mouse.create();
+		// Mouse.create();
 		defaultShader.start();
 		randStr = "((";
 		for (int i = 0; i < 200; i++) {
@@ -267,9 +279,10 @@ public class Test extends VGLApplication {
 
 		}
 		bRenderer.begin();
-		bRenderer.renderSprite(new ImageSprite(tex2), 5, 5, 5, 5,
-		        VectorMaths.translationMatrix(new Vector3f(-10f, 0f, 0f)).multiply(
-		                VectorMaths.rotationMatrix(0, 0, theta += 0.1f)));
+		if (tex2 != null)
+			bRenderer.renderSprite(new ImageSprite(tex2), 5, 5, 5, 5,
+			        VectorMaths.translationMatrix(new Vector3f(-10f, 0f, 0f)).multiply(
+			                VectorMaths.rotationMatrix(0, 0, theta += 0.1f)));
 		int index = 0;
 		for (float x = 0f; x < 16f; x += 0.05f) {
 			for (float y = 0f; y < 9f; y += 0.05f) {
@@ -285,8 +298,10 @@ public class Test extends VGLApplication {
 		// }
 		// bRenderer.drawText(randStr, 0, 10, font);
 		// bRenderer.drawText("0", 0, 0, font);
-		bRenderer.drawText("Enjoy your stay", 0, 7, font);
-		bRenderer.drawText("^\\gggggg", 0, 3, font);
+		if(def_font != null) {
+		 bRenderer.drawText("The Sky\nTastes\nGood", 0, 7, def_font);
+//		 bRenderer.drawText("^\\gggggg", 0, 3, def_font);
+		}
 		bRenderer.end();
 		bRenderer.render();
 		// for (Sprite sprite : sprites) {
@@ -301,7 +316,6 @@ public class Test extends VGLApplication {
 
 	@Override
 	public void update() throws VGLException {
-
 		if (VGL.input.isKeyDown(Key.W)) {
 			transY += 0.05f;
 		}
@@ -320,9 +334,8 @@ public class Test extends VGLApplication {
 		if (Keyboard.isKeyDown(Key.E)) {
 			angleRotY -= 0.05f;
 		}
-		if(VGL.input.isKeyDown(Key.SPACE)) {
-			VGL.context
-			   .toggleLooping();
+		if (VGL.input.isKeyDown(Key.SPACE)) {
+			VGL.context.toggleLooping();
 		}
 		// transX -= 0.05f;
 		// transMat = VectorMaths.translationMatrix(new Vector3f(transX, transY,
@@ -338,7 +351,6 @@ public class Test extends VGLApplication {
 	@Override
 	public void finish() throws VGLException {
 		System.out.println("Cleanup");
-		Texture.cleanTextureCache();
 	}
 
 	@Override

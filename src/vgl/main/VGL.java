@@ -1,6 +1,6 @@
 package vgl.main;
 
-import vgl.audio.IAudioPlatform;
+import vgl.core.audio.IAudioPlatform;
 import vgl.core.input.IPlatformInputDevice;
 import vgl.core.internal.ErrorChannel;
 import vgl.platform.AbstractDisplayDevice;

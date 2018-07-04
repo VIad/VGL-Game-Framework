@@ -2,6 +2,7 @@ package vgl.desktop.gfx.renderer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
@@ -9,7 +10,10 @@ import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
+import vgl.core.geom.Size2i;
 import vgl.core.gfx.Color;
+import vgl.core.gfx.font.BMFont;
+import vgl.core.gfx.font.FontSpecifics;
 import vgl.core.gfx.font.Glyph;
 import vgl.core.gfx.font.IFont;
 import vgl.core.gfx.gl.IndexBuffer;
@@ -25,7 +29,7 @@ import vgl.maths.vector.Matrix4f;
 import vgl.maths.vector.Vector2f;
 import vgl.maths.vector.Vector3f;
 import vgl.platform.gl.GLBufferUsage;
-import vgl.platform.gl.GLTypes;
+import vgl.platform.gl.Primitive;
 
 final public class Renderer2D implements IRenderer2D {
 
@@ -68,10 +72,10 @@ final public class Renderer2D implements IRenderer2D {
 		GL20.glEnableVertexAttribArray(VertexLayout.UV_INDEX);
 		GL20.glEnableVertexAttribArray(VertexLayout.TID_INDEX);
 
-		GL20.glVertexAttribPointer(0, 3, GLTypes.FLOAT, false, VERTEX_ATTRIB_STRIDE, 0);
-		GL20.glVertexAttribPointer(1, 4, GLTypes.FLOAT, false, VERTEX_ATTRIB_STRIDE, 12);
-		GL20.glVertexAttribPointer(2, 2, GLTypes.FLOAT, false, VERTEX_ATTRIB_STRIDE, 28);
-		GL20.glVertexAttribPointer(3, 1, GLTypes.FLOAT, false, VERTEX_ATTRIB_STRIDE, 36);
+		GL20.glVertexAttribPointer(0, 3, Primitive.FLOAT.toGLType(), false, VERTEX_ATTRIB_STRIDE, 0);
+		GL20.glVertexAttribPointer(1, 4, Primitive.FLOAT.toGLType(), false, VERTEX_ATTRIB_STRIDE, 12);
+		GL20.glVertexAttribPointer(2, 2, Primitive.FLOAT.toGLType(), false, VERTEX_ATTRIB_STRIDE, 28);
+		GL20.glVertexAttribPointer(3, 1, Primitive.FLOAT.toGLType(), false, VERTEX_ATTRIB_STRIDE, 36);
 
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 		GL30.glBindVertexArray(0);
@@ -83,6 +87,9 @@ final public class Renderer2D implements IRenderer2D {
 	public void setScaling(float pmatMaxX, float pmatMaxY) {
 		this.projMaxX = pmatMaxX;
 		this.projMaxY = pmatMaxY;
+
+		this.scaleX = (float) VGL.display.getWidth() * 1.0f / projMaxX;
+		this.scaleY = (float) VGL.display.getWidth() * 1.0f / projMaxX;
 	}
 
 	private float	projMaxX	= 16f, projMaxY = 9f;
@@ -143,93 +150,128 @@ final public class Renderer2D implements IRenderer2D {
 		return ts;
 	}
 
-	public void drawText(String str, float x, float y, IFont font) {
-		Texture fontTexture = font.getFontTexture();
-		float ts = getTextureSlot(fontTexture);
+	public void drawText(String str, float x, float y, BMFont font) {
+		final FontSpecifics fs = font.getFontSpecifics();
 		float currentX = x;
-		for (char ch : str.toCharArray()) {
-			if (!IFont.isSupported(ch))
-				throw new vgl.core.exception.VGLFontException("Character >> " + ch + " is not supported");
-			Color c = Color.DARK_BLUE;
-			Glyph g = font.getGlyph(ch);
+		float currentY = y;
+//		for (Map.Entry<Integer, Texture> pages : font.getPages().entrySet()) {
+//			float ts = getTextureSlot(pages.getValue());
+			for (char ch : str.toCharArray()) {
+				// if (!IFont.isSupported(ch))
+				// throw new vgl.core.exception.VGLFontException("Character >> " + ch + " is not
+				// supported");
+				Color c = Color.DARK_BLUE;
+				// Glyph g = font.getGlyph(ch);
 
-			float x0 = currentX;
-			float y0 = y;
-			float x1 = currentX + g.getAdvance() / scaleX;
-			float y1 = y + font.getCharHeight() / scaleY;
+				// float x0 = currentX;
+				// float y0 = y;
+				// float x1 = currentX + font.getAdvance(ch) / scaleX;
+				// float y1 = y + font.getHeight()/ scaleY;
 
-			float u0 = g.getU0();
-			float v0 = g.getV0();
-			float u1 = g.getU1();
-			float v1 = g.getV1();
+				// float u0 = g.getU0();
+				// float v0 = g.getV0();
+				// float u1 = g.getU1();
+				// float v1 = g.getV1();
+				// float u0 = font.getGlyphs().get((int) ch).x / 1024;
+				// float v0 = font.getGlyphs().get((int) ch).y / 1024;
+				// float u1 = (font.getGlyphs().get((int) ch).x + font.getGlyphs().get((int)
+				// ch).xadvance) / 1024;
+				// float v1 = (font.getGlyphs().get((int) ch).y + font.getGlyphs().get((int)
+				// ch).height) / 1024;
+				//
+				// currentX += font.getAdvance(ch) / scaleX;
 
-			currentX += g.getAdvance() / scaleX;
+				if (ch == '\n') {
+					currentY += fs.getHeight() / scaleY;
+					currentX = 0;
+					continue;
+				}
 
-			/**
-			 * VBO LAYOUT
-			 */
-			// Vertex
-			gpuDirect.put(x0);
-			gpuDirect.put(y0);
-			gpuDirect.put(0f);
-			// Color
-			gpuDirect.put(c.getRed());
-			gpuDirect.put(c.getGreen());
-			gpuDirect.put(c.getBlue());
-			gpuDirect.put(c.getAlpha());
-			// UVs
-			gpuDirect.put(u0);
-			gpuDirect.put(v0);
-			// TID
-			gpuDirect.put(ts);
+				Glyph glyph = font.getGlyph((int) ch);
+//				if (glyph.page == pages.getKey()) {
+				float ts = getTextureSlot(font.getPages().get(glyph.page));
+					float x0 = currentX + glyph.xoffset / scaleX;
+					float y0 = currentY + glyph.yoffset / scaleY;
+					float x1 = x0 + glyph.width / scaleX;
+					float y1 = y0 + glyph.height / scaleY;
 
-			// Vertex
-			gpuDirect.put(x0);
-			gpuDirect.put(y1);
-			gpuDirect.put(0f);
-			// Color
-			gpuDirect.put(c.getRed());
-			gpuDirect.put(c.getGreen());
-			gpuDirect.put(c.getBlue());
-			gpuDirect.put(c.getAlpha());
-			// UVs
-			gpuDirect.put(u0);
-			gpuDirect.put(v1);
-			// TID
-			gpuDirect.put(ts);
+					float s0 = glyph.x;
+					float t0 = glyph.y;
+					float s1 = glyph.x + glyph.width;
+					float t1 = glyph.y + glyph.height;
+					Size2i fTex = fs.getFontTextureDimensions();
+					float u0 = s0 / fTex.width;
+					float v0 = t0 / fTex.height;
+					float u1 = s1 / fTex.width;
+					float v1 = t1 / fTex.height;
 
-			// Vertex
-			gpuDirect.put(x1);
-			gpuDirect.put(y1);
-			gpuDirect.put(0f);
-			// Color
-			gpuDirect.put(c.getRed());
-			gpuDirect.put(c.getGreen());
-			gpuDirect.put(c.getBlue());
-			gpuDirect.put(c.getAlpha());
-			// UVs
-			gpuDirect.put(u1);
-			gpuDirect.put(v1);
-			// TID
-			gpuDirect.put(ts);
+					currentX += glyph.xadvance / scaleX;
+					/**
+					 * VBO LAYOUT
+					 */
+					// Vertex
+					gpuDirect.put(x0);
+					gpuDirect.put(y0);
+					gpuDirect.put(0f);
+					// Color
+					gpuDirect.put(c.getRed());
+					gpuDirect.put(c.getGreen());
+					gpuDirect.put(c.getBlue());
+					gpuDirect.put(c.getAlpha());
+					// UVs
+					gpuDirect.put(u0);
+					gpuDirect.put(v0);
+					// TID
+					gpuDirect.put(ts);
 
-			// Vertex
-			gpuDirect.put(x1);
-			gpuDirect.put(y0);
-			gpuDirect.put(0f);
-			// Color
-			gpuDirect.put(c.getRed());
-			gpuDirect.put(c.getGreen());
-			gpuDirect.put(c.getBlue());
-			gpuDirect.put(c.getAlpha());
-			// UVs
-			gpuDirect.put(u1);
-			gpuDirect.put(v0);
-			// TID
-			gpuDirect.put(ts);
+					// Vertex
+					gpuDirect.put(x0);
+					gpuDirect.put(y1);
+					gpuDirect.put(0f);
+					// Color
+					gpuDirect.put(c.getRed());
+					gpuDirect.put(c.getGreen());
+					gpuDirect.put(c.getBlue());
+					gpuDirect.put(c.getAlpha());
+					// UVs
+					gpuDirect.put(u0);
+					gpuDirect.put(v1);
+					// TID
+					gpuDirect.put(ts);
 
-			indexCount += 6;
-		}
+					// Vertex
+					gpuDirect.put(x1);
+					gpuDirect.put(y1);
+					gpuDirect.put(0f);
+					// Color
+					gpuDirect.put(c.getRed());
+					gpuDirect.put(c.getGreen());
+					gpuDirect.put(c.getBlue());
+					gpuDirect.put(c.getAlpha());
+					// UVs
+					gpuDirect.put(u1);
+					gpuDirect.put(v1);
+					// TID
+					gpuDirect.put(ts);
+
+					// Vertex
+					gpuDirect.put(x1);
+					gpuDirect.put(y0);
+					gpuDirect.put(0f);
+					// Color
+					gpuDirect.put(c.getRed());
+					gpuDirect.put(c.getGreen());
+					gpuDirect.put(c.getBlue());
+					gpuDirect.put(c.getAlpha());
+					// UVs
+					gpuDirect.put(u1);
+					gpuDirect.put(v0);
+					// TID
+					gpuDirect.put(ts);
+
+					indexCount += 6;
+//				}
+			}
 	}
 
 	private boolean validateRenderable(Renderable2D renderable) {
@@ -578,10 +620,16 @@ final public class Renderer2D implements IRenderer2D {
 		}
 		GL30.glBindVertexArray(vao);
 		ibo.bind();
-		GL11.glDrawElements(GL11.GL_TRIANGLES, indexCount, GLTypes.UNSIGNED_INT, 0);
+		GL11.glDrawElements(GL11.GL_TRIANGLES, indexCount, Primitive.UNSIGNED_INT.toGLType(), 0);
 		ibo.unbind();
 		GL30.glBindVertexArray(0);
 		indexCount = 0;
 		textureSlots.clear();
+	}
+
+	@Override
+	public void drawText(String text, float x, float y, IFont font) {
+		// TODO Auto-generated method stub
+
 	}
 }

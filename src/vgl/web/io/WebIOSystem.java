@@ -5,14 +5,21 @@ import java.util.Arrays;
 import com.google.gwt.xhr.client.XMLHttpRequest;
 import com.vgl.gwtreq.client.GWTArrayBuffer;
 
+import jdk.nashorn.internal.parser.Lexer.XMLToken;
 import vgl.core.buffers.MemoryBuffer;
+import vgl.core.exception.VGLIOException;
 import vgl.core.exception.VGLRuntimeException;
+import vgl.core.gfx.Image;
 import vgl.core.internal.GlobalDetails;
+import vgl.main.VGL;
 import vgl.platform.io.FileDetails;
 import vgl.platform.io.IOSystem;
 import vgl.platform.io.ReadOption;
+import vgl.tools.functional.callback.BinaryCallback;
 import vgl.tools.functional.callback.Callback;
 import vgl.web.WebMemoryBuffer;
+import vgl.web.WebSpecific;
+import vgl.web.WebSpecific.JS;
 
 public class WebIOSystem extends IOSystem {
 
@@ -82,5 +89,16 @@ public class WebIOSystem extends IOSystem {
 			buffer.putByte(i, data);
 		}
 	}
+
+	@Override
+	public void readImage(FileDetails file, BinaryCallback<Image, Throwable> onResult) {
+		VGL.io
+		   .readBytes(file, bytes -> {
+			   WebSpecific.JS
+			                .getImage(JS.cast(bytes), image -> onResult.invoke(image, null),
+			                        error -> onResult.invoke(null, new VGLIOException("Something went wrong while reading image")));
+		   });
+	}
+
 
 }

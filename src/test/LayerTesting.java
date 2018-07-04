@@ -11,9 +11,11 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
-import vgl.audio.AudioManager;
-import vgl.audio.AudioSystem;
+import com.shc.gwtal.client.webaudio.AudioBuffer;
+
 import vgl.audio.Sound;
+import vgl.core.audio.AudioManager;
+import vgl.core.audio.AudioSystem;
 import vgl.core.exception.VGLException;
 import vgl.core.gfx.Color;
 import vgl.core.gfx.Image;
@@ -47,6 +49,7 @@ public class LayerTesting {
 		app = new App("Sad", 640, 480);
 		app.setLayout(layout = new LayeredLayout());
 		app.setUpdatesPerSecond(60);
+		app.setFixedUpdateTimestamp(2.5f);
 		app.startApplication();
 	}
 
@@ -86,26 +89,20 @@ public class LayerTesting {
 			// TODO Auto-generated constructor stub
 		}
 
+		private boolean first = true;
+
+
 		@Override
 		public void init() throws VGLException {
+			resLoader = VGL.factory.createResourceLoader();
 			AudioSystem.initialize();
 			AudioManager.create();
-			Sound s = new Sound(DesktopSpecific.AudioDecoder.decodeAudio("resources/untitled.wav"));
-			s.play();
-			BasicUtils.delayThread(300);
-			s.play();
-			// AudioManager.reconfigure("music", 0.1f, 1f);
-			// JOptionPane.showMessageDialog(null, new
-			// ImageIcon(imageToBufferedImage(loadImage("resources/0.png"))));
-			// AudioManager.reconfigure("music", 0.1f, 1.5f).play();
-			VGL.errorChannel.setErrorHandler(ech -> {
-				ech.printStackTrace();
-			});
-			VGL.display.setClearColor(Color.WHITE);
-			resLoader = new DesktopResourceLoader();
-
+			
+			AudioManager.add("snd_retard",
+			        new Sound(DesktopSpecific.AudioDecoder.decodeAudio("resources/untitled.wav")));
 			resLoader.loadTexture(VGL.io.file("resources/tex.png"), texture -> {
 				tex = texture;
+				System.out.println("tex loaded");
 			});
 
 			resLoader.loadImage(VGL.io.file("resources/1.jpg"), image -> {
@@ -114,8 +111,31 @@ public class LayerTesting {
 			resLoader.loadImage(VGL.io.file("resources/1.png"), image -> {
 				System.out.println("Image loaded");
 			});
+			resLoader.loadImage(VGL.io.file("resources/2.jpg"), image -> {
+				System.out.println("Image loaded");
+			});
+			resLoader.loadImage(VGL.io.file("resources/2.png"), image -> {
+				System.out.println("Image loaded");
+			});
+			resLoader.loadImage(VGL.io.file("resources/3.jpg"), image -> {
+				System.out.println("Image loaded");
+			});
+			resLoader.loadImage(VGL.io.file("resources/3.png"), image -> {
+				System.out.println("Image loaded");
+			});
+			resLoader.loadImage(VGL.io.file("resources/0.png"), image -> {
+				System.out.println("Image loaded");
+			});
 			resLoader.begin();
-			System.out.println(resLoader.getReadyPercentage());
+			System.out.println("After begin");
+			// AudioManager.reconfigure("music", 0.1f, 1f);
+			// JOptionPane.showMessageDialog(null, new
+			// ImageIcon(imageToBufferedImage(loadImage("resources/0.png"))));
+			// AudioManager.reconfigure("music", 0.1f, 1.5f).play();
+			VGL.errorChannel.setErrorHandler(ech -> {
+				ech.printStackTrace();
+			});
+			VGL.display.setClearColor(Color.WHITE);
 			VGL.display.setDisplayFps(true);
 			layout.pushLayer(new ILayer2D(16f, 9f) {
 				float angle = 0f;
@@ -140,12 +160,13 @@ public class LayerTesting {
 
 		@Override
 		public void render() throws VGLException {
-
+//			System.out.println("draaw");
 		}
 
 		@Override
 		public void update() throws VGLException {
-			if (VGL.input.isKeyDown(Key.C)) {
+			if (VGL.input.isKeyDown(Key.P)) {
+				AudioManager.play("snd_retard");
 			}
 		}
 

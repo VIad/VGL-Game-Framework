@@ -22,14 +22,14 @@ import vgl.web.utils.WebPromptLogger;
 abstract public class VGLWebApplication extends Application {
 
 	String				renderTargetID;
-	private WContext	context;
+	private WebContext	context;
 
 	public VGLWebApplication(String documentCanvasId) {
 		super();
 		GlobalDetails.set((Application) this);
 		GlobalDetails.set(Platform.WEB);
 		this.renderTargetID = documentCanvasId;
-		this.context = new WContext(this);
+		this.context = new WebContext(this);
 		context.set();
 		WebGLExtensions.tryEnableAll();
 		initGlobals();
@@ -47,18 +47,6 @@ abstract public class VGLWebApplication extends Application {
 			}
 		});
 		
-	}
-	
-	public void decodeAndPlayTest() {
-		VGL.io.readBytes(VGL.io.file("http://localhost/net/bet.ogg"), buffer -> {
-			AudioDecoder.decodeAudio(((GWTDataView)buffer.nativeBufferDetails().getBuffer()).getView().buffer(), sb -> {
-				Sound s = new Sound(sb);
-				s.setPitch(5f);
-				s.play();
-			}, error -> {
-				Window.alert(error);
-			});
-		});
 	}
 	
 	@Override
@@ -98,7 +86,7 @@ abstract public class VGLWebApplication extends Application {
 		this.w_height = dim.height;
 	}
 
-	public WContext getContext() {
+	public WebContext getContext() {
 		return context;
 	}
 	
@@ -106,7 +94,7 @@ abstract public class VGLWebApplication extends Application {
 		return renderTargetID;
 	}
 
-	public void set(WContext webContext) {
+	public void set(WebContext webContext) {
 		this.context = webContext;
 	}
 }
