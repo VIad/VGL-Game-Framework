@@ -8,4 +8,6 @@ public interface IFont {
 
 	FontSpecifics getFontSpecifics();
 
+	Texture getFontTextureFor(Glyph character);
+	
 }

@@ -1,5 +1,7 @@
 package vgl.maths.vector;
 
+import vgl.core.geom.Transform2D;
+
 //============================================================================
 //Name        : VectorMaths
 //Author      : Vladimir Ivanov
@@ -57,7 +59,7 @@ public class VectorMaths {
 		        transform.rotationZ(),
 		        transform.scale());
 	}
-
+	
 	public static Matrix4f translationMatrix(final Vector3f translation) {
 		final Matrix4f matrix = new Matrix4f();
 		matrix.setIdentity();
@@ -116,6 +118,13 @@ public class VectorMaths {
 		float newY = (float) Math.sin(angRad);
 		result.set(newX, newY);
 		return result;
+	}
+
+	public static Matrix4f transformationMatrix(Transform2D transform2d) {
+		return transformationMatrix(new Vector3f(transform2d.position().x, transform2d.position().y, 0f),
+				0f, 0f,
+		        transform2d.angleDegrees(), 
+		        1f); 
 	}
 
 }

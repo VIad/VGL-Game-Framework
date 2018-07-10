@@ -26,4 +26,8 @@ public class IndexBuffer {
 		VGL.api_gfx.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
 
+	public void dispose() {
+		VGL.api_gfx.glDeleteBuffers(buffer);
+	}
+
 }

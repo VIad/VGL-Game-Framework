@@ -3,37 +3,26 @@ package test;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.stream.IntStream;
 
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
 
-import com.shc.gwtal.client.webaudio.AudioBuffer;
-
+import vgl.audio.AudioManager;
 import vgl.audio.Sound;
-import vgl.core.audio.AudioManager;
 import vgl.core.audio.AudioSystem;
 import vgl.core.exception.VGLException;
 import vgl.core.gfx.Color;
 import vgl.core.gfx.Image;
 import vgl.core.gfx.Image.Format;
 import vgl.core.gfx.gl.Texture;
+import vgl.core.gfx.layer.GFX2D;
+import vgl.core.gfx.layer.ILayer2D;
+import vgl.core.gfx.layer.LayeredLayout;
 import vgl.core.gfx.renderable.ImageSprite;
-import vgl.core.internal.ProcessManager;
 import vgl.desktop.DesktopSpecific;
 import vgl.desktop.VGLApplication;
-import vgl.desktop.gfx.layer.GFX2D;
-import vgl.desktop.gfx.layer.ILayer2D;
-import vgl.desktop.gfx.layer.LayeredLayout;
 import vgl.desktop.input.Key;
-import vgl.desktop.tools.DesktopResourceLoader;
-import vgl.desktop.utils.BasicUtils;
 import vgl.main.VGL;
 import vgl.tools.IResourceLoader;
-import vgl.tools.functional.callback.Callback;
 
 public class LayerTesting {
 
@@ -91,15 +80,15 @@ public class LayerTesting {
 
 		private boolean first = true;
 
-
 		@Override
 		public void init() throws VGLException {
 			resLoader = VGL.factory.createResourceLoader();
 			AudioSystem.initialize();
-			AudioManager.create();
-			
-			AudioManager.add("snd_retard",
-			        new Sound(DesktopSpecific.AudioDecoder.decodeAudio("resources/untitled.wav")));
+			AudioManager.insert("sounds_2d", "music",
+			        new Sound(DesktopSpecific.AudioDecoder.decodeOGG("resources/bet.ogg")));
+//			AudioManager.fetch("sounds_2d", "music").setGain(0.01f)
+//			                                        .setPitch(0.8f)
+//			                                        .play();
 			resLoader.loadTexture(VGL.io.file("resources/tex.png"), texture -> {
 				tex = texture;
 				System.out.println("tex loaded");
@@ -148,7 +137,7 @@ public class LayerTesting {
 				@Override
 				public void render(GFX2D graphics) {
 					if (tex != null)
-						graphics.renderSprite(new ImageSprite(tex), 2f, 2f, 3f, 3f);
+						graphics.drawSprite(new ImageSprite(tex), 2f, 2f, 3f, 3f);
 					// graphics.renderSprite(new ImageSprite(tex), new Transform2D(new Vector2f(2,
 					// 2)));
 					// graphics.renderSprite(new ColoredSprite(Color.LAVENDER, 2f, 2f),
@@ -160,14 +149,13 @@ public class LayerTesting {
 
 		@Override
 		public void render() throws VGLException {
-//			System.out.println("draaw");
+			// System.out.println("draaw");
 		}
 
 		@Override
 		public void update() throws VGLException {
-			if (VGL.input.isKeyDown(Key.P)) {
-				AudioManager.play("snd_retard");
-			}
+			if (VGL.input.isKeyDown(Key.E))
+				AudioManager.fetch("sounds_2d", "music").play();
 		}
 
 		@Override

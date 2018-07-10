@@ -18,8 +18,8 @@ import org.lwjgl.opengl.GL;
 
 import vgl.core.exception.VGLException;
 import vgl.core.exception.VGLFatalError;
+import vgl.core.gfx.layer.LayeredLayout;
 import vgl.core.internal.Checks;
-import vgl.desktop.gfx.layer.LayeredLayout;
 import vgl.desktop.gl.VertexArray;
 import vgl.desktop.input.DesktopInputSystem;
 import vgl.main.VGL;
@@ -64,12 +64,6 @@ public class DesktopContext extends AbstractContext<VGLApplication> implements I
 	}
 
 	@Override
-	protected void platformSpecificRender() {
-		if (application.getLayout() != null)
-			application.getLayout().render();
-	}
-
-	@Override
 	protected boolean shouldStop() {
 		return glfwWindowShouldClose(((Window)VGL.display).__nativePtr());
 	}
@@ -110,13 +104,6 @@ public class DesktopContext extends AbstractContext<VGLApplication> implements I
 	@Override
 	public void toggleLooping() {
 		super.toggleInternalOperations();
-	}
-
-	@Override
-	protected void platformSpecificUpdate() {
-		if (application.getLayout() != null)
-			if (application.getLayout() instanceof LayeredLayout)
-				((LayeredLayout) application.getLayout()).update();
 	}
 
 

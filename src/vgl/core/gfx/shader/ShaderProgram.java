@@ -71,10 +71,12 @@ abstract public class ShaderProgram extends Shader {
 		final int shaderID = VGL.api_gfx.glCreateShader(type);
 		VGL.api_gfx.glShaderSource(shaderID, source);
 		VGL.api_gfx.glCompileShader(shaderID);
-		if (VGL.api_gfx.glGetShaderi(shaderID, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
-			VGL.logger.info(VGL.api_gfx.glGetShaderInfoLog(shaderID));
-			throw new vgl.core.exception.VGLFatalError("Shader failed to compile >> [" + source + "]");
-		}
+//		if (VGL.api_gfx.glGetShaderi(shaderID, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
+//			throw new vgl.core.exception.VGLFatalError("Shader failed to compile >> [" + source + "]");
+//		}
+		VGL.logger.warn("*********Shader Compilation Info log**********");
+		VGL.logger.warn(VGL.api_gfx.glGetShaderInfoLog(shaderID));
+		VGL.logger.warn("**********************************************");
 		VGL.logger.info("Succesfull compilation of shader : " + type);
 		return shaderID;
 	}
@@ -145,14 +147,22 @@ abstract public class ShaderProgram extends Shader {
 	
 	public static ShaderProgram create(String vsSource, String fsSource) {
 		final ShaderTokener tokener = new ShaderTokener(vsSource, fsSource);
+		System.out.println("VERT ***** ")
+		;
+		System.out.println(tokener.getVertexSourceSafe());
 		
+		System.out.println("FRAG******");
+		
+		System.out.println(tokener.getFragmentSourceSafe());
 		return new ShaderProgram(tokener.getVertexSourceSafe(), tokener.getFragmentSourceSafe()) {
 			
 			@Override
 			public void getAllUniformLocations() {
 				tokener.getData()
 				       .uniforms
-				       .forEach(uniformDecl -> findUniform(uniformDecl.getName()));
+				       .stream()
+				       .filter(decl -> !decl.getName().contains("["))
+				       .forEach(System.out::println);
 			}
 			
 			@Override

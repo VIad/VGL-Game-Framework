@@ -109,11 +109,12 @@ public class Sound implements IResource, ISpecifier<IResource.ResourceState> {
 		return gain;
 	}
 
-	public void setGain(float gain) {
+	public Sound setGain(float gain) {
 		validate();
 		checks(true, gain);
-		VGL.api_afx.alSourcef(currentSourceSlot, AL_GAIN, gain);
+//		VGL.api_afx.alSourcef(currentSourceSlot, AL_GAIN, gain);
 		this.gain = gain;
+		return this;
 	}
 
 	public int getCurrentSourceSlot() {
@@ -131,11 +132,12 @@ public class Sound implements IResource, ISpecifier<IResource.ResourceState> {
 		return pitch;
 	}
 
-	public void setPitch(float pitch) {
+	public Sound setPitch(float pitch) {
 		validate();
 		checks(false, pitch);
-		VGL.api_afx.alSourcef(currentSourceSlot, AL_PITCH, pitch);
+//		VGL.api_afx.alSourcef(currentSourceSlot, AL_PITCH, pitch);
 		this.pitch = pitch;
+		return this;
 	}
 
 	@Override

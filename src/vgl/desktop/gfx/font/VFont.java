@@ -13,6 +13,7 @@ import vgl.core.annotation.SupportedPlatforms;
 import vgl.core.gfx.font.FontSpecifics;
 import vgl.core.gfx.font.Glyph;
 import vgl.core.gfx.font.IFont;
+import vgl.core.gfx.gl.Texture;
 import vgl.core.internal.Checks;
 import vgl.platform.Platform;
 
@@ -125,6 +126,12 @@ public class VFont implements IFont {
 
 	@Override
 	public FontSpecifics getFontSpecifics() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Texture getFontTextureFor(Glyph character) {
 		// TODO Auto-generated method stub
 		return null;
 	}

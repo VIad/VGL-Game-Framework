@@ -5,8 +5,8 @@ import org.lwjgl.opengl.GL11;
 
 import vgl.core.annotation.UnusedParameter;
 import vgl.core.exception.VGLException;
+import vgl.core.gfx.layer.LayeredLayout;
 import vgl.core.internal.ProcessManager;
-import vgl.desktop.gfx.layer.LayeredLayout;
 import vgl.main.Application;
 import vgl.main.VGL;
 
@@ -50,7 +50,11 @@ public abstract class AbstractContext<APP extends Application> {
 	protected int		ups				= 0;
 
 	private boolean		firstTimeCheck	= true;
-
+	
+	protected void setFPS(int fps) {
+		VGL.display.lastFps = fps;
+	}
+	
 	protected void loop(@UnusedParameter(reason = "Required for requesting animation frames in JS") double unused)
 	        throws VGLException {
 		if (firstTimeCheck) {
@@ -71,30 +75,27 @@ public abstract class AbstractContext<APP extends Application> {
 				application.update();
 				if (loop) {
 					ProcessManager.get().runOnUpdate();
-					platformSpecificUpdate();
 					VGL.errorChannel.supplyChannel();
 					VGL.input.updateDeltas();
 					ups++;
 				}
 				delta--;
 			}
-			platformSpecificRender();
+			ProcessManager.get().runOnRender();
 			application.render();
 			fps++;
 			if ((System.currentTimeMillis() - last) > 1000) {
 				last += 1000;
 				if (VGL.display.isDisplayingFps())
 					VGL.logger.info("FPS : " + fps + ", UPS : " + ups);
+				setFPS(fps);
 				fps = ups = 0;
 			}
 			if ((System.currentTimeMillis() - lastFixedUpdate) > futs) {
 				lastFixedUpdate = System.currentTimeMillis();
 				application.fixedUpdate();
 			}
-			int glError = VGL.api_gfx.glGetError();
-			if (glError != GL11.GL_NO_ERROR) {
-				VGL.logger.critical("GL_ERROR >> " + glError);
-			}
+			
 			if (VGL.api_afx.isInitialized()) {
 				int alError = VGL.api_afx.alGetError();
 				if (alError != AL10.AL_NO_ERROR) {
@@ -125,10 +126,6 @@ public abstract class AbstractContext<APP extends Application> {
 	protected abstract void postLoop() throws VGLException;
 
 	protected abstract void loopEnd();
-
-	protected abstract void platformSpecificUpdate();
-
-	protected abstract void platformSpecificRender();
 
 	protected abstract boolean shouldStop();
 

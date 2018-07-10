@@ -234,6 +234,7 @@ public class WebGraphicsPlatform implements IGraphicsPlatorm {
 	@Override
 	public void glValidateProgram(int program) {
 		// throw new UnsupportedOperationException();
+		WebGL10.glValidateProgram(program);
 	}
 
 	@Override
@@ -299,28 +300,18 @@ public class WebGraphicsPlatform implements IGraphicsPlatorm {
 	@Override
 	public void glUniformMatrix4fv(int location, boolean transpose, MemoryBuffer matrix) {
 		WebGL10.glUniformMatrix4fv(location, transpose, Buffers.castToFloatUnsafe(matrix));
-		// WebGL10.glUniformMatrix4fv(location, transpose,
-		// Native.create((GWTArrayBuffer) matrix.nativeBufferDetails().getBuffer()));
-
 	}
 
 	@Override
 	public void glUniformMatrix3fv(int location, boolean transpose, MemoryBuffer matrix) {
-		// WebGL10.glUniformMatrix4fv(location, transpose,
-		// Native.create((GWTArrayBuffer) matrix.nativeBufferDetails().getBuffer()));
 		WebGL10.glUniformMatrix3fv(location, transpose, Buffers.castToFloatUnsafe(matrix));
 	}
 
 	@Override
-	public void glUniform1fv(int location, float[] data) {
-
-	}
+	public void glUniform1fv(int location, float[] data) {}
 
 	@Override
-	public void glUniform1iv(int location, int[] data) {
-		// TODO Auto-generated method stub
-
-	}
+	public void glUniform1iv(int location, int[] data) {}
 
 	@Override
 	public void glDetachShader(int program, int shader) {
@@ -370,7 +361,6 @@ public class WebGraphicsPlatform implements IGraphicsPlatorm {
 	@Override
 	public void glClear(int flags) {
 		WebGL10.glClear(flags);
-
 	}
 
 	@Override
@@ -381,6 +371,51 @@ public class WebGraphicsPlatform implements IGraphicsPlatorm {
 	@Override
 	public void glBufferData(int target, int[] data, int usage) {
 		WebGL10.glBufferData(target, data, usage);
+	}
+
+	@Override
+	public void glBindFramebuffer(int target, int fbo) {
+		WebGL10.glBindFramebuffer(target, fbo);
+	}
+
+	@Override
+	public void glFramebufferTexture2D(int target, int attachment, int textarget, int texture, int level) {
+		WebGL10.glFramebufferTexture2D(target, attachment, textarget, texture, level);
+	}
+
+	@Override
+	public int glGenRenderbuffer() {
+		return WebGL10.glCreateFramebuffer();
+	}
+
+	@Override
+	public void glBindRenderbuffer(int target, int renderBuffer) {
+		WebGL10.glBindRenderbuffer(target, renderBuffer);
+	}
+
+	@Override
+	public void glDeleteRenderbuffer(int renderBufferID) {
+		WebGL10.glDeleteRenderbuffer(renderBufferID);
+	}
+
+	@Override
+	public int glGetRenderbufferParameteri(int target, int pname) {
+		return WebGL10.glGetRenderbufferParameter(target, pname);
+	}
+
+	@Override
+	public void glRenderbufferStorage(int target, int internalFormat, int width, int height) {
+		WebGL10.glRenderbufferStorage(target, internalFormat, width, height);
+	}
+
+	@Override
+	public void glFramebufferRenderbuffer(int target, int attachment, int renderbuffertarget, int renderbuffer) {
+		WebGL10.glFramebufferRenderbuffer(target, attachment, renderbuffertarget, renderbuffer);
+	}
+
+	@Override
+	public int glCheckFramebufferStatus(int target) {
+		return WebGL10.glCheckFramebufferStatus(target);
 	}
 
 }

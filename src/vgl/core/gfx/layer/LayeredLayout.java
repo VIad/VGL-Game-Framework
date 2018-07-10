@@ -1,12 +1,11 @@
-package vgl.desktop.gfx.layer;
+package vgl.core.gfx.layer;
 
 import java.util.Stack;
 
 import com.shc.webgl4j.client.WebGL10;
 
 import vgl.core.annotation.VGLInternal;
-import vgl.core.gfx.layer.ILayer;
-import vgl.core.gfx.layer.ILayout;
+import vgl.core.internal.ProcessManager;
 import vgl.main.VGL;
 
 public class LayeredLayout implements ILayout {
@@ -15,6 +14,9 @@ public class LayeredLayout implements ILayout {
 
 	public LayeredLayout() {
 		this.layerStack = new Stack<>();
+		ProcessManager.get()
+		              .registerRenderLoop(this::render)
+		              .registerUpdateLoop(this::update);
 	}
 
 	@Override

@@ -1,5 +1,9 @@
 package vgl.platform;
 
+import org.lwjgl.opengl.GL30;
+
+import com.shc.webgl4j.client.WebGL10;
+
 import vgl.core.buffers.MemoryBuffer;
 import vgl.core.gfx.shader.ShaderType;
 import vgl.platform.gl.GLBufferTarget;
@@ -16,6 +20,8 @@ public interface IGraphicsPlatorm {
 	int glGenFramebuffer();
 
 	int glGenTexture();
+	
+	int glGenRenderbuffer();
 
 	// Binding objects
 
@@ -28,7 +34,23 @@ public interface IGraphicsPlatorm {
 	void glEnableVertexAttribArray(int index);
 
 	void glDisableVertexAttribArray(int index);
+	
+	void glBindRenderbuffer(int target, int renderBuffer);
+	
+	void glDeleteRenderbuffer(int renderBufferID);
+	
+	int glGetRenderbufferParameteri(int target, int pname);
+	
+	void glRenderbufferStorage(int target, int internalFormat, int width, int height);
+	
+	void glFramebufferRenderbuffer(int target, int attachment, int renderbuffertarget, int renderbuffer);
 
+	int glCheckFramebufferStatus(int target);
+	
+	void glBindFramebuffer(int target, int fbo);
+	
+	void glFramebufferTexture2D(int target, int attachment, int textarget, int texture, int level);
+	
 	// Buffer data
 
 	void glBufferData(GLBufferTarget target, long size, int usage);

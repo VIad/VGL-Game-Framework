@@ -1,6 +1,10 @@
 package vgl.core.internal;
 
+import org.lwjgl.opengl.GL11;
+
 import vgl.core.annotation.VGLInternal;
+import vgl.core.exception.OpenGLError;
+import vgl.main.VGL;
 
 public class Checks {
 
@@ -17,6 +21,15 @@ public class Checks {
 		if (!GL_INIT)
 			throw new vgl.core.exception.VGLFatalError(
 			        "Unable to find an Application object >> create an instance of either VGLApplication or VGLWebApplication");
+	}
+	
+	public static void checkGLError() {
+		int error = GL11.GL_NO_ERROR;
+		while((error = VGL.api_gfx.glGetError()) != GL11.GL_NO_ERROR) {
+			VGL.errorChannel
+			   .forward(new OpenGLError(error));
+		}
+		
 	}
 
 	public static void checkCanInstantiate(Class<?> clazz) {

@@ -1,9 +1,12 @@
 package vgl.core.gfx.font;
 
+import vgl.core.annotation.VGLInternal;
+import vgl.core.geom.Size2f;
 import vgl.core.geom.Size2i;
+import vgl.core.gfx.render.RenderContext;
 
 public interface FontSpecifics {
-	
+
 	public static class Info {
 		public String	name;
 		public int		size;
@@ -19,30 +22,63 @@ public interface FontSpecifics {
 			this.stretchH = stretchH;
 		}
 	}
-	
+
 	FontSpecifics.Info getInfo();
-	
+
 	boolean isCharSupported(char c);
-	
-	Size2i getTextDimensions(String text);
-	
+
+	default Size2i getTextDimensions(String text) {
+		Size2f contextual = getTextDimensions(text, RenderContext.UNSPECIFIED);
+		return new Size2i((int) contextual.width, (int) contextual.height);
+	}
+
+	Size2f getTextDimensions(String text, RenderContext context);
+
 	Size2i getFontTextureDimensions();
+
+
+	float getWidth(String text, RenderContext context);
 	
-	int getWidth(String text);
+	default int getWidth(String text) {
+		return (int) getWidth(text, RenderContext.UNSPECIFIED);
+	}
+
+	float getHeight(String text, RenderContext context);
 	
-	int getHeight(String text);
+	default int getHeight(String text) {
+		return (int) getHeight(text, RenderContext.UNSPECIFIED);
+	}
+
+	float getWidth(char c, RenderContext context);
+
+	default int getWidth(char c) {
+		return (int) getWidth(c, RenderContext.UNSPECIFIED);
+	}
+
+	float getHeight(char c, RenderContext context);
 	
-	int getWidth(char c);
-	
-	int getHeight(char c);
-	
-	int getHeight();
-	
-	int getAdvance(char c);
-	
+	default int getHeight(char c) {
+		return (int) getHeight(c, RenderContext.UNSPECIFIED);
+	}
+
+
+	default int getHeight() {
+		return (int) getHeight(RenderContext.UNSPECIFIED);
+	}
+
+	@VGLInternal
+	@Deprecated
+	float getHeight(RenderContext context);
+
+	default int getAdvance(char c) {
+		return (int) getAdvance(c, RenderContext.UNSPECIFIED);
+	}
+
+	float getAdvance(char c, RenderContext context);
+
 	int getPixelSize();
-	
+
 	boolean isBold();
-	
+
 	boolean isItalic();
 }

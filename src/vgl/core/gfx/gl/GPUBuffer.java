@@ -4,7 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.lwjgl.openal.ALC;
+import org.lwjgl.openal.ALC10;
 import org.lwjgl.opengl.GPU_DEVICE;
+
+import com.shc.webgl4j.client.WebGL10;
 
 import vgl.core.buffers.MemoryBuffer;
 import vgl.main.VGL;
@@ -35,6 +39,16 @@ public final class GPUBuffer {
 	public void setData(MemoryBuffer data) {
 		bind();
 		VGL.api_gfx.glBufferData(GLBufferTarget.ARRAY_BUFFER, data, usage);
+	}
+	
+	public void setData(MemoryBuffer data, int offset) {
+		bind();
+		VGL.api_gfx.glBufferSubData(GLBufferTarget.ARRAY_BUFFER.nativeGL(), offset, data);
+	}
+	
+	public void resize(int bytes) {
+		bind();
+		VGL.api_gfx.glBufferData(GLBufferTarget.ARRAY_BUFFER, bytes, usage);
 	}
 
 	public void setLayout(GPUBuffer.Layout layout) {
@@ -83,6 +97,10 @@ public final class GPUBuffer {
 			}
 			return ptr;
 		}
+		
+		public int getVertexSizeBytes() {
+			return totalBytes;
+		}
 	}
 
 	private static class BufferDataType {
@@ -95,6 +113,12 @@ public final class GPUBuffer {
 		}
 	}
 
+	public void dispose() {
+		if(currentlyBound == this)
+			currentlyBound = null;
+		VGL.api_gfx.glDeleteBuffers(vbo);
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

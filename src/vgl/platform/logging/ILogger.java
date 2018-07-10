@@ -3,6 +3,20 @@ package vgl.platform.logging;
 import vgl.platform.LogLevel;
 
 public interface ILogger {
+	
+	public enum InternalLogPolicy{
+		
+		LOG_ALWAYS,
+		
+		LOG_WARNINGS,
+		
+		LOG_ERRORS,
+		
+		LOG_NEVER;
+		
+	}
+	
+	void setInternalLoggingPolicy(InternalLogPolicy internalLogPolicy);
 
 	void log(Object message, LogLevel logLevel);
 

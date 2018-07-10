@@ -3,9 +3,15 @@ package vgl.core.gfx.font;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.GL43;
+import org.lwjgl.opengl.GLDebugMessageCallbackI;
+
 import vgl.core.exception.VGLFontException;
+import vgl.core.geom.Size2f;
 import vgl.core.geom.Size2i;
 import vgl.core.gfx.gl.Texture;
+import vgl.core.gfx.render.RenderContext;
 import vgl.core.internal.ProcessManager;
 import vgl.main.VGL;
 import vgl.maths.Maths;
@@ -16,6 +22,10 @@ import vgl.tools.async.UniContainer;
 import vgl.tools.functional.callback.BinaryCallback;
 import vgl.utils.FNTParser;
 
+
+//TODO 
+//Add support for non-alpha font loading
+//Add support for kerning
 public class BMFont implements IFont, IResource, ISpecifier<IResource.ResourceState> {
 
 	private FontSpecifics.Info	info;
@@ -83,9 +93,7 @@ public class BMFont implements IFont, IResource, ISpecifier<IResource.ResourceSt
 					}
 					ProcessManager.get().runNextUpdate(() -> {
 						container.put(container.get() + 1);
-						Texture tex = null;
-						font.pages.put(page.getId(), tex = new Texture(image));
-						VGL.logger.error("Loaded >> " + pageTex + " for page :: " + page);
+						font.pages.put(page.getId(), new Texture(image));
 						if (container.get() == parser.getPages()) {
 							font.specify(ResourceState.AVAILABLE);
 							result.invoke(font, null);
@@ -98,10 +106,12 @@ public class BMFont implements IFont, IResource, ISpecifier<IResource.ResourceSt
 	}
 
 	public Map<Integer, Texture> getPages() {
+		validate();
 		return pages;
 	}
 
 	public Map<Integer, Glyph> getGlyphs() {
+		validate();
 		return glyphs;
 	}
 
@@ -113,51 +123,24 @@ public class BMFont implements IFont, IResource, ISpecifier<IResource.ResourceSt
 		}
 
 		@Override
-		public Size2i getTextDimensions(String text) {
-			Size2i result = new Size2i(0, getHeight());
-			int x = 0;
+		public Size2f getTextDimensions(String text, RenderContext context) {
+			Size2f result = new Size2f(0, getHeight());
+			float x = 0;
 			for (char c : text.toCharArray()) {
-				if (isCharSupported(c))
-					throw new VGLFontException("Character [" + c + "] is not supported by this instance of BMFont");
 				if (c == '\n') {
 					result.width = Maths.max(x, result.width);
+					result.height += getHeight();
 					x = 0;
 					continue;
 				}
+				if (!isCharSupported(c))
+					c = ' ';
 				x += getAdvance(c);
 			}
 			result.width = Maths.max(result.width, x);
+			result.width = result.width / context.user2Device().x;
+			result.height = result.height / context.user2Device().y;
 			return result;
-		}
-
-		@Override
-		public int getWidth(String text) {
-			return getTextDimensions(text).width;
-		}
-
-		@Override
-		public int getHeight(String text) {
-			return getTextDimensions(text).height;
-		}
-
-		@Override
-		public int getWidth(char c) {
-			return glyphs.get((int) c).width;
-		}
-
-		@Override
-		public int getHeight(char c) {
-			return glyphs.get((int) c).height;
-		}
-
-		@Override
-		public int getHeight() {
-			return common.lineHeight;
-		}
-
-		@Override
-		public int getAdvance(char c) {
-			return glyphs.get((int) c).xadvance;
 		}
 
 		@Override
@@ -185,9 +168,40 @@ public class BMFont implements IFont, IResource, ISpecifier<IResource.ResourceSt
 			return info;
 		}
 
+		@Override
+		public float getWidth(String text, RenderContext context) {
+			return getTextDimensions(text, context).width;
+		}
+
+		@Override
+		public float getHeight(String text, RenderContext context) {
+			return getTextDimensions(text, context).height;
+		}
+
+		@Override
+		public float getWidth(char c, RenderContext context) {
+			return glyphs.get((int) c).width / context.user2Device().x;
+		}
+
+		@Override
+		public float getHeight(char c, RenderContext context) {
+			return glyphs.get((int) c).height / context.user2Device().y;
+		}
+
+		@Override
+		public float getHeight(RenderContext context) {
+			return common.lineHeight / context.user2Device().y;
+		}
+
+		@Override
+		public float getAdvance(char c, RenderContext context) {
+			return glyphs.get((int) c).xadvance / context.user2Device().x;
+		}
+
 	}
 
 	public FontSpecifics getFontSpecifics() {
+		validate();
 		return new SpecificsImpl();
 	}
 
@@ -217,7 +231,14 @@ public class BMFont implements IFont, IResource, ISpecifier<IResource.ResourceSt
 
 	@Override
 	public Glyph getGlyph(int charCode) {
+		validate();
 		return glyphs.get(charCode);
+	}
+
+	@Override
+	public Texture getFontTextureFor(Glyph character) {
+		validate();
+		return pages.get(character.page);
 	}
 
 }

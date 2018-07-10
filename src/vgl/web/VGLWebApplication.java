@@ -8,6 +8,8 @@ import com.vgl.gwtreq.client.VGWT;
 
 import vgl.audio.Sound;
 import vgl.core.exception.VGLException;
+import vgl.core.gfx.Color;
+import vgl.core.internal.Checks;
 import vgl.core.internal.GlobalDetails;
 import vgl.main.Application;
 import vgl.main.VGL;
@@ -33,6 +35,7 @@ abstract public class VGLWebApplication extends Application {
 		context.set();
 		WebGLExtensions.tryEnableAll();
 		initGlobals();
+		Checks.__setglinit(true);
 		try {
 			init();
 		} catch (VGLException e) {
@@ -64,6 +67,7 @@ abstract public class VGLWebApplication extends Application {
 	
 	@Override
 	public void startApplication() {
+		VGL.display.setClearColor(Color.BLACK);
 		VGWT.requestAnimation();
 	}
 

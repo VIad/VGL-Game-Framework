@@ -2,6 +2,7 @@ package vgl.web.audio;
 
 import com.shc.gwtal.client.openal.AL;
 import com.shc.gwtal.client.openal.AL10;
+import com.shc.gwtal.client.openal.ALCCapabilities;
 import com.shc.gwtal.client.openal.ALContext;
 import com.shc.gwtal.client.webaudio.AudioContext;
 import com.shc.gwtal.client.webaudio.AudioContextException;

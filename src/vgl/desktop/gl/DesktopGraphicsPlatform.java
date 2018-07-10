@@ -1,5 +1,7 @@
 package vgl.desktop.gl;
 
+import java.util.Arrays;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL15;
@@ -8,6 +10,7 @@ import org.lwjgl.opengl.GL30;
 
 import vgl.core.buffers.MemoryBuffer;
 import vgl.core.gfx.shader.ShaderType;
+import vgl.main.VGL;
 import vgl.platform.IGraphicsPlatorm;
 import vgl.platform.gl.GLBufferTarget;
 import vgl.platform.gl.GLPrimitiveMode;
@@ -17,12 +20,26 @@ public class DesktopGraphicsPlatform implements IGraphicsPlatorm {
 
 	@Override
 	public int glGenVertexArray() {
-		return GL30.glGenVertexArrays();
+		try {
+			return GL30.glGenVertexArrays();
+		} finally {
+			int glError = VGL.api_gfx.glGetError();
+			if (glError != GL11.GL_NO_ERROR) {
+				VGL.logger.critical("GL_ERROR >> " + glError);
+			}
+		}
 	}
 
 	@Override
 	public int glGenBuffer() {
-		return GL15.glGenBuffers();
+		try {
+			return GL15.glGenBuffers();
+		} finally {
+			int glError = VGL.api_gfx.glGetError();
+			if (glError != GL11.GL_NO_ERROR) {
+				VGL.logger.critical("GL_ERROR >> " + glError);
+			}
+		}
 	}
 
 	@Override
@@ -37,17 +54,31 @@ public class DesktopGraphicsPlatform implements IGraphicsPlatorm {
 
 	@Override
 	public void glBindBuffer(GLBufferTarget target, int buffer) {
-		GL15.glBindBuffer(target.nativeGL(), buffer);
+		glBindBuffer(target.nativeGL(), buffer);
 	}
 
 	@Override
 	public void glBindBuffer(int target, int buffer) {
-		GL15.glBindBuffer(target, buffer);
+		try {
+			GL15.glBindBuffer(target, buffer);
+		} finally {
+			int glError = VGL.api_gfx.glGetError();
+			if (glError != GL11.GL_NO_ERROR) {
+				VGL.logger.critical("GL_ERROR [glBindBuffer(target,I)] >> " + glError);
+			}
+		}
 	}
 
 	@Override
 	public void glBindVertexArray(int vao) {
-		GL30.glBindVertexArray(vao);
+		try {
+			GL30.glBindVertexArray(vao);
+		} finally {
+			int glError = VGL.api_gfx.glGetError();
+			if (glError != GL11.GL_NO_ERROR) {
+				VGL.logger.critical("GL_ERROR [glBindVao(vao)] >> " + glError);
+			}
+		}
 	}
 
 	@Override
@@ -129,9 +160,7 @@ public class DesktopGraphicsPlatform implements IGraphicsPlatorm {
 	public void glTexImage2D(int target, int level, int internalF, int width, int height, int border, int format,
 	        int type, MemoryBuffer data) {
 		GL11.glTexImage2D(target, level, internalF, width, height, border, format, type,
-				data != null ? 
-		        ((java.nio.ByteBuffer) data.nativeBufferDetails().getBuffer()) 
-		        : null);
+		        data != null ? ((java.nio.ByteBuffer) data.nativeBufferDetails().getBuffer()) : null);
 	}
 
 	@Override
@@ -316,8 +345,7 @@ public class DesktopGraphicsPlatform implements IGraphicsPlatorm {
 
 	@Override
 	public void glDeleteShader(int... shaders) {
-		for (int shader : shaders)
-			GL20.glDeleteShader(shader);
+		Arrays.stream(shaders).forEach(GL20::glDeleteShader);
 	}
 
 	@Override
@@ -368,6 +396,51 @@ public class DesktopGraphicsPlatform implements IGraphicsPlatorm {
 	@Override
 	public void glBufferData(int target, int[] data, int usage) {
 		GL15.glBufferData(target, data, usage);
+	}
+
+	@Override
+	public int glGenRenderbuffer() {
+		return GL30.glGenRenderbuffers();
+	}
+
+	@Override
+	public void glBindRenderbuffer(int target, int renderBuffer) {
+		 GL30.glBindRenderbuffer(target, renderBuffer);
+	}
+
+	@Override
+	public void glDeleteRenderbuffer(int renderBufferID) {
+		GL30.glDeleteRenderbuffers(renderBufferID);
+	}
+
+	@Override
+	public int glGetRenderbufferParameteri(int target, int pname) {
+		return GL30.glGetRenderbufferParameteri(target, pname);
+	}
+
+	@Override
+	public void glRenderbufferStorage(int target, int internalFormat, int width, int height) {
+		GL30.glRenderbufferStorage(target, internalFormat, width, height);
+	}
+
+	@Override
+	public void glFramebufferRenderbuffer(int target, int attachment, int renderbuffertarget, int renderbuffer) {
+		GL30.glFramebufferRenderbuffer(target, attachment, renderbuffertarget, renderbuffer);
+	}
+
+	@Override
+	public int glCheckFramebufferStatus(int target) {
+		return GL30.glCheckFramebufferStatus(target);
+	}
+
+	@Override
+	public void glBindFramebuffer(int target, int fbo) {
+		GL30.glBindFramebuffer(target, fbo);
+	}
+
+	@Override
+	public void glFramebufferTexture2D(int target, int attachment, int textarget, int texture, int level) {
+		GL30.glFramebufferTexture2D(target, attachment, textarget, texture, level);
 	}
 
 }

@@ -1,18 +1,18 @@
 package vgl.desktop;
 
+import org.lwjgl.glfw.GLFW;
+
 import vgl.core.exception.VGLException;
 import vgl.core.internal.GlobalDetails;
 import vgl.desktop.audio.DesktopAudioPlatform;
 import vgl.desktop.gl.DesktopGraphicsPlatform;
 import vgl.desktop.input.DesktopInputSystem;
-import vgl.desktop.input.Keyboard;
-import vgl.desktop.input.Mouse;
 import vgl.desktop.io.DesktopIOSystem;
 import vgl.desktop.utils.DesktopLogger;
 import vgl.desktop.utils.DesktopPromptLogger;
 import vgl.main.Application;
 import vgl.main.VGL;
-import vgl.platform.AbstractDisplayDevice;
+import vgl.maths.vector.Vector2i;
 import vgl.platform.Platform;
 
 abstract public class VGLApplication extends Application {
@@ -73,6 +73,14 @@ abstract public class VGLApplication extends Application {
 	public final void setVerticalSynchronized(boolean vsync) {
 		VGL.display.setVsync(vsync);
 		this.vsync = vsync;
+	}
+	
+	public final void setPosition(Vector2i pos) {
+		setPosition(pos.x, pos.y);
+	}
+	
+	public final void setPosition(int x, int y) {
+		((Window) VGL.display).setPosition(x, y);
 	}
 	
 	//TODO ADD UPDATING WINDOW

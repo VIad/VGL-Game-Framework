@@ -1,9 +1,11 @@
 package vgl.core.gfx.shader;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import vgl.core.internal.GlobalDetails;
 import vgl.platform.Platform;
@@ -19,11 +21,11 @@ public class ShaderTokener {
 		this.fs = translate(fs, ShaderType.FRAGMENT);
 		// begin();
 	}
-	
+
 	public String getVertexSourceSafe() {
 		return vs;
 	}
-	
+
 	public String getFragmentSourceSafe() {
 		return fs;
 	}
@@ -38,7 +40,7 @@ public class ShaderTokener {
 		return new AttributeDeclaration(
 		        0,
 		        lineSpl[lineSpl.length - 1].substring(0, lineSpl[lineSpl.length - 1].length() - 1),
-		        ShaderAttributeType.parse(lineSpl[lineSpl.length - 2]));
+		        ShaderVariableType.parse(lineSpl[lineSpl.length - 2]));
 	}
 
 	public static int getLocation(String line) {
@@ -54,10 +56,10 @@ public class ShaderTokener {
 
 	public static class AttributeDeclaration {
 		private String				name;
-		private ShaderAttributeType	type;
+		private ShaderVariableType	type;
 		private int					index;
 
-		public AttributeDeclaration(int index, String name, ShaderAttributeType type) {
+		public AttributeDeclaration(int index, String name, ShaderVariableType type) {
 			super();
 			this.index = index;
 			this.name = name;
@@ -72,7 +74,7 @@ public class ShaderTokener {
 			return name;
 		}
 
-		public ShaderAttributeType getType() {
+		public ShaderVariableType getType() {
 			return type;
 		}
 
@@ -198,6 +200,8 @@ public class ShaderTokener {
 		return translate(shaderSrc, type, GlobalDetails.getPlatform());
 	}
 
+	private HashMap<String, String> blockTypeToVariable = new HashMap<>();
+
 	public String translate(String shaderSrc, ShaderType type, Platform to) {
 		StringBuilder src = new StringBuilder();
 
@@ -221,6 +225,7 @@ public class ShaderTokener {
 			List<String> blockVariables = new ArrayList<>();
 			List<String> blockPrefixes = new ArrayList<>();
 			String blockName = null;
+			String blockDataType = null;
 			String outColor = null;
 			int blockType = 0;
 			for (String s : lines) {
@@ -228,16 +233,7 @@ public class ShaderTokener {
 
 				if (lineActual.contains("precision"))
 					continue;
-				if (type == ShaderType.FRAGMENT) {
-					if (outColor != null && s.contains(outColor)) {
-						lineActual = s.replaceAll(outColor, "g_FragColor");
-					}
-					if (s.contains("out vec4")) {
-						String outColorWS = s.split("\\s")[2];
-						outColor = outColorWS.substring(0, outColorWS.length() - 1);
-						lineActual = "out vec4 g_FragColor;\n";
-					}
-				}
+
 				lineActual = lineActual.startsWith("varying")
 				        ? lineActual.replaceAll("varying", type == ShaderType.VERTEX ? "out" : "in")
 				        : lineActual;
@@ -252,17 +248,21 @@ public class ShaderTokener {
 				if (isAttributeBlockHeader("in", lineActual, shaderSrcActual)) {
 					block = true;
 					blockType = 1;// In
+					blockDataType = getBlockDataType(lineActual);
 					continue;
 				}
 				if (isAttributeBlockHeader("out", lineActual, shaderSrcActual)) {
 					block = true;
 					blockType = 2;
+					blockDataType = getBlockDataType(lineActual);
 					continue;
 				}
 				if (getAttributeBlockFooter(lineActual) != null) {
 					block = false;
 					blockName = getAttributeBlockFooter(lineActual);
 					blockPrefixes.add(blockName);
+					blockTypeToVariable.put(blockName, blockDataType);
+					blockDataType = null;
 					final int bType = blockType;
 					blockType = 0;
 					for (String bv : blockVariables) {
@@ -297,11 +297,31 @@ public class ShaderTokener {
 				if (!lineEmpty(lineActual))
 					src.append(lineActual.trim()).append('\n');
 			}
-			String s = src.toString();
-			for (String bp : blockPrefixes) {
-				s = s.replaceAll(bp + ".", bp + "_");
-			}
-			return s;
+//			String s = src.toString();
+//			System.out.println("heer : "+s);
+//			src = new StringBuilder();
+//			for (String bp : blockPrefixes) {
+//				s = s.replaceAll(bp + ".", bp + "_");
+//				s = s.replaceAll(bp + "_", "pass_" + blockTypeToVariable.get(bp) + "_");
+//				for (String lineActual : s.split("\n")) {
+//					if (type == ShaderType.FRAGMENT) {
+//						if (outColor != null && lineActual.contains(outColor)) {
+//							
+//						}
+//						if (lineActual.contains("out vec4")) {
+//							
+//							String outColorWS = readSized(lineActual, "out vec4", ";").trim();
+//							// outColor = outColorWS.substring(0, outColorWS.length() - 1);
+//							System.out.println(outColorWS);
+//							outColor = outColorWS.trim();
+//							lineActual = "out vec4 g_CB_clr_output_rgb;\n";
+//						}
+//					}
+//					src.append(lineActual.trim())
+//					   .append('\n');
+//				}
+//			}
+			return src.toString();
 		} else {
 			if (!shaderSrcActual.contains("precision"))
 				src.append("precision highp float;\n");
@@ -314,8 +334,8 @@ public class ShaderTokener {
 					if (outColor != null && s.contains(outColor)) {
 						lineActual = lineActual.replaceAll(outColor, "gl_FragColor");
 					}
-					if (s.contains("out vec4")) {
-						String outColorWS = s.split("\\s")[2];
+					if (lineActual.contains("out vec4")) {
+						String outColorWS = lineActual.split("\\s")[2];
 						outColor = outColorWS.substring(0, outColorWS.length() - 1);
 						lineActual = "";
 					}
@@ -347,6 +367,7 @@ public class ShaderTokener {
 					src.append(lineActual.trim()).append('\n');
 			}
 		}
+
 		return src.toString();
 	}
 
@@ -360,6 +381,18 @@ public class ShaderTokener {
 		}
 	}
 
+	private static String readSized(String input, String start, String end) {
+		return input.substring(input.indexOf(start) + start.length(), input.indexOf(end));
+	}
+
+	private String getBlockDataType(String line) {
+		String[] l = line.split("\\s");
+		if (l[1].endsWith("{")) {
+			return l[1].substring(0, l[1].length() - 1).trim();
+		}
+		return l[1].trim();
+	}
+
 	private String getAttributeBlockFooter(String lineActual) {
 		String[] line = lineActual.split("\\s");
 		return line.length != 2
@@ -369,12 +402,12 @@ public class ShaderTokener {
 
 	private boolean isStandartAttributeDeclaration(String plat, String line) {
 		String[] l = line.split("\\s");
-		return l.length == 3 && l[0].trim().equals(plat) && ShaderAttributeType.exists(l[1].trim());
+		return l.length == 3 && l[0].trim().equals(plat) && ShaderVariableType.exists(l[1].trim());
 	}
 
 	private String getIfStandartVariableDeclaration(String line) {
 		String[] l = line.split("\\s");
-		return l.length != 2 ? null : !ShaderAttributeType.exists(l[0]) ? null : line;
+		return l.length != 2 ? null : !ShaderVariableType.exists(l[0]) ? null : line;
 	}
 
 	private boolean isAttributeBlockHeader(String blockType, String line, String shaderSrcActual) {

@@ -3,6 +3,8 @@ package vgl.desktop.input;
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
 
+import org.lwjgl.glfw.GLFW;
+
 import vgl.desktop.DesktopContext;
 import vgl.desktop.Window;
 import vgl.main.VGL;

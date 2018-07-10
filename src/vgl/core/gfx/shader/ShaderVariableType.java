@@ -5,7 +5,7 @@ import java.util.Arrays;
 import vgl.core.exception.VGLGraphicsException;
 import vgl.tools.functional.Functional;
 
-public enum ShaderAttributeType {
+public enum ShaderVariableType {
 	
 	INT("int", 4),
 	FLOAT("float", 4),
@@ -13,7 +13,7 @@ public enum ShaderAttributeType {
 	VEC3("vec3", 12),
 	VEC4("vec4", 16);
 	
-	private ShaderAttributeType(String name, int byteSize) {
+	private ShaderVariableType(String name, int byteSize) {
 		this.byteSize = byteSize;
 		this.glName = name;
 	}
@@ -30,7 +30,7 @@ public enum ShaderAttributeType {
 		return glName;
 	}
 	
-	public static ShaderAttributeType parse(String name) {
+	public static ShaderVariableType parse(String name) {
 		return Arrays.stream(values())
 				     .filter(type -> type.glName.equals(name))
 				     .findFirst()
@@ -40,9 +40,7 @@ public enum ShaderAttributeType {
 	
 	public static boolean exists(String var) {
 		return  Arrays.stream(values())
-			     .filter(type -> type.glName.equals(var))
-			     .findFirst()
-			     .orElse(null) != null;
+			          .anyMatch(value -> value.glName.equals(var));
 	}
 	
 	

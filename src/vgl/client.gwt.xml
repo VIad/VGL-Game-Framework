@@ -25,14 +25,7 @@
 		<exclude name="**/DesktopResourceLoader.java" />
 		<exclude name="**/Reflection.java" />
 	</source>
-	<source path='core/annotation'></source>
-	<source path='core/audio'></source>
-	<source path='core/buffers'></source>
-	<source path='core/exception'></source>
-	<source path='core/geom'></source>
-	<source path='core/gfx'></source>
-	<source path='core/internal'></source>
-	<source path='core/input'></source>
+	<source path ='core'></source>
 	<source path='audio'></source>
 	<source path='main'></source>
 	<source path='maths'></source>

@@ -13,6 +13,8 @@ abstract public class AbstractDisplayDevice {
 	private boolean displayFps;
 	protected boolean vsync, fullscreen;
 	protected boolean resizable;
+	
+	int lastFps;
 
 	public AbstractDisplayDevice(String title ,int width, int height, boolean vsync, boolean fullscreen) {
 		this.width = width;
@@ -36,6 +38,10 @@ abstract public class AbstractDisplayDevice {
 
 	public int getWidth() {
 		return width;
+	}
+	
+	public int getFramesPerSecond() {
+		return lastFps;
 	}
 
 	public int getHeight() {

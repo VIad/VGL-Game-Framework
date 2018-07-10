@@ -5,7 +5,6 @@ import java.util.Arrays;
 import com.google.gwt.xhr.client.XMLHttpRequest;
 import com.vgl.gwtreq.client.GWTArrayBuffer;
 
-import jdk.nashorn.internal.parser.Lexer.XMLToken;
 import vgl.core.buffers.MemoryBuffer;
 import vgl.core.exception.VGLIOException;
 import vgl.core.exception.VGLRuntimeException;
@@ -49,6 +48,7 @@ public class WebIOSystem extends IOSystem {
 		XMLHttpRequest request = XMLHttpRequest.create();
 		request.open("GET", file.absolutePath());
 		request.setResponseType(XMLHttpRequest.ResponseType.Default);
+		request.setRequestHeader("Content-Type", "text/plain;charset=UTF-8");
 		request.setOnReadyStateChange(xhr -> {
 			if (request.getReadyState() == XMLHttpRequest.DONE) {
 				if (request.getStatus() == 200) {

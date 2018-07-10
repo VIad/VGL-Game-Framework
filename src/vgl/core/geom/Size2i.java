@@ -5,10 +5,9 @@ public class Size2i {
 	public int width, height;
 
 	public Size2i(Size2i other) {
-		this(other.width,
-		     other.height);
+		this(other.width, other.height);
 	}
-	
+
 	public Size2i() {
 		this(0, 0);
 	}
@@ -17,11 +16,11 @@ public class Size2i {
 		this.width = width;
 		this.height = height;
 	}
-	
+
 	public int getHeight() {
 		return height;
 	}
-	
+
 	public int getWidth() {
 		return width;
 	}
@@ -50,7 +49,10 @@ public class Size2i {
 			return false;
 		return true;
 	}
-	
-	
+
+	@Override
+	public String toString() {
+		return "Size2i [width=" + width + ", height=" + height + "]";
+	}
 
 }

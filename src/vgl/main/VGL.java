@@ -1,6 +1,7 @@
 package vgl.main;
 
 import vgl.core.audio.IAudioPlatform;
+import vgl.core.events.EventFeedback;
 import vgl.core.input.IPlatformInputDevice;
 import vgl.core.internal.ErrorChannel;
 import vgl.platform.AbstractDisplayDevice;
@@ -25,11 +26,17 @@ public class VGL {
 	 * Used for platform independent OpenAL calls
 	 */
 	public static IAudioPlatform		api_afx;
-
+	/**
+	 * The application object, meant as read onlu
+	 */
 	public static Application			app;
-
+	/**
+	 * Reference of the platform independent display device
+	 */
 	public static AbstractDisplayDevice	display;
-
+	/**
+	 * Methods for receiving cross-platform file I/O and other utilities
+	 */
 	public static IOSystem				io;
 
 	public static IPlatformInputDevice	input;
@@ -39,10 +46,10 @@ public class VGL {
 	public static ILogger				logger;
 
 	public static IPromptLogger			promptLogger;
+	
+	public static EventFeedback         eventController;
 
 	public static ErrorChannel			errorChannel;
-
 	public final static String			build	= "0.2a";
-	// IContext or st.h with pauseLoopMethod
 
 }

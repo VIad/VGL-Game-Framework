@@ -127,4 +127,10 @@ public class WebLogger implements ILogger {
 		$wnd.console.error(message);
 	}-*/;
 
+	@Override
+	public void setInternalLoggingPolicy(ILogger.InternalLogPolicy internalLogPolicy) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

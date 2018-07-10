@@ -129,4 +129,10 @@ public class DesktopLogger implements ILogger {
 		CRITICAL_PREFIX = "[VGL::CRITICAL]";
 		indent = "  ";
 	}
+
+	@Override
+	public void setInternalLoggingPolicy(ILogger.InternalLogPolicy internalLogPolicy) {
+		// TODO Auto-generated method stub
+		
+	}
 }

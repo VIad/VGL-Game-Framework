@@ -1,7 +1,7 @@
-package vgl.desktop.gfx.renderable;
+package vgl.core.gfx.renderable;
 
 import vgl.core.annotation.VGLInternal;
-import vgl.core.gfx.renderable.Renderable2D;
+import vgl.core.gfx.font.IFont;
 import vgl.desktop.gfx.font.VFont;
 import vgl.maths.vector.Vector2f;
 
@@ -11,11 +11,11 @@ public class TextRenderable extends Renderable2D {
 
 	private float	x, y;
 
-	private VFont	font;
+	private IFont	font;
 	private String	text;
 
 	@VGLInternal
-	public TextRenderable(String text, float x, float y, VFont font) {
+	public TextRenderable(String text, float x, float y, IFont font) {
 		this.text = text;
 		this.x = x;
 		this.y = y;
@@ -23,12 +23,12 @@ public class TextRenderable extends Renderable2D {
 	}
 
 	@VGLInternal
-	public TextRenderable(String text, Vector2f pos, VFont font) {
+	public TextRenderable(String text, Vector2f pos, IFont font) {
 		this(text, pos.x, pos.y, font);
 	}
 
 	@VGLInternal
-	public VFont getFont() {
+	public IFont getFont() {
 		return font;
 	}
 

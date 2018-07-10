@@ -1,9 +1,11 @@
 package vgl.core.gfx.gl;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
 
 import com.google.gwt.typedarrays.shared.ArrayBufferView;
 import com.google.gwt.typedarrays.shared.Uint8Array;
+import com.shc.webgl4j.client.WebGL10;
 
 import vgl.core.exception.VGLGraphicsException;
 import vgl.core.gfx.Image;
@@ -28,6 +30,10 @@ public class Texture implements IResource, ISpecifier<IResource.ResourceState>{
 	private static int currentlyActive;
 	
 	private ResourceState state;
+	
+	static {
+		currentlyActive = WebGL10.GL_TEXTURE0;
+	}
 	
 	public Texture(int width, int height) {
 		this.textureID = VGL.api_gfx.glGenTexture();
@@ -86,7 +92,7 @@ public class Texture implements IResource, ISpecifier<IResource.ResourceState>{
 	public static void setActiveTextureUnit(int textureUnit) {
 		if(currentlyActive == textureUnit)
 			return;
-		VGL.api_gfx.glActiveTexture(textureUnit);
+		VGL.api_gfx.glActiveTexture(GL13.GL_TEXTURE0 + textureUnit);
 		currentlyActive = textureUnit;
 	}
 	

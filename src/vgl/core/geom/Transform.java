@@ -98,7 +98,7 @@ public class Transform implements java.io.Serializable {
 	}
 
 	public Matrix4f toMatrix() {
-		return vgl.maths.vector.VectorMaths.transformationMatrix(this);
+		return currentTransformation;
 	}
 
 	public Vector3f scale() {

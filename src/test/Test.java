@@ -14,15 +14,18 @@ import vgl.core.gfx.Color;
 import vgl.core.gfx.Image;
 import vgl.core.gfx.camera.PerspectiveCamera;
 import vgl.core.gfx.font.BMFont;
+import vgl.core.gfx.gl.GPUBuffer;
 import vgl.core.gfx.gl.Texture;
+import vgl.core.gfx.render.SpriteBatchRenderer;
 import vgl.core.gfx.renderable.ColoredSprite;
 import vgl.core.gfx.renderable.ImageSprite;
 import vgl.core.gfx.renderable.Renderable2D;
 import vgl.core.gfx.shader.ShaderFactory;
 import vgl.core.gfx.shader.ShaderProgram;
+import vgl.core.gfx.shader.ShaderTokener;
 import vgl.desktop.VGLApplication;
 import vgl.desktop.gfx.font.VFont;
-import vgl.desktop.gfx.renderer.Renderer2D;
+import vgl.desktop.gfx.renderer.DirectGPUAccessRenderer2D;
 import vgl.desktop.input.Key;
 import vgl.desktop.input.Keyboard;
 import vgl.main.VGL;
@@ -30,13 +33,85 @@ import vgl.maths.Projection;
 import vgl.maths.vector.Matrix4f;
 import vgl.maths.vector.Vector3f;
 import vgl.maths.vector.VectorMaths;
+import vgl.platform.gl.Primitive;
 import vgl.utils.ResourceLoader;
 
 public class Test extends VGLApplication {
 
 	private static ShaderProgram			defaultShader;
-	private static Renderer2D				bRenderer;
+	private static SpriteBatchRenderer				bRenderer;
 	private static ArrayList<Renderable2D>	sprites;
+	
+	public static String vsBatch = "precision highp float;" + 
+			"\r\n" + 
+			"attribute vec3 positions;\r\n" + 
+			"attribute vec4 color;\r\n" + 
+			"attribute vec2 uvs;\r\n" + 
+			"attribute float texId;\r\n" + 
+			"\r\n" + 
+			"uniform mat4 transformationMatrix = mat4(1);\r\n" + 
+			"uniform mat4 projectionMatrix;\r\n" + 
+			"\r\n" + 
+			 
+			"varying vec3 fs_in_positions;\r\n" + 
+			"varying vec4 fs_in_color;\r\n" + 
+			"varying vec2 fs_in_uvs;\r\n" + 
+			"varying float fs_in_texId;\r\n" +  
+			"\r\n" + 
+			"\r\n" + 
+			"\r\n" + 
+			"void main(void){\r\n" + 
+			"  gl_Position = projectionMatrix * transformationMatrix * vec4(positions,1.0f);\r\n" + 
+			"  fs_in_positions = positions;\r\n" + 
+			"  fs_in_color = color;\r\n" + 
+			"  fs_in_uvs = uvs;\r\n" + 
+			"  fs_in_texId = texId;\r\n" + 
+			"}";
+	
+	public static String fsBatch = "precision highp float;" + 
+			"\r\n" + 
+			"\r\n" +  
+			"varying vec3 fs_in_positions;\r\n" + 
+			"varying vec4 fs_in_color;\r\n" + 
+			"varying vec2 fs_in_uvs;\r\n" + 
+			"varying float fs_in_texId;\r\n" +   
+			"\r\n" + 
+			"const float cIntensity = 0.7f;\r\n" + 
+			"uniform sampler2D textures_0;\r\n" + 
+			"uniform sampler2D textures_1;\r\n" +
+			"uniform sampler2D textures_2;\r\n" +
+			"uniform sampler2D textures_3;\r\n" +
+			"uniform sampler2D textures_4;\r\n" +
+			"uniform sampler2D textures_5;\r\n" +
+			"uniform sampler2D textures_6;\r\n" +
+			"uniform sampler2D textures_7;\r\n" +
+			"\r\n" + 
+			"void main(){\r\n" + 
+			"\r\n" + 
+			"    vec4 color = vec4(1.0);\n"+
+			"    color = fs_in_color;\r\n" + 
+			"    if(fs_in_texId > 0.0)\r\n" + 
+			"    {\r\n" + 
+			"       int tid = int(fs_in_texId - 0.5);\r\n" + 
+			"       if(tid == 0)\n "+
+			"       color = texture2D(textures_0, fs_in_uvs);\r\n" +
+			"       if(tid == 1)\n "+
+			"       color = texture2D(textures_1, fs_in_uvs);\r\n" + 
+			"       if(tid == 2)\n "+
+			"       color = texture2D(textures_2, fs_in_uvs);\r\n" + 
+			"       if(tid == 3)\n "+
+			"       color = texture2D(textures_3, fs_in_uvs);\r\n" + 
+			"       if(tid == 4)\n "+
+			"       color = texture2D(textures_4, fs_in_uvs);\r\n" + 
+			"       if(tid == 5)\n "+
+			"       color = texture2D(textures_5, fs_in_uvs);\r\n" + 
+			"       if(tid == 6)\n "+
+			"       color = texture2D(textures_6, fs_in_uvs);\r\n" + 
+			"       if(tid == 7)\n "+
+			"       color = texture2D(textures_7, fs_in_uvs);\r\n" + 
+			"    }\r\n" + 
+			"    gl_FragColor = color;"+
+			"}";
 
 	public Test(String title, int window_width, int window_height) {
 		super(title, window_width, window_height);
@@ -135,6 +210,7 @@ public class Test extends VGLApplication {
 		app.setResizable(true);
 		app.setFixedUpdateTimestamp(2f);
 		app.setUpdatesPerSecond(100);
+		app.setPosition(100, 100);
 		app.startApplication();
 	}
 
@@ -150,7 +226,6 @@ public class Test extends VGLApplication {
 
 		AudioSystem.initialize(100);
 		AudioManager.create();
-
 		// AudioManager.add("music", new Sound("resources/test_track.ogg"));
 		// AudioManager.reconfigure("music", 1f, 1f).play();
 		System.out.println("GL_VENDOR   : " + GL11.glGetString(GL11.GL_VENDOR));
@@ -167,6 +242,9 @@ public class Test extends VGLApplication {
 		// tex = new Texture("resources/1.png");
 		// tex2 = new Texture("resources/0.png");
 		// tex3 = new Texture("resources/1.jpg");
+		ShaderTokener tokener = new ShaderTokener(vsBatch, fsBatch);
+		System.out.println(vsBatch);
+//		System.out.println(tokener.getVertexSourceSafe());
 
 		ResourceLoader.get().loadTexture(VGL.io.file("resources/1.png"), texture -> tex = texture);
 		ResourceLoader.get().loadTexture(VGL.io.file("resources/0.png"), texture -> tex2 = texture);
@@ -177,11 +255,31 @@ public class Test extends VGLApplication {
 		ResourceLoader.get().begin();
 		VGL.display.setClearColor(Color.BLACK);
 
-		defaultShader = ShaderFactory.batch2DGLSL();
+//		defaultShader = ShaderFactory.batch2DGLSL();
+		defaultShader = new ShaderProgram(tokener.getVertexSourceSafe(),tokener.getFragmentSourceSafe()) {
+			
+			@Override
+			public void getAllUniformLocations() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void bindVertexShaderInputAttribs() {
+				
+			}
+		};
 		defaultShader.start();
-		
-		defaultShader.uniform1iv("textures", new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
-		        18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 });
+//		defaultShader.uniformInt("textures_0", 0);
+//		defaultShader.uniformInt("textures_1", 1);
+//		defaultShader.uniformInt("textures_2", 2);
+//		defaultShader.uniformInt("textures_3", 3);
+//		defaultShader.uniformInt("textures_4", 4);
+//		defaultShader.uniformInt("textures_5", 5);
+//		defaultShader.uniformInt("textures_6", 6);
+//		defaultShader.uniformInt("textures_7", 7);
+//		defaultShader.uniform1iv("textures", new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
+//		        18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 });
 		// projMat = Matrix4f.orthographic(0, 16, 9, 0, -1, 1);
 		// projMat = Maths.topLeftOrthographic(16, 9);
 		projMat = Projection.topLeftOrthographic(16, 9);
@@ -218,6 +316,8 @@ public class Test extends VGLApplication {
 				sprites.add(new ColoredSprite(new Color(rand.nextInt(0xffffff)), 0.04f, 0.04f));
 			}
 		}
+		
+//		sprites.add(new ImageSprite(tex));
 
 		// for (int i = 0; i < 200; i++) {
 		// for (int j = 0; j < 100; j++) {
@@ -235,7 +335,13 @@ public class Test extends VGLApplication {
 		// Color(rand.nextInt(0xffffff)),tex3));
 		font = new VFont(new Font("Times New Roman", Font.PLAIN, 100));
 
-		bRenderer = new Renderer2D();
+		bRenderer = new SpriteBatchRenderer(
+		        100000,
+		        new GPUBuffer.Layout()
+		                     .push(Primitive.FLOAT, 3)
+		                     .push(Primitive.FLOAT, 4)
+		                     .push(Primitive.FLOAT, 2)
+		                     .push(Primitive.FLOAT, 1));
 		sprites.add(new ColoredSprite(Color.LAVENDER, 5, 5));
 		sprites.add(new ColoredSprite(5, 5, new Color(rand.nextInt(0xffffff)), new Color(rand.nextInt(0xffffff))));
 		sprites.add(new ColoredSprite(
@@ -279,16 +385,16 @@ public class Test extends VGLApplication {
 
 		}
 		bRenderer.begin();
-		if (tex2 != null)
-			bRenderer.renderSprite(new ImageSprite(tex2), 5, 5, 5, 5,
-			        VectorMaths.translationMatrix(new Vector3f(-10f, 0f, 0f)).multiply(
-			                VectorMaths.rotationMatrix(0, 0, theta += 0.1f)));
+//		if (tex2 != null)
+//			bRenderer.buffer(new ImageSprite(tex2), 5, 5, 5, 5);
 		int index = 0;
 		for (float x = 0f; x < 16f; x += 0.05f) {
 			for (float y = 0f; y < 9f; y += 0.05f) {
-				bRenderer.renderSprite(sprites.get(index++), x, y);
+				bRenderer.draw(sprites.get(index++), x, y, 0.04f, 0.04f);
 			}
 		}
+		if(tex != null)
+		bRenderer.draw(new ImageSprite(tex), 5f, 15f, 5f, 5f);
 		//
 		// for (int i = 0; i < sprites.size(); i++) {
 		// if (i > 1)
@@ -298,9 +404,7 @@ public class Test extends VGLApplication {
 		// }
 		// bRenderer.drawText(randStr, 0, 10, font);
 		// bRenderer.drawText("0", 0, 0, font);
-		if(def_font != null) {
-		 bRenderer.drawText("The Sky\nTastes\nGood", 0, 7, def_font);
-//		 bRenderer.drawText("^\\gggggg", 0, 3, def_font);
+		if (def_font != null) {
 		}
 		bRenderer.end();
 		bRenderer.render();

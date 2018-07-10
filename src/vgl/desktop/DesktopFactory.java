@@ -1,6 +1,8 @@
 package vgl.desktop;
 
 import vgl.core.buffers.MemoryBuffer;
+import vgl.core.gfx.render.IRenderer2D;
+import vgl.desktop.gfx.renderer.DirectGPUAccessRenderer2D;
 import vgl.desktop.tools.DesktopResourceLoader;
 import vgl.desktop.utils.DesktopLogger;
 import vgl.platform.IFactory;
@@ -23,5 +25,12 @@ public class DesktopFactory implements IFactory {
 	public IResourceLoader createResourceLoader() {
 		return new DesktopResourceLoader();
 	}
+
+	@Override
+	public IRenderer2D newPlatformOptimalRenderer2D(int batchesHint) {
+		return new DirectGPUAccessRenderer2D(batchesHint);
+	}
+
+	
 
 }

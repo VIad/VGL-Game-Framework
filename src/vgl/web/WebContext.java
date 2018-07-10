@@ -71,6 +71,7 @@ public class WebContext extends AbstractContext<VGLWebApplication> implements IP
 			VGL.input.updateDeltas();
 			if ((System.currentTimeMillis() - last) > 1000) {
 				last += 1000;
+				setFPS(fps);
 				if (VGL.display.isDisplayingFps())
 					VGL.logger.info("FPS : " + fps + ", UPS : " + ups);
 				fps = ups = 0;
@@ -80,6 +81,8 @@ public class WebContext extends AbstractContext<VGLWebApplication> implements IP
 				application.fixedUpdate();
 			}
 			loopEnd();
+			ProcessManager.get()
+			              .runOnRender();
 			application.render();
 			fps++;
 		} catch (VGLException e) {
@@ -120,11 +123,6 @@ public class WebContext extends AbstractContext<VGLWebApplication> implements IP
 		WebGL10.glClear(WebGL10.GL_COLOR_BUFFER_BIT | WebGL10.GL_DEPTH_BUFFER_BIT);
 	}
 
-	@Override
-	protected void platformSpecificRender() {
-		// TODO Auto-generated method stub
-	}
-
 	public void set() {
 		wglContext.makeCurrent();
 	}
@@ -140,12 +138,6 @@ public class WebContext extends AbstractContext<VGLWebApplication> implements IP
 
 	public CanvasDetails getCanvasDetails() {
 		return details;
-	}
-
-	@Override
-	protected void platformSpecificUpdate() {
-		// TODO Auto-generated method stub
-
 	}
 
 }

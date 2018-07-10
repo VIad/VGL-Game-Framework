@@ -32,6 +32,14 @@ abstract public class Buffers {
 		}
 		return buffer;
 	}
+	
+	public static byte[] toByteArray(MemoryBuffer buffer) {
+		byte[] bytes = new byte[buffer.capacity()];
+		for(int i = 0; i < buffer.capacity(); i++) {
+			bytes[i] = buffer.readByte(i);
+		}
+		return bytes;
+	}
 
 	public static void wrap(MemoryBuffer memBuffer, Matrix4f matrix) {
 		memBuffer.putFloat(0, matrix.m00);

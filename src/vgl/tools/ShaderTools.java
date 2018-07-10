@@ -2,7 +2,7 @@ package vgl.tools;
 
 import java.util.Arrays;
 
-import vgl.core.gfx.shader.ShaderAttributeType;
+import vgl.core.gfx.shader.ShaderVariableType;
 import vgl.core.gfx.shader.ShaderCompiler;
 import vgl.core.gfx.shader.ShaderTokener;
 import vgl.core.gfx.shader.ShaderTokener.AttributeDeclaration;

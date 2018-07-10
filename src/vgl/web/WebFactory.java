@@ -1,7 +1,11 @@
 package vgl.web;
 
 import vgl.core.buffers.MemoryBuffer;
+import vgl.core.gfx.gl.GPUBuffer;
+import vgl.core.gfx.render.IRenderer2D;
+import vgl.core.gfx.render.SpriteBatchRenderer;
 import vgl.platform.IFactory;
+import vgl.platform.gl.Primitive;
 import vgl.platform.io.FileDetails;
 import vgl.platform.logging.ILogger;
 import vgl.tools.IResourceLoader;
@@ -24,6 +28,11 @@ public class WebFactory implements IFactory {
 	@Override
 	public IResourceLoader createResourceLoader() {
 		return new WebResourceLoader();
+	}
+
+	@Override
+	public IRenderer2D newPlatformOptimalRenderer2D(int batchesHint) {
+		return new SpriteBatchRenderer(batchesHint, SpriteBatchRenderer.STD_BATCH_LAYOUT);
 	}
 
 }
