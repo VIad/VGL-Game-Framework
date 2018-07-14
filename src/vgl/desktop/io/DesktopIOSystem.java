@@ -68,11 +68,6 @@ public class DesktopIOSystem extends IOSystem {
 	}
 
 	@Override
-	public FileDetails file(String file) {
-		return new DesktopFileDetails(file);
-	}
-
-	@Override
 	public void memset(MemoryBuffer buffer, int data) {
 		MemoryUtil.memSet(((ByteBuffer) buffer.nativeBufferDetails().getBuffer()), data);
 	}

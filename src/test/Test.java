@@ -246,10 +246,10 @@ public class Test extends VGLApplication {
 		System.out.println(vsBatch);
 //		System.out.println(tokener.getVertexSourceSafe());
 
-		ResourceLoader.get().loadTexture(VGL.io.file("resources/1.png"), texture -> tex = texture);
-		ResourceLoader.get().loadTexture(VGL.io.file("resources/0.png"), texture -> tex2 = texture);
-		ResourceLoader.get().loadTexture(VGL.io.file("resources/1.jpg"), texture -> tex3 = texture);
-		ResourceLoader.get().loadFont(VGL.io.file("resources/fonts/font_test.fnt"), font -> {
+		ResourceLoader.get().loadTexture(VGL.files.resource("resources/1.png"), texture -> tex = texture);
+		ResourceLoader.get().loadTexture(VGL.files.resource("resources/0.png"), texture -> tex2 = texture);
+		ResourceLoader.get().loadTexture(VGL.files.resource("resources/1.jpg"), texture -> tex3 = texture);
+		ResourceLoader.get().loadFont(VGL.files.resource("resources/fonts/font_test.fnt"), font -> {
 			def_font = font;
 		});
 		ResourceLoader.get().begin();

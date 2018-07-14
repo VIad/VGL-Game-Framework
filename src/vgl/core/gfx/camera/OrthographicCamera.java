@@ -2,10 +2,10 @@ package vgl.core.gfx.camera;
 
 import java.awt.Graphics2D;
 
-import vgl.core.geom.RectFloat;
-import vgl.core.geom.Size2f;
-import vgl.core.geom.Transform2D;
 import vgl.core.gfx.shader.ShaderProgram;
+import vgl.maths.geom.Size2f;
+import vgl.maths.geom.Transform2D;
+import vgl.maths.geom.shape2d.RectFloat;
 import vgl.maths.vector.Vector2f;
 
 public class OrthographicCamera {

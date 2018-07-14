@@ -4,7 +4,7 @@ import vgl.core.buffers.MemoryBufferFloat;
 import vgl.maths.vector.Vector4f;
 
 public final class Color implements java.io.Serializable, Comparable<Color> {
-
+	
 	/**
 	 *
 	 */

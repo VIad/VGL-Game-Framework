@@ -2,6 +2,7 @@ package vgl.core.gfx.renderable;
 
 
 import vgl.core.gfx.gl.Texture;
+import vgl.maths.geom.Size2f;
 import vgl.maths.vector.Vector2f;
 
 public class ImageSprite extends Renderable2D {
@@ -11,7 +12,7 @@ public class ImageSprite extends Renderable2D {
 
 	public ImageSprite(Texture texture) {
 		this.tex = texture;
-		this.size = new Vector2f(texture.getWidth(), texture.getHeight());
+		this.size = new Size2f(texture.getWidth(), texture.getHeight());
 		this.UVs = defaultUVS();
 	}
 

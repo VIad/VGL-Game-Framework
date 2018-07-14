@@ -1,6 +1,6 @@
 package vgl.maths.vector;
 
-import vgl.core.geom.Transform2D;
+import vgl.maths.geom.Transform2D;
 
 //============================================================================
 //Name        : VectorMaths
@@ -52,7 +52,7 @@ public class VectorMaths {
 		return matrix;
 	}
 
-	public static Matrix4f transformationMatrix(final vgl.core.geom.Transform transform) {
+	public static Matrix4f transformationMatrix(final vgl.maths.geom.Transform transform) {
 		return transformationMatrix(transform.position(),
 		        transform.rotationX(),
 		        transform.rotationY(),

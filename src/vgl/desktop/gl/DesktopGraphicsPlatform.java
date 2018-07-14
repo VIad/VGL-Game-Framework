@@ -1,6 +1,8 @@
 package vgl.desktop.gl;
 
 import java.util.Arrays;
+import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
@@ -18,55 +20,58 @@ import vgl.platform.gl.GLTextureType;
 
 public class DesktopGraphicsPlatform implements IGraphicsPlatorm {
 
-	@Override
-	public int glGenVertexArray() {
-		try {
-			return GL30.glGenVertexArrays();
-		} finally {
-			int glError = VGL.api_gfx.glGetError();
-			if (glError != GL11.GL_NO_ERROR) {
-				VGL.logger.critical("GL_ERROR >> " + glError);
+	private boolean shouldTest() {
+		return true;
+	}
+	
+	private <T> T runGLMethod(BooleanSupplier condition,String methodName, Supplier<T> action) {
+		if (condition.getAsBoolean()) {
+			try {
+				return action.get();
+			} finally {
+				int glError = VGL.api_gfx.glGetError();
+				if (glError != GL11.GL_NO_ERROR)
+					VGL.logger.critical("GL_ERROR @ " + methodName + " >> " + glError);
 			}
 		}
+		return action.get();
+	}
+	
+	private void runGLVoidMethod(BooleanSupplier condition, String methodName, Runnable action) {
+		runGLMethod(condition, methodName, () -> {
+			action.run();
+			return null;
+		});
+	}
+	
+	@Override
+	public int glGenVertexArray() {
+		return runGLMethod(this::shouldTest, "genVAO", GL30::glGenVertexArrays);
 	}
 
 	@Override
 	public int glGenBuffer() {
-		try {
-			return GL15.glGenBuffers();
-		} finally {
-			int glError = VGL.api_gfx.glGetError();
-			if (glError != GL11.GL_NO_ERROR) {
-				VGL.logger.critical("GL_ERROR >> " + glError);
-			}
-		}
+		return runGLMethod(this::shouldTest, "glGenBuffer", GL15::glGenBuffers);
 	}
 
 	@Override
 	public int glGenFramebuffer() {
-		return GL30.glGenFramebuffers();
+		return runGLMethod(this::shouldTest, "glGenFBO", GL30::glGenFramebuffers);
 	}
 
 	@Override
 	public int glGenTexture() {
-		return GL11.glGenTextures();
+		return runGLMethod(this::shouldTest, "glGenTexture", GL11::glGenTextures);
 	}
 
 	@Override
 	public void glBindBuffer(GLBufferTarget target, int buffer) {
-		glBindBuffer(target.nativeGL(), buffer);
+		runGLVoidMethod(this::shouldTest, "glBindBuffer", () -> GL15.glBindBuffer(target.nativeGL(), buffer));
 	}
 
 	@Override
 	public void glBindBuffer(int target, int buffer) {
-		try {
-			GL15.glBindBuffer(target, buffer);
-		} finally {
-			int glError = VGL.api_gfx.glGetError();
-			if (glError != GL11.GL_NO_ERROR) {
-				VGL.logger.critical("GL_ERROR [glBindBuffer(target,I)] >> " + glError);
-			}
-		}
+		runGLVoidMethod(this::shouldTest, "glBindBuffer", () -> GL15.glBindBuffer(target, buffer));
 	}
 
 	@Override
@@ -441,6 +446,11 @@ public class DesktopGraphicsPlatform implements IGraphicsPlatorm {
 	@Override
 	public void glFramebufferTexture2D(int target, int attachment, int textarget, int texture, int level) {
 		GL30.glFramebufferTexture2D(target, attachment, textarget, texture, level);
+	}
+
+	@Override
+	public int glGetProgrami(int program, int flag) {
+		return GL20.glGetProgrami(program, flag);
 	}
 
 }

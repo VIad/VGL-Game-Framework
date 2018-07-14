@@ -1,9 +1,9 @@
 package vgl.core.gfx.font;
 
 import vgl.core.annotation.VGLInternal;
-import vgl.core.geom.Size2f;
-import vgl.core.geom.Size2i;
 import vgl.core.gfx.render.RenderContext;
+import vgl.maths.geom.Size2f;
+import vgl.maths.geom.Size2i;
 
 public interface FontSpecifics {
 

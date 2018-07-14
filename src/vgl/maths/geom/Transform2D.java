@@ -1,4 +1,4 @@
-package vgl.core.geom;
+package vgl.maths.geom;
 
 import vgl.maths.vector.Matrix4f;
 import vgl.maths.vector.Vector2f;
@@ -81,6 +81,7 @@ public class Transform2D {
 		this.self.multiply(Matrix4f.rotation(angDegAmnt, Vector3f.TO_POSITIVE_Z));
 		return this;
 	}
+
 
 	public Matrix4f toMatrix() {
 		return self;

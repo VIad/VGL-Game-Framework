@@ -1,4 +1,4 @@
-package vgl.core.geom;
+package vgl.maths.geom;
 
 public class Size2i {
 

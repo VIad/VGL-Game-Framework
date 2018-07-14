@@ -1,4 +1,4 @@
-package vgl.core.geom;
+package vgl.maths.geom;
 
 import vgl.maths.vector.Matrix4f;
 import vgl.maths.vector.Vector3f;

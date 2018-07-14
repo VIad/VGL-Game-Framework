@@ -11,18 +11,17 @@ package vgl.maths.vector;
 
 /**
  * 
- * @author vgl
- * <br><br>
- * Most methods of the class return a pointer to this, allowing for chained mathematical operations such as <br>
- * <code> vec.add(new Vector2f(10,15).multiply(3)); </code>
- * <br>
- * <strong> Note : none of the methods instead of <code> copy </code> create any new object, but return a pointer to this, so if you
- * would like to keep your original vector after an operation, just place a <code> .copy() </code> before you execute an operation
- * <br>
- * eg:
- * </strong>
- * <br>
- * <code> vec.add(otherVec.copy().multiply(3)) </code>
+ * @author vgl <br>
+ *         <br>
+ *         Most methods of the class return a pointer to this, allowing for
+ *         chained mathematical operations such as <br>
+ *         <code> vec.add(new Vector2f(10,15).multiply(3)); </code> <br>
+ *         <strong> Note : none of the methods instead of <code> copy </code>
+ *         create any new object, but return a pointer to this, so if you would
+ *         like to keep your original vector after an operation, just place a
+ *         <code> .copy() </code> before you execute an operation <br>
+ *         eg: </strong> <br>
+ *         <code> vec.add(otherVec.copy().multiply(3)) </code>
  *
  *
  */
@@ -58,7 +57,7 @@ public class Vector2f implements java.io.Serializable, Comparable<Vector2f> {
 	public float
 
 									x, y;
-	
+
 	public Vector2f(float x, float y) {
 		this.x = x;
 		this.y = y;
@@ -105,6 +104,10 @@ public class Vector2f implements java.io.Serializable, Comparable<Vector2f> {
 		y += scalar;
 		return this;
 	}
+	
+	public Vector2f add(float xamnt, float yamnt) {
+		return set(x + xamnt, y + yamnt);
+	}
 
 	public Vector2f subtract(float scalar) {
 		x -= scalar;
@@ -124,6 +127,21 @@ public class Vector2f implements java.io.Serializable, Comparable<Vector2f> {
 		return this;
 	}
 
+	public Vector2f rotate(float angleDegrees) {
+		float c = (float) Math.cos(Math.toRadians(angleDegrees));
+		float s = (float) Math.sin(Math.toRadians(angleDegrees));
+
+		return set(x * c - y * s, x * s + y * c);
+	}
+
+	public float angleRad() {
+		return (float) Math.atan2(y, x);
+	}
+
+	public float angleDegrees() {
+		return (float) Math.toDegrees(angleRad());
+	}
+
 	public Vector2f copy() {
 		return new Vector2f(x, y);
 	}
@@ -136,8 +154,20 @@ public class Vector2f implements java.io.Serializable, Comparable<Vector2f> {
 		return ((x * x) + (y * y));
 	}
 
+	public boolean isParallel(Vector2f other) {
+		float xx = x == 0 ? Math.abs(x) : x;
+		float yy = y == 0 ? Math.abs(y) : y;
+		float xo = other.x == 0 ? Math.abs(other.x) : other.x;
+		float yo = other.y == 0 ? Math.abs(other.y) : other.y;
+		return new Vector2f(xo, yo).negate().equals(new Vector2f(xx, yy).negate());
+	}
+
 	public static float dot(Vector2f v, Vector2f v2) {
 		return v.x * v2.x + v.y * v2.y;
+	}
+
+	public Vector2f scale(float xFactor/* See what i did there.... */, float yFactor) {
+		return set(x * xFactor, y * yFactor);
 	}
 
 	public float dot(Vector2f other) {
@@ -145,8 +175,10 @@ public class Vector2f implements java.io.Serializable, Comparable<Vector2f> {
 	}
 
 	public Vector2f negate() {
-		x = -x;
-		y = -y;
+		if (x != 0)
+			x = -x;
+		if (y != 0)
+			y = -y;
 		return this;
 	}
 
@@ -168,9 +200,19 @@ public class Vector2f implements java.io.Serializable, Comparable<Vector2f> {
 
 	public Vector2f normalize() {
 		float len = length();
+		if (len == 0 || len == 1)
+			return this;
 		x /= len;
 		y /= len;
 		return this;
+	}
+
+	public Vector2f perp(boolean flip) {
+		return !flip ? new Vector2f(y, -x) : new Vector2f(-y, x);
+	}
+
+	public Vector2f perp() {
+		return perp(false);
 	}
 
 	public Vector2f reflect(Vector2f normalizedSurface) {
@@ -196,6 +238,8 @@ public class Vector2f implements java.io.Serializable, Comparable<Vector2f> {
 		result = prime * result + Float.floatToIntBits(y);
 		return result;
 	}
+	
+	
 
 	@Override
 	public boolean equals(Object obj) {
@@ -220,5 +264,9 @@ public class Vector2f implements java.io.Serializable, Comparable<Vector2f> {
 		if (o.x == x && o.y == y)
 			return 0;
 		return -1;
+	}
+
+	public Vector2f subtract(float anchorX, float anchorY) {
+		return set(x - anchorX, y - anchorY);
 	}
 }

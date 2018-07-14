@@ -11,7 +11,6 @@ import org.lwjgl.opengl.GL30;
 
 import vgl.core.annotation.UnusedParameter;
 import vgl.core.buffers.MemoryBufferFloat;
-import vgl.core.geom.Size2i;
 import vgl.core.gfx.Color;
 import vgl.core.gfx.font.FontSpecifics;
 import vgl.core.gfx.font.Glyph;
@@ -23,6 +22,7 @@ import vgl.core.gfx.renderable.ColoredSprite;
 import vgl.core.gfx.renderable.ImageSprite;
 import vgl.core.gfx.renderable.Renderable2D;
 import vgl.main.VGL;
+import vgl.maths.geom.Size2i;
 import vgl.maths.vector.Matrix4f;
 import vgl.maths.vector.Vector2f;
 import vgl.platform.gl.GLBufferUsage;
@@ -392,6 +392,34 @@ final public class SpriteBatchRenderer implements IRenderer2D{
 	@Override
 	public IRenderer2D usingOverflowPolicy(OverflowPolicy policy) {
 		this.overflowPolicy = policy;
+		return this;
+	}
+
+	@Override
+	public IRenderer2D drawTriangle(float x0, float y0, float x1, float y1, float x2, float y2, Color color) {
+		Vector2f[] uv = ImageSprite.defaultUVS();
+		float ts = 0.0f;
+		putVec(x0, y0);
+		putColor(color);
+		putUVElement(uv[0]);
+		local.put(ts);
+		
+		putVec(x1, y1);
+		putColor(color);
+		putUVElement(uv[1]);
+		local.put(ts);
+		
+		putVec(x2, y2);
+		putColor(color);
+		putUVElement(uv[2]);
+		local.put(ts);
+		
+		putVec(x1, y1);
+		putColor(color);
+		putUVElement(uv[3]);
+		local.put(ts);
+		
+		indexCount += 6;
 		return this;
 	}
 

@@ -8,6 +8,7 @@ import vgl.platform.AbstractDisplayDevice;
 import vgl.platform.IFactory;
 import vgl.platform.IGraphicsPlatorm;
 import vgl.platform.IPlatformContext;
+import vgl.platform.io.Files;
 import vgl.platform.io.IOSystem;
 import vgl.platform.logging.ILogger;
 import vgl.platform.logging.IPromptLogger;
@@ -49,6 +50,8 @@ public class VGL {
 	
 	public static EventFeedback         eventController;
 
+	public static Files                 files;
+	
 	public static ErrorChannel			errorChannel;
 	public final static String			build	= "0.2a";
 

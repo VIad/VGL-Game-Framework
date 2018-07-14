@@ -1,6 +1,7 @@
 package vgl.core.gfx.renderable;
 
 import vgl.core.gfx.Color;
+import vgl.maths.geom.Size2f;
 import vgl.maths.vector.Vector2f;
 
 public final class ColoredSprite extends Renderable2D {
@@ -10,17 +11,17 @@ public final class ColoredSprite extends Renderable2D {
 	private boolean	gradientSprite;
 
 	public ColoredSprite(Color color, float width, float height) {
-		this.size = new Vector2f(width, height);
+		this.size = new Size2f(width, height);
 		this.color = color;
 	}
 
 	public ColoredSprite(float width, float height) {
-		this.size = new Vector2f(width, height);
+		this.size = new Size2f(width, height);
 		this.color = Color.WHITE;
 	}
 
 	public ColoredSprite(float width, float height, Color... gradient) {
-		this.size = new Vector2f(width, height);
+		this.size = new Size2f(width, height);
 		if (gradient.length != 4 && gradient.length != 2) {
 			throw new vgl.core.exception.VGLRuntimeException(
 			        "You need to specify either 2 or 4 colors to create gradient colored sprite");

@@ -2,9 +2,7 @@ package vgl.web.io;
 
 import java.util.List;
 
-import com.google.gwt.xhr.client.XMLHttpRequest;
 
-import vgl.core.exception.VGLIOException;
 import vgl.main.VGL;
 import vgl.platform.io.FileDetails;
 import vgl.tools.functional.Result;
@@ -27,7 +25,7 @@ public class WebFileDetails extends FileDetails {
 
 	@Override
 	public FileDetails getParent() {
-		return VGL.io.file(path.substring(0, path.lastIndexOf(SEPARATOR)));
+		return VGL.files.absolute(path.substring(0, path.lastIndexOf(SEPARATOR)));
 	}
 
 	@Override
@@ -40,7 +38,7 @@ public class WebFileDetails extends FileDetails {
 		return new Result<>((success, fail) -> {
 			XMLHttpRequest request = XMLHttpRequest.create();
 
-            request.open("HEAD", absolutePath());
+            request.open("HEAD", absolutePath(), false);
           
             request.setOnReadyStateChange(xhr ->
             {

@@ -167,6 +167,8 @@ public interface IGraphicsPlatorm {
 	void glDeleteProgram(int... id);
 
 	int glCreateShader(ShaderType type);
+	
+	int glGetProgrami(int program, int flag);
 
 	void glShaderSource(int shader, String source);
 

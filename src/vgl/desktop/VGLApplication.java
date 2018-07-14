@@ -7,6 +7,7 @@ import vgl.core.internal.GlobalDetails;
 import vgl.desktop.audio.DesktopAudioPlatform;
 import vgl.desktop.gl.DesktopGraphicsPlatform;
 import vgl.desktop.input.DesktopInputSystem;
+import vgl.desktop.io.DesktopFiles;
 import vgl.desktop.io.DesktopIOSystem;
 import vgl.desktop.utils.DesktopLogger;
 import vgl.desktop.utils.DesktopPromptLogger;
@@ -99,6 +100,7 @@ abstract public class VGLApplication extends Application {
 	protected void initGlobals() {
 		VGL.context = this.context;
 		VGL.factory = new DesktopFactory();
+		VGL.files = new DesktopFiles();
 		VGL.logger = new DesktopLogger();
 		VGL.promptLogger = new DesktopPromptLogger();
 		VGL.display = new Window(title, w_width, w_height, vsync, false);

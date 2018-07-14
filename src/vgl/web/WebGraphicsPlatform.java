@@ -365,7 +365,7 @@ public class WebGraphicsPlatform implements IGraphicsPlatorm {
 
 	@Override
 	public boolean glGetBoolean(int which) {
-		return false;// For some reason get functions are not in WGL
+		return WebGL10.glGetParameter(which);
 	}
 
 	@Override
@@ -416,6 +416,11 @@ public class WebGraphicsPlatform implements IGraphicsPlatorm {
 	@Override
 	public int glCheckFramebufferStatus(int target) {
 		return WebGL10.glCheckFramebufferStatus(target);
+	}
+
+	@Override
+	public int glGetProgrami(int program, int flag) {
+		return WebGL10.glGetProgramParameter(program, flag);
 	}
 
 }

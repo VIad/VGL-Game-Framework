@@ -1,6 +1,11 @@
 package vgl.core.input;
 
 import vgl.core.annotation.VGLInternal;
+import vgl.core.gfx.render.RenderContext;
+import vgl.main.VGL;
+import vgl.maths.Maths;
+import vgl.maths.Projection;
+import vgl.maths.vector.Vector2f;
 
 public interface IPlatformInputDevice {
 	
@@ -16,6 +21,19 @@ public interface IPlatformInputDevice {
 	
 	float getMouseY();
 	
+	default float getMouseX(RenderContext context) {
+		return Maths.linearConversion(getMouseX(), 0f, VGL.display.getWidth(), context.projectionMinX(), context.projectionMaxX());
+	}
+	
+	default float getMouseY(RenderContext context) {
+		return Maths.linearConversion(getMouseY(), 0f, VGL.display.getHeight(), context.projectionMinY(), context.projectionMaxY());
+	}
+	
+	default Vector2f getMousePosition(RenderContext context) {
+		return new Vector2f(getMouseX(context),
+				            getMouseY(context));
+	}
+	
 	float getDeltaX();
 	
 	float getDeltaY();
@@ -26,4 +44,8 @@ public interface IPlatformInputDevice {
 	
 	@VGLInternal
 	void updateDeltas();
+
+	default Vector2f getMousePosition() {
+		return new Vector2f(getMouseX(), getMouseY());
+	}
 }

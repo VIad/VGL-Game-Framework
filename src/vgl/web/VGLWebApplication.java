@@ -17,6 +17,7 @@ import vgl.platform.AbstractDisplayDevice;
 import vgl.platform.Platform;
 import vgl.web.audio.WebAudioPlatform;
 import vgl.web.input.WebInputSystem;
+import vgl.web.io.WebFiles;
 import vgl.web.io.WebIOSystem;
 import vgl.web.utils.WebLogger;
 import vgl.web.utils.WebPromptLogger;
@@ -75,6 +76,7 @@ abstract public class VGLWebApplication extends Application {
 	protected void initGlobals() {
 		VGL.app = (Application) this;
 		VGL.context = this.context;
+		VGL.files = new WebFiles();
 		VGL.display = new WebDisplay("display",w_width, w_height, true, false);
 		VGL.factory = new WebFactory();
 		VGL.logger = new WebLogger();

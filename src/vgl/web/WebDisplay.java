@@ -1,6 +1,5 @@
 package vgl.web;
 
-import vgl.main.VGL;
 import vgl.platform.AbstractDisplayDevice;
 
 public class WebDisplay extends AbstractDisplayDevice {
@@ -12,13 +11,7 @@ public class WebDisplay extends AbstractDisplayDevice {
 
 	@Override
 	public void resize(int width, int height) {
-//		this.nResize(width, height, ((VGLWebApplication) VGL.app).renderTargetID);
 	}
 
-	private native void nResize(int newWidth, int newHeight, String canvasID);/*-{
-		var canvas = document.getElementById(canvasID);
-		canvas.width = newWidth;
-		canvas.height = newHeight;
-	}-*/
 	
 }

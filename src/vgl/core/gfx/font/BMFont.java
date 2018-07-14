@@ -8,20 +8,20 @@ import org.lwjgl.opengl.GL43;
 import org.lwjgl.opengl.GLDebugMessageCallbackI;
 
 import vgl.core.exception.VGLFontException;
-import vgl.core.geom.Size2f;
-import vgl.core.geom.Size2i;
+import vgl.core.exception.VGLIOException;
 import vgl.core.gfx.gl.Texture;
 import vgl.core.gfx.render.RenderContext;
 import vgl.core.internal.ProcessManager;
 import vgl.main.VGL;
 import vgl.maths.Maths;
+import vgl.maths.geom.Size2f;
+import vgl.maths.geom.Size2i;
 import vgl.platform.io.FileDetails;
 import vgl.tools.IResource;
 import vgl.tools.ISpecifier;
 import vgl.tools.async.UniContainer;
 import vgl.tools.functional.callback.BinaryCallback;
 import vgl.utils.FNTParser;
-
 
 //TODO 
 //Add support for non-alpha font loading
@@ -85,7 +85,7 @@ public class BMFont implements IFont, IResource, ISpecifier<IResource.ResourceSt
 			final UniContainer<Integer> container = new UniContainer<>();
 			container.put(0);
 			parser.getPagesList().forEach(page -> {
-				FileDetails pageTex = VGL.io.file(file.getParent().absolutePath() + "/" + page.getFile());
+				FileDetails pageTex = VGL.files.absolute(file.getParent().absolutePath() + "/" + page.getFile());
 				VGL.io.readImage(pageTex, (image, error) -> {
 					if (error != null) {
 						result.invoke(null, error);

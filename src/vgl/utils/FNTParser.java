@@ -6,6 +6,7 @@ import java.util.List;
 import vgl.core.gfx.font.BMFont;
 import vgl.core.gfx.font.Glyph;
 
+//TODO Font kerning
 public class FNTParser {
 
 	private String		fntFile;

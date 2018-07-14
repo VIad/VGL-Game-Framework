@@ -31,8 +31,8 @@ public class DesktopInputSystem implements IPlatformInputDevice {
 		glfwSetCursorPosCallback(((Window) VGL.display).__nativePtr(), (window, x, y) -> {
 			dx = (float) (x - x);
 			dy = (float) (y - y);
-			x = (float) x;
-			y = (float) y;
+			this.x = (float) x;
+			this.y = (float) y;
 		});
 		glfwSetMouseButtonCallback(((Window) VGL.display).__nativePtr(), (window, button, action, mods) -> {
 			if (button == GLFW_MOUSE_BUTTON_LEFT)

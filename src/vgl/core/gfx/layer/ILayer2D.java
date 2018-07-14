@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import vgl.core.annotation.VGLInternal;
-import vgl.core.geom.Size2f;
 import vgl.core.gfx.Color;
 import vgl.core.gfx.camera.OrthographicCamera;
 import vgl.core.gfx.render.IRenderer2D;
@@ -17,6 +16,7 @@ import vgl.core.internal.Checks;
 import vgl.core.internal.GlobalDetails;
 import vgl.main.VGL;
 import vgl.maths.Projection;
+import vgl.maths.geom.Size2f;
 import vgl.maths.vector.Matrix4f;
 import vgl.maths.vector.Vector2f;
 import vgl.platform.Platform;
@@ -37,8 +37,6 @@ abstract public class ILayer2D implements ILayer {
 
 	private OrthographicCamera	layerCam;
 
-	private List<Renderable2D>	drawCommand;
-
 	private GFX2D				graphicsInstance;
 
 	private Color				layerBackground;
@@ -50,7 +48,6 @@ abstract public class ILayer2D implements ILayer {
 		this.layerRenderer = layerRenderer;
 		this.graphicsInstance = new GFX2D(this);
 		this.shader = ShaderFactory.batch2DGLSL();
-		this.drawCommand = new ArrayList<>();
 		this.layerBackground = Color.BLACK;
 		this.layerCam = new OrthographicCamera(new Vector2f(), new Size2f(maxXProj, maxYProj));
 		shader.start();
@@ -59,7 +56,7 @@ abstract public class ILayer2D implements ILayer {
 		this.uploadProjection(Projection.topLeftOrthographic(maxXProj, maxYProj));
 		shader.stop();
 		layerRenderer.setScaling(maxXProj, maxYProj);
-		this.renderContext = RenderContext.create(maxXProj, maxYProj);
+		this.renderContext = RenderContext.create(0f, maxXProj, 0f, maxYProj);
 	}
 
 	public ILayer2D(IRenderer2D layerRenderer, Vector2f bottomRight) {
@@ -69,13 +66,13 @@ abstract public class ILayer2D implements ILayer {
 	public ILayer2D(float bottomRightX, float bottomRightY) {
 		this(VGL.factory.newPlatformOptimalRenderer2D(1000)
 				        .usingOverflowPolicy(IRenderer2D.OverflowPolicy.DO_RENDER),
-				        bottomRightX, bottomRightY);
+				         bottomRightX, bottomRightY);
 	}
 
 	public ILayer2D(Vector2f bottomRight) {
 		this(VGL.factory.newPlatformOptimalRenderer2D(1000)
 				        .usingOverflowPolicy(IRenderer2D.OverflowPolicy.DO_RENDER),
-				        bottomRight.x, bottomRight.y);
+				         bottomRight.x, bottomRight.y);
 	}
 
 	private void uploadProjection(Matrix4f projection) {
@@ -107,6 +104,10 @@ abstract public class ILayer2D implements ILayer {
 	public Color getLayerBackground() {
 		return new Color(layerBackground);
 	}
+	
+	public RenderContext getRenderContext() {
+		return renderContext;
+	}
 
 	// void submitText(String text, float x, float y, IFont font) {
 	// drawCommand.add(new TextRenderable(text, x, y, font));
@@ -126,8 +127,9 @@ abstract public class ILayer2D implements ILayer {
 		shader.start();
 		layerCam.uploadToShader("transformationMatrix", shader);
 		layerRenderer.begin();
+		//TODO fix fix fix fix
 		if (!layerBackground.equals(Color.TRANSPARENT))
-			layerRenderer.draw(new ColoredSprite(layerBackground, maxX, maxY), 0, 0);
+			layerRenderer.draw(new ColoredSprite(layerBackground, Float.MAX_VALUE, Float.MAX_VALUE), -1000000F, -1000000F);
 		render(graphicsInstance);
 		layerRenderer.end();
 		layerRenderer.render();

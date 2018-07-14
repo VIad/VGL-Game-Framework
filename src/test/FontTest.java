@@ -46,7 +46,7 @@ public class FontTest {
 
 		@Override
 		public void init() throws VGLException {
-			BMFont.load(VGL.io.file("resources/fonts/test_1.fnt"), (font, error) -> {
+			BMFont.load(VGL.files.external("resources/fonts/test_1.fnt"), (font, error) -> {
 				FontTest.font = font;
 			});
 			AudioSystem.initialize();

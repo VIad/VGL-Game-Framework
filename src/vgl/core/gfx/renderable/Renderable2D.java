@@ -1,17 +1,17 @@
 package vgl.core.gfx.renderable;
 
-import vgl.maths.vector.Vector2f;
+import vgl.maths.geom.Size2f;
 
 abstract public class Renderable2D {
 
-	protected Vector2f size;
+	protected Size2f size;
 
 	public float getWidth() {
-		return size.x;
+		return size.width;
 	}
 
 	public float getHeight() {
-		return size.y;
+		return size.height;
 	}
 
 }

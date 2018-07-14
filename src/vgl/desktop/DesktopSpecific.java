@@ -35,7 +35,11 @@ import vgl.tools.functional.callback.Callback;
 import vgl.tools.managers.Managers;
 
 abstract public class DesktopSpecific {
-
+	
+	static {
+		
+	}
+	
 	abstract public static class FileLoading {
 
 		public static Image loadImage0(String absPath) throws Throwable {

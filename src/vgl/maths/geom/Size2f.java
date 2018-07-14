@@ -1,4 +1,4 @@
-package vgl.core.geom;
+package vgl.maths.geom;
 
 public class Size2f {
 
@@ -55,6 +55,9 @@ public class Size2f {
 		return "Size2f [width=" + width + ", height=" + height + "]";
 	}
 
+	public static Size2f identity() {
+		return new Size2f(1f,1f);
+	}
 	
 	
 }

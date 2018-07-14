@@ -1,16 +1,20 @@
 package vgl.core.gfx.layer;
 
-import org.apache.commons.io.filefilter.IOFileFilter;
+import java.util.Collections;
 
 import vgl.core.exception.VGLGraphicsException;
-import vgl.core.geom.RectFloat;
-import vgl.core.geom.Size2i;
-import vgl.core.geom.Transform2D;
 import vgl.core.gfx.Color;
 import vgl.core.gfx.font.FontSpecifics;
 import vgl.core.gfx.font.IFont;
 import vgl.core.gfx.renderable.ColoredSprite;
 import vgl.core.gfx.renderable.Renderable2D;
+import vgl.maths.geom.GeomUtils;
+import vgl.maths.geom.Size2i;
+import vgl.maths.geom.Transform2D;
+import vgl.maths.geom.shape2d.Polygon;
+import vgl.maths.geom.shape2d.RectFloat;
+import vgl.maths.geom.shape2d.Shape2D;
+import vgl.maths.geom.shape2d.Triangle;
 import vgl.maths.vector.Vector2f;
 
 public class GFX2D {
@@ -46,7 +50,29 @@ public class GFX2D {
 		return color;
 	}
 
-	public void fillRectangle(RectFloat rectangle) {
+	public void fillTriangle(Triangle triangle) {
+		Vector2f a = triangle.getA();
+		Vector2f b = triangle.getB();
+		Vector2f c = triangle.getC();
+		layer.layerRenderer.drawTriangle(a.x, a.y, b.x, b.y, c.x, c.y, getColor());
+	}
+	
+	public void fill(Shape2D shape) {
+		if(shape instanceof RectFloat)
+			fillRect((RectFloat) shape);
+		else if(shape instanceof Triangle)
+			fillTriangle((Triangle) shape);
+		fillPolygon(shape.toPolygon());
+	}
+	
+	public void fillPolygon(Polygon polygon) {
+		GeomUtils.Triangulator.triangulate(polygon)
+		                      .orElseGet(Collections::emptyList)
+		                      .stream()
+		                      .forEach(tri -> layer.layerRenderer.drawTriangle(tri, color));
+	}
+
+	public void fillRect(RectFloat rectangle) {
 		fillRect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
 	}
 
@@ -63,11 +89,11 @@ public class GFX2D {
 	}
 
 	public void drawRectangle(float x, float y, float width, float height, float thiccness) {
-		layer.layerRenderer.drawLine(x, y, x + width, y, thiccness, getColor()) // Top line
-		                   .drawLine(x, y + height, x + width, y + height, thiccness, getColor())// Bottom line
-		                   .drawLine(x + thiccness, y, x + thiccness, y + height, thiccness, getColor())// Left line
-		                   .drawLine(x + width - thiccness, y, x + width - thiccness, y + height, thiccness,getColor());// Right line
-
+		layer.layerRenderer
+		     .drawLine(x, y, x + width, y, thiccness, getColor()) // Top 
+		     .drawLine(x, y + height, x + width, y + height, thiccness, getColor())// Bottom 
+		     .drawLine(x + thiccness, y, x + thiccness, y + height, thiccness, getColor())// Left 
+		     .drawLine(x + width - thiccness, y, x + width - thiccness, y + height, thiccness, getColor());// Right
 	}
 
 	public void drawLine(float x0, float y0, float x1, float y1, float thiccness) {
@@ -98,13 +124,13 @@ public class GFX2D {
 	public void drawText(String text, Vector2f pos, IFont font) {
 		drawText(text, pos.x, pos.y, font);
 	}
-	
+
 	public void drawText(String string, float x, float y) {
 		if (font == null)
 			throw new VGLGraphicsException("No font was found, set font first using GFX2D.setFont()");
 		drawText(string, x, y, getFont());
 	}
-	
+
 	public void drawTextCentered(String text, Vector2f pos, IFont font) {
 		drawTextCentered(text, pos.x, pos.y, font);
 	}

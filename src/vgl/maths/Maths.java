@@ -1,5 +1,7 @@
 package vgl.maths;
 
+import vgl.maths.vector.Vector2f;
+
 //============================================================================
 //Name        : Maths
 //Author      : Vladimir Ivanov
@@ -35,6 +37,19 @@ public class Maths {
 
 	public static float exp(float num) {
 		return num - (int) num;
+	}
+	
+	public static float linearConversion(float value, float oldRangeMin, float oldRangeMax, float newRangeMin, float newRangeMax) {
+		float oldRange = (oldRangeMax - oldRangeMin);
+		float newValue = value;
+		if(oldRange == 0)
+			newValue = newRangeMin;
+		else
+		{
+			float newRange = (newRangeMax - newRangeMin);
+			newValue = (((value - oldRangeMin) * newRange) / oldRange) + newRangeMin;
+		}
+		return newValue;
 	}
 
 	public static double average(double first, double... rest) {

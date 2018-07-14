@@ -89,30 +89,30 @@ public class LayerTesting {
 //			AudioManager.fetch("sounds_2d", "music").setGain(0.01f)
 //			                                        .setPitch(0.8f)
 //			                                        .play();
-			resLoader.loadTexture(VGL.io.file("resources/tex.png"), texture -> {
+			resLoader.loadTexture(VGL.files.resource("resources/tex.png"), texture -> {
 				tex = texture;
 				System.out.println("tex loaded");
 			});
 
-			resLoader.loadImage(VGL.io.file("resources/1.jpg"), image -> {
+			resLoader.loadImage(VGL.files.resource("resources/1.jpg"), image -> {
 				System.out.println("Image loaded");
 			});
-			resLoader.loadImage(VGL.io.file("resources/1.png"), image -> {
+			resLoader.loadImage(VGL.files.resource("resources/1.png"), image -> {
 				System.out.println("Image loaded");
 			});
-			resLoader.loadImage(VGL.io.file("resources/2.jpg"), image -> {
+			resLoader.loadImage(VGL.files.resource("resources/2.jpg"), image -> {
 				System.out.println("Image loaded");
 			});
-			resLoader.loadImage(VGL.io.file("resources/2.png"), image -> {
+			resLoader.loadImage(VGL.files.resource("resources/2.png"), image -> {
 				System.out.println("Image loaded");
 			});
-			resLoader.loadImage(VGL.io.file("resources/3.jpg"), image -> {
+			resLoader.loadImage(VGL.files.resource("resources/3.jpg"), image -> {
 				System.out.println("Image loaded");
 			});
-			resLoader.loadImage(VGL.io.file("resources/3.png"), image -> {
+			resLoader.loadImage(VGL.files.resource("resources/3.png"), image -> {
 				System.out.println("Image loaded");
 			});
-			resLoader.loadImage(VGL.io.file("resources/0.png"), image -> {
+			resLoader.loadImage(VGL.files.resource("resources/0.png"), image -> {
 				System.out.println("Image loaded");
 			});
 			resLoader.begin();

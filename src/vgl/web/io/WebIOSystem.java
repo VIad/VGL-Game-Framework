@@ -2,7 +2,7 @@ package vgl.web.io;
 
 import java.util.Arrays;
 
-import com.google.gwt.xhr.client.XMLHttpRequest;
+import com.google.gwt.core.client.GWT;
 import com.vgl.gwtreq.client.GWTArrayBuffer;
 
 import vgl.core.buffers.MemoryBuffer;
@@ -21,10 +21,8 @@ import vgl.web.WebSpecific;
 import vgl.web.WebSpecific.JS;
 
 public class WebIOSystem extends IOSystem {
-
 	
 	public WebIOSystem() {
-		
 	}
 	
 	@Override
@@ -47,6 +45,7 @@ public class WebIOSystem extends IOSystem {
 		boolean ignoreLines = Arrays.stream(options).anyMatch(op -> op == ReadOption.IGNORE_NEWLINES);
 		XMLHttpRequest request = XMLHttpRequest.create();
 		request.open("GET", file.absolutePath());
+		request.setOverrideMimeType("text/plain");
 		request.setResponseType(XMLHttpRequest.ResponseType.Default);
 		request.setRequestHeader("Content-Type", "text/plain;charset=UTF-8");
 		request.setOnReadyStateChange(xhr -> {
@@ -72,15 +71,9 @@ public class WebIOSystem extends IOSystem {
 	}
 
 	@Override
+	@Deprecated
 	public String readString(FileDetails file, ReadOption... options) {
-		throw new VGLRuntimeException(
-		        "this instance of readString method is not supported on platform : " + GlobalDetails.getPlatform()
-		                + ", instead use readString(callback)");
-	}
-
-	@Override
-	public FileDetails file(String file) {
-		return new WebFileDetails(file);
+		return makeSyncAjaxCall(file.absolutePath(), null, "", "GET");
 	}
 
 	@Override
@@ -101,4 +94,17 @@ public class WebIOSystem extends IOSystem {
 	}
 
 
+	@Deprecated
+	private native String makeSyncAjaxCall(String url, String msgText, String resType,String conType)/*-{
+		var xhReq = new XMLHttpRequest();
+		xhReq.open(conType, url, false);
+		xhReq.responseType = resType;
+		if (conType == "POST")
+			xhReq.setRequestHeader('Content-Type',
+					'application/x-www-form-urlencoded');
+		xhReq.send(msgText);
+		var serverResponse = xhReq.status + xhReq.responseText;
+		return serverResponse;
+	}-*/;
+	
 }

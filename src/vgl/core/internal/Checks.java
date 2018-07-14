@@ -16,6 +16,11 @@ public class Checks {
 		GL_INIT = gL_INIT;
 	}
 
+	public static void doAssert(boolean condition, String message) {
+		if (!condition)
+			throw new AssertionError(message);
+	}
+	
 	@VGLInternal
 	public static void checkIfInitialized() {
 		if (!GL_INIT)
