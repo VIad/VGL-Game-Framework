@@ -12,6 +12,10 @@ import static vgl.natives.memory.VGLMemory.__nvglshortArray;
 
 import vgl.core.annotation.VGLInternal;
 
+/**
+ * No
+ *
+ */
 @VGLInternal
 public class MemoryAccess {
 	

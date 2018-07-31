@@ -18,7 +18,7 @@ import vgl.core.gfx.gl.GPUBuffer;
 import vgl.core.gfx.gl.Texture;
 import vgl.core.gfx.render.SpriteBatchRenderer;
 import vgl.core.gfx.renderable.ColoredSprite;
-import vgl.core.gfx.renderable.ImageSprite;
+import vgl.core.gfx.renderable.Sprite;
 import vgl.core.gfx.renderable.Renderable2D;
 import vgl.core.gfx.shader.ShaderFactory;
 import vgl.core.gfx.shader.ShaderProgram;
@@ -394,7 +394,7 @@ public class Test extends VGLApplication {
 			}
 		}
 		if(tex != null)
-		bRenderer.draw(new ImageSprite(tex), 5f, 15f, 5f, 5f);
+		bRenderer.draw(new Sprite(tex), 5f, 15f, 5f, 5f);
 		//
 		// for (int i = 0; i < sprites.size(); i++) {
 		// if (i > 1)

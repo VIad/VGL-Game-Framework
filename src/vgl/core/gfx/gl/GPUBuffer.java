@@ -16,15 +16,15 @@ import vgl.platform.gl.GLBufferTarget;
 import vgl.platform.gl.GLBufferUsage;
 import vgl.platform.gl.Primitive;
 
-public final class GPUBuffer {
+public class GPUBuffer {
 
 	public final static int		NULL	= 0;
 
 	private static GPUBuffer	currentlyBound;
 
-	private int					vbo;
+	protected int					vbo;
 
-	private int					usage;
+	protected int					usage;
 
 	public GPUBuffer(int usage) {
 		this.usage = usage;

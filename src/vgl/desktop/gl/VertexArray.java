@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL20;
 
 import vgl.core.buffers.Buffers;
 import vgl.core.buffers.MemoryBuffer;
@@ -15,6 +14,10 @@ import vgl.main.VGL;
 import vgl.platform.gl.GLBufferTarget;
 import vgl.platform.gl.GLBufferUsage;
 
+/**
+ * Not really applicable in many cases tbh
+ *
+ */
 public class VertexArray {
 	
 	protected final int						vaoID;
@@ -63,7 +66,7 @@ public class VertexArray {
 //		final FloatBuffer buffer = ((ByteBuffer) memBuffer.nativeBufferDetails().getBuffer()).asFloatBuffer();
 		VGL.api_gfx.glBufferData(GLBufferTarget.ARRAY_BUFFER, memBuffer, GLBufferUsage.STATIC_DRAW);
 		bufferCache.add(memBuffer);
-		GL20.glVertexAttribPointer(attribPosition, dataSize, GL11.GL_FLOAT, false, 0, 0);
+		VGL.api_gfx.glVertexAttribPointer(attribPosition, dataSize, GL11.GL_FLOAT, false, 0, 0);
 		VGL.api_gfx.glBindBuffer(GLBufferTarget.ARRAY_BUFFER, 0);
 		unbind();
 	}

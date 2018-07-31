@@ -59,7 +59,7 @@ public class ShaderFactory {
 			"    if(fs_in.texId > 0.0)\r\n" + 
 			"    {\r\n" + 
 			"       int tid = int(fs_in.texId - 0.5);\r\n" + 
-			"       pass_Color = texture(textures[tid], fs_in.uvs);\r\n" + 
+			"       pass_Color = texture(textures[tid], fs_in.uvs) * fs_in.color;\r\n" + 
 			"    }\r\n" + 
 			"}";
 	

@@ -4,96 +4,118 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import vgl.core.collision.Collider2D;
-import vgl.maths.geom.GeomUtils;
 import vgl.maths.geom.OrthoProjection;
 import vgl.maths.geom.Size2f;
 import vgl.maths.geom.Transform2D;
+import vgl.maths.geom.shape2d.ShapeFactory.PolygonBuilder;
 import vgl.maths.vector.Vector2f;
 
-public class Polygon implements Shape2D{
+public class Polygon implements Shape2D {
 
 	private Vector2f		position;
 
 	private List<Vector2f>	vertices;
 
-	private float           angleRot;
-	
-	private RectFloat		bounds;
-	
-	private Vector2f translation;
-	
-	private Size2f scale;
+	private float			angleRot;
 
-	public Polygon(Vector2f vec) {
-		this.position = vec;
+	private RectFloat		bounds;
+
+	private Vector2f		translation;
+
+	private Size2f			scale;
+
+	public Polygon() {
+		this((Vector2f) null);
+	}
+
+	public Polygon(float x, float y) {
 		this.vertices = new ArrayList<>();
+		this.position = new Vector2f(x, y);
+		addVertex(position);
 		this.bounds = new RectFloat();
 		this.translation = new Vector2f();
 		this.scale = Size2f.identity();
 		this.angleRot = 0.0f;
 	}
-	
-	public Polygon() {
-		this(new Vector2f(0f, 0f));
+
+	public Polygon(Vector2f pos) {
+		this.vertices = new ArrayList<>();
+		if (pos != null) {
+			this.position = pos.copy();
+			addVertex(this.position);
+		}
+		this.bounds = new RectFloat();
+		this.translation = new Vector2f();
+		this.scale = Size2f.identity();
+		this.angleRot = 0.0f;
 	}
-	
-	public Polygon(float x, float y) {
-		this(new Vector2f(x, y));
-	}
-	
+
+	/**
+	 * Broken atm
+	 * 
+	 * @param other
+	 */
 	public Polygon(Polygon other) {
-		this(other.position.copy());
+		this.vertices = new ArrayList<>();
 		other.vertices.forEach(vertex -> this.vertices.add(vertex.copy()));
-		this.bounds.setBounds(other.bounds);
+		if (!this.vertices.isEmpty())
+			this.position = this.vertices.get(0);
+		this.bounds = new RectFloat(other.bounds);
+		this.translation = other.translation.copy();
+		this.angleRot = other.angleRot;
 		this.scale.width = other.scale.width;
 		this.scale.height = other.scale.height;
 	}
-	
-	public Polygon identity() {
-		this.vertices.clear();
-		this.angleRot = 0;
+
+	public Polygon(PolygonBuilder polygonBuilder) {
+		this.vertices = polygonBuilder.vertices;
+		this.position = polygonBuilder.vertices.get(0);
+		this.bounds = new RectFloat();
+		this.translation = new Vector2f();
 		this.scale = Size2f.identity();
-		return this;
+		this.angleRot = 0.0f;
 	}
-	
+
 	private void recalculateBounds() {
-		float minX = Float.POSITIVE_INFINITY, minY = Float.POSITIVE_INFINITY, maxX = Float.NEGATIVE_INFINITY, maxY = Float.NEGATIVE_INFINITY;
+		float minX = Float.POSITIVE_INFINITY, minY = Float.POSITIVE_INFINITY, maxX = Float.NEGATIVE_INFINITY,
+		        maxY = Float.NEGATIVE_INFINITY;
 		for (Vector2f vector2f : vertices) {
-			if(vector2f.x < minX)
+			if (vector2f.x < minX)
 				minX = vector2f.x;
-			if(vector2f.y < minY)
+			if (vector2f.y < minY)
 				minY = vector2f.y;
-			if(vector2f.x > maxX)
+			if (vector2f.x > maxX)
 				maxX = vector2f.x;
-			if(vector2f.y > maxY)
+			if (vector2f.y > maxY)
 				maxY = vector2f.y;
 		}
 		bounds.setBounds(minX, minY, maxX - minX, maxY - minY);
-		
+
 	}
-	
+
 	public Polygon transformBy(Transform2D transform) {
 		return this;
 	}
-	
+
 	public Polygon translateTo(float x, float y) {
-		return translateBy(-translation.x + x, -translation.y + y);
+		return translateBy(-bounds.x + x, -bounds.y + y);
 	}
-	
+
 	public Polygon translateBy(float x, float y) {
-		this.position.add(x, y);
 		this.translation.add(x, y);
-		vertices.stream()
-		        .forEach(vertex -> vertex.add(x, y));
+		vertices.stream().forEach(vertex -> vertex.add(x, y));
 		recalculateBounds();
 		return this;
 	}
-	
+
+	public static Polygon create(Shape2D shape) {
+		return shape.toPolygon();
+	}
+
 	public boolean contains(Vector2f point) {
 		return contains(point.x, point.y);
 	}
-	
+
 	public boolean contains(float x, float y) {
 		return pnpoly(getVertexCount(), x, y);
 	}
@@ -112,48 +134,48 @@ public class Polygon implements Shape2D{
 	}
 
 	public Polygon scaleBy(float xFactor, float yFactor) {
-		this.position.scale(xFactor, yFactor);
 		scale.width += xFactor;
 		scale.height += yFactor;
-		vertices.stream()
-		        .forEach(vertex -> vertex.scale(xFactor, yFactor));
+		vertices.stream().forEach(vertex -> vertex.scale(xFactor, yFactor));
 		recalculateBounds();
 		return this;
 	}
-	
+
 	public Polygon rotateAroundCenterBy(float angleDegrees) {
 		return rotateBy(angleDegrees, bounds().getCenter());
 	}
-	
+
 	public Polygon rotateAroundCenterTo(float angleDegrees) {
 		return rotateBy(-this.angleRot + angleDegrees, bounds().getCenter());
 	}
-	
+
 	public Polygon rotateBy(float angleDegrees, float anchorX, float anchorY) {
 		this.angleRot += angleDegrees;
-		vertices.stream()
-		        .forEach(vertex -> vertex.subtract(anchorX, anchorY).rotate(angleDegrees).subtract(-anchorX, -anchorY));
+		vertices.stream().forEach(
+		        vertex -> vertex.subtract(anchorX, anchorY).rotate(angleDegrees).subtract(-anchorX, -anchorY));
 		recalculateBounds();
 		return this;
 	}
-		
+
 	public Polygon rotateBy(float angleDegrees, Vector2f anchor) {
 		return rotateBy(angleDegrees, anchor.x, anchor.y);
 	}
-	
+
 	public Polygon rotateBy(float angleDegrees) {
 		return rotateBy(angleDegrees, 0, 0);
 	}
-	
+
 	public Vector2f getPosition() {
 		return position;
 	}
 
 	public Polygon addVertex(Vector2f vertex) {
+		if(position == null)
+			this.position = vertex;
 		vertices.add(vertex);
 		return this;
 	}
-	
+
 	public Polygon addVertex(float x, float y) {
 		return addVertex(new Vector2f(x, y));
 	}
@@ -166,11 +188,11 @@ public class Polygon implements Shape2D{
 		recalculateBounds();
 		return new RectFloat(bounds);
 	}
-	
+
 	public int getVertexCount() {
 		return vertices.size();
 	}
-	
+
 	public OrthoProjection project(Vector2f axis) {
 		return new OrthoProjection(this, axis);
 	}
@@ -225,11 +247,6 @@ public class Polygon implements Shape2D{
 	@Override
 	public Polygon toPolygon() {
 		return this;
-	}
-
-	@Override
-	public boolean intersects(Shape2D other) {
-		return Collider2D.checkPolygonIntersection(this, other.toPolygon());
 	}
 
 	@Override

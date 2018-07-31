@@ -17,7 +17,7 @@ import vgl.core.gfx.gl.Texture;
 import vgl.core.gfx.layer.GFX2D;
 import vgl.core.gfx.layer.ILayer2D;
 import vgl.core.gfx.layer.LayeredLayout;
-import vgl.core.gfx.renderable.ImageSprite;
+import vgl.core.gfx.renderable.Sprite;
 import vgl.desktop.DesktopSpecific;
 import vgl.desktop.VGLApplication;
 import vgl.desktop.input.Key;
@@ -137,7 +137,7 @@ public class LayerTesting {
 				@Override
 				public void render(GFX2D graphics) {
 					if (tex != null)
-						graphics.drawSprite(new ImageSprite(tex), 2f, 2f, 3f, 3f);
+						graphics.drawSprite(new Sprite(tex), 2f, 2f, 3f, 3f);
 					// graphics.renderSprite(new ImageSprite(tex), new Transform2D(new Vector2f(2,
 					// 2)));
 					// graphics.renderSprite(new ColoredSprite(Color.LAVENDER, 2f, 2f),

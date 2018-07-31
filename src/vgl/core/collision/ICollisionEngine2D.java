@@ -10,13 +10,6 @@ public interface ICollisionEngine2D {
 	
 	CollisionReport2D testRectangleIntersection(IRect rect1, IRect rect2);
 	
-	default CollisionReport2D testShapeIntersection(Shape2D first, Shape2D second) {
-		if(first instanceof IRect && second instanceof IRect)
-			return testRectangleIntersection((IRect) first, (IRect) second);
-		return testPolygonIntersection( first.toPolygon(), 
-				                       second.toPolygon());
-	}
-	
-	boolean testCircularCollision();
+	CollisionReport2D testCircularCollision();
 	
 }

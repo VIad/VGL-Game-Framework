@@ -22,27 +22,46 @@ public class CollisionReport2D {
 		}
 	}
 	
-	public CollisionReport2D() {
+	private CollisionReport2D(Builder builder) {
+		this.mtv = builder.mtv;
+		this.collided = builder.collided;
+		this.firstContainsSecond = builder.firstContainsSecond;
+		this.secondContainsFirst = builder.secondContainsFirst;
+	}
+	
+	public static class Builder{
 		
-	}
-	
-	public CollisionReport2D collided(boolean collided) {
-		this.collided = collided;
-		return this;
-	}
-	
-	public CollisionReport2D firstContainsSecond(boolean fcs) {
-		this.firstContainsSecond = fcs;
-		return this;
-	}
-	
-	public CollisionReport2D secondContainsFirst(boolean scf) {
-		this.secondContainsFirst = scf;
-		return this;
-	}
-
-	public CollisionReport2D mtv(MTV mtv) {
-		this.mtv = mtv;
-		return this;
+		private MTV mtv;
+		
+		private boolean collided;
+		
+		private boolean firstContainsSecond;
+		
+		private boolean secondContainsFirst;
+		
+		public CollisionReport2D build() {
+			return new CollisionReport2D(this);
+		}
+		
+		public Builder mtv(MTV mtv) {
+			this.mtv = mtv;
+			return this;
+		}
+		
+		public Builder setCollided(boolean collided) {
+			this.collided = collided;
+			return this;
+		}
+		
+		public Builder firstContainsSecond(boolean fcs) {
+			this.firstContainsSecond = fcs;
+			return this;
+		}
+		
+		public Builder secondContainsFirst(boolean scf) {
+			this.secondContainsFirst = scf;
+			return this;
+		}
+		
 	}
 }

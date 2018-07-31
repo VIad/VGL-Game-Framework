@@ -1,6 +1,5 @@
 package vgl.maths.geom.shape2d;
 
-import vgl.core.collision.Collider2D;
 import vgl.maths.vector.Vector2f;
 
 public class Triangle implements Shape2D{
@@ -34,10 +33,17 @@ public class Triangle implements Shape2D{
 	}
 	
 	public Polygon toPolygon() {
-		return new Polygon()
-				   .addVertex(a)
-				   .addVertex(b)
-				   .addVertex(c);
+		return new Polygon(a.copy())
+				.addVertex(b.copy())
+				.addVertex(c.copy());
+	}
+	
+	public Triangle translateTo(float x, float y) {
+		RectFloat bounds = bounds();
+ 		a.add(-bounds.x + x,-bounds.y +  y);
+		b.add(-bounds.x + x,-bounds.y +  y);
+		c.add(-bounds.x + x,-bounds.y +  y);
+		return this;
 	}
 	
 	public boolean contains(Vector2f point) { 
@@ -94,17 +100,12 @@ public class Triangle implements Shape2D{
 	public Vector2f relativeCenter() {
 		return bounds().getCenter();
 	}
-
-	@Override
-	//TODO
-	public boolean intersects(Shape2D other) {
-		return Collider2D.checkShapeIntersection(this, other);
-	}
-
+	
 	@Override
 	@SuppressWarnings("unchecked")
 	public Triangle copy() {
 		return new Triangle(this);
 	}
+
 	
 }

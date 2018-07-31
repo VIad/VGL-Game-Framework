@@ -3,6 +3,11 @@ package vgl.core.gfx;
 import vgl.core.buffers.MemoryBufferFloat;
 import vgl.maths.vector.Vector4f;
 
+/**
+ * 
+ * A R G B
+ *
+ */
 public final class Color implements java.io.Serializable, Comparable<Color> {
 	
 	/**
@@ -898,7 +903,10 @@ public final class Color implements java.io.Serializable, Comparable<Color> {
 	*/
 	public static final Color YELLOW_GREEN = new Color(0x9ACD32);
 	
-	public static final Color TRANSPARENT = new Color(0xffffff00, true);
+	/**
+	 * argb fml
+	 */
+	public static final Color TRANSPARENT = new Color(0x00FFFFFF, true);
 
 	public static final byte SIZE_BYTES = 4 * Float.BYTES;
 
@@ -1087,6 +1095,14 @@ public final class Color implements java.io.Serializable, Comparable<Color> {
 	}
 
 	private static final float BRIGHTNESS_ALTER_FACTOR = 0.2f;
+
+	public Color mix(Color other) {
+		float opacity = vgl.maths.Maths.max(a, other.a);
+		float r = (this.r + other.r) / 2f;
+		float g = (this.g + other.g) / 2f;
+		float b = (this.b + other.b) / 2f;
+		return new Color(r, g, b, opacity);
+	}
 
 	public Color brighter() {
 		float r = vgl.maths.Maths.clamp(this.r + BRIGHTNESS_ALTER_FACTOR, 1f, 0f);

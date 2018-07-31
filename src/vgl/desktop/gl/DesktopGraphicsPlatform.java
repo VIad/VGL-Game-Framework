@@ -23,8 +23,8 @@ public class DesktopGraphicsPlatform implements IGraphicsPlatorm {
 	private boolean shouldTest() {
 		return true;
 	}
-	
-	private <T> T runGLMethod(BooleanSupplier condition,String methodName, Supplier<T> action) {
+
+	private <T> T runGLMethod(BooleanSupplier condition, String methodName, Supplier<T> action) {
 		if (condition.getAsBoolean()) {
 			try {
 				return action.get();
@@ -36,14 +36,14 @@ public class DesktopGraphicsPlatform implements IGraphicsPlatorm {
 		}
 		return action.get();
 	}
-	
+
 	private void runGLVoidMethod(BooleanSupplier condition, String methodName, Runnable action) {
 		runGLMethod(condition, methodName, () -> {
 			action.run();
 			return null;
 		});
 	}
-	
+
 	@Override
 	public int glGenVertexArray() {
 		return runGLMethod(this::shouldTest, "genVAO", GL30::glGenVertexArrays);
@@ -76,14 +76,15 @@ public class DesktopGraphicsPlatform implements IGraphicsPlatorm {
 
 	@Override
 	public void glBindVertexArray(int vao) {
-		try {
-			GL30.glBindVertexArray(vao);
-		} finally {
-			int glError = VGL.api_gfx.glGetError();
-			if (glError != GL11.GL_NO_ERROR) {
-				VGL.logger.critical("GL_ERROR [glBindVao(vao)] >> " + glError);
-			}
-		}
+		// try {
+		// GL30.glBindVertexArray(vao);
+		// } finally {
+		// int glError = VGL.api_gfx.glGetError();
+		// if (glError != GL11.GL_NO_ERROR) {
+		// VGL.logger.critical("GL_ERROR [glBindVao(vao)] >> " + glError);
+		// }
+		// }
+		runGLVoidMethod(this::shouldTest, "glBindVao", () -> GL30.glBindVertexArray(vao));
 	}
 
 	@Override
@@ -410,7 +411,7 @@ public class DesktopGraphicsPlatform implements IGraphicsPlatorm {
 
 	@Override
 	public void glBindRenderbuffer(int target, int renderBuffer) {
-		 GL30.glBindRenderbuffer(target, renderBuffer);
+		GL30.glBindRenderbuffer(target, renderBuffer);
 	}
 
 	@Override

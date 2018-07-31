@@ -64,7 +64,7 @@ public interface IRenderer2D {
 
 	IRenderer2D draw(Renderable2D renderable, float x, float y, float width, float height, Matrix4f transformation);
 
-	IRenderer2D drawText(String text, float x, float y, vgl.core.gfx.font.IFont font);
+	IRenderer2D drawText(String text, float x, float y, vgl.core.gfx.font.IFont font, Color color);
 
 	IRenderer2D usingOverflowPolicy(OverflowPolicy policy);
 

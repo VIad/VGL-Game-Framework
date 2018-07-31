@@ -118,7 +118,7 @@ public class GFX2D {
 	}
 
 	public void drawText(String string, float x, float y, IFont font) {
-		layer.layerRenderer.drawText(string, x, y, font);
+		layer.layerRenderer.drawText(string, x, y, font, color);
 	}
 
 	public void drawText(String text, Vector2f pos, IFont font) {

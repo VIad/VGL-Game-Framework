@@ -1,49 +1,44 @@
 package vgl.maths.geom.shape2d;
 
-import java.io.Serializable;
-
 import vgl.core.collision.Collider2D;
 import vgl.maths.geom.Size2f;
+import vgl.maths.geom.Size2i;
 import vgl.maths.vector.Vector2f;
+import vgl.maths.vector.Vector2i;
 
-public class RectFloat implements IRect, Serializable {
+public class RectInt implements IRect{
 
-	/**
-	 * 
-	 */
-	private static final long	serialVersionUID	= 3078918919786101243L;
+	public int				x, y, width, height;
 
-	public float				x, y, width, height;
-
-	public RectFloat() {
-		this(0f, 0f, 0f, 0f);
+	public RectInt() {
+		this(0, 0, 0, 0);
 	}
 
-	public RectFloat(float x, float y, float width, float height) {
+	public RectInt(int x, int y, int width, int height) {
 		setBounds(x, y, width, height);
 	}
 
-	public RectFloat(IRect r) {
-		this(r.getX(), r.getY(), r.getWidth(), r.getHeight());
+	public RectInt(RectInt r) {
+		this(r.x, r.y, r.width, r.height);
 	}
 
-	public RectFloat(float width, float height) {
+	public RectInt(int width, int height) {
 		this(0, 0, width, height);
 	}
 
-	public RectFloat(Vector2f pos) {
+	public RectInt(Vector2i pos) {
 		this(pos.x, pos.y, 0, 0);
 	}
 
-	public RectFloat(Size2f viewportSize) {
-		this(0, 0, viewportSize.width, viewportSize.height);
+	public RectInt(Size2i dim) {
+		this(0, 0, dim.width, dim.height);
 	}
 
-	public void setBounds(RectFloat r) {
+	public void setBounds(RectInt r) {
 		setBounds(r.x, r.y, r.width, r.height);
 	}
 
-	public void setBounds(float x, float y, float width, float height) {
+	public void setBounds(int x, int y, int width, int height) {
 		validate(width, height);
 		this.x = x;
 		this.y = y;
@@ -51,7 +46,7 @@ public class RectFloat implements IRect, Serializable {
 		this.height = height;
 	}
 
-	private void validate(float width2, float height2) {
+	private void validate(int width2, int height2) {
 		if (width2 < 0 || height2 < 0)
 			throw new IllegalArgumentException("Either width or height is less than 0");
 	}
@@ -60,29 +55,29 @@ public class RectFloat implements IRect, Serializable {
 		return new Vector2f(x, y);
 	}
 
-	public void setLocation(float x, float y) {
+	public void setLocation(int x, int y) {
 		this.x = x;
 		this.y = y;
 	}
 
-	public void setCenter(Vector2f center) {
+	public void setCenter(Vector2i center) {
 		setCenter(center.x, center.y);
 	}
 	
-	public void setCenter(float x, float y) {
+	public void setCenter(int x, int y) {
 		this.x = x - width / 2;
 		this.y = y - height / 2;		
 	}
 
-	public void setLocation(Vector2f pos) {
+	public void setLocation(Vector2i pos) {
 		this.setLocation(pos.x, pos.y);
 	}
 
-	public boolean contains(float X, float Y, float W, float H) {
-		float w = this.width;
-		float h = this.height;
-		float x = this.x;
-		float y = this.y;
+	public boolean contains(int X, int Y, int W, int H) {
+		int w = this.width;
+		int h = this.height;
+		int x = this.x;
+		int y = this.y;
 		if (w < 0 || h < 0 || W < 0 || H < 0)
 			return false;
 		if (X < x || Y < y) {
@@ -109,9 +104,9 @@ public class RectFloat implements IRect, Serializable {
 		return true;
 	}
 
-	public boolean contains(float x, float y) {
-		float w = this.width;
-		float h = this.height;
+	public boolean contains(int x, int y) {
+		int w = this.width;
+		int h = this.height;
 		if (w < 0 || h < 0)
 			return false;
 
@@ -123,7 +118,7 @@ public class RectFloat implements IRect, Serializable {
 		return ((w < this.x || w > x) && (h < this.y || h > y));
 	}
 
-	public boolean intersects(RectFloat other) {
+	public boolean intersects(RectInt other) {
 		return intersects(other.x, other.y, other.width, other.height);
 	}
 
@@ -183,7 +178,7 @@ public class RectFloat implements IRect, Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		RectFloat other = (RectFloat) obj;
+		RectInt other = (RectInt) obj;
 		if (Float.floatToIntBits(height) != Float.floatToIntBits(other.height))
 			return false;
 		if (Float.floatToIntBits(width) != Float.floatToIntBits(other.width))
@@ -197,12 +192,12 @@ public class RectFloat implements IRect, Serializable {
 
 	@Override
 	public String toString() {
-		return "RectFloat [x=" + x + ", y=" + y + ", width=" + width + ", height=" + height + "]";
+		return "RectInt [x=" + x + ", y=" + y + ", width=" + width + ", height=" + height + "]";
 	}
 
 	@Override
 	public RectFloat bounds() {
-		return this;
+		return new RectFloat(this);
 	}
 
 	@Override
@@ -220,14 +215,14 @@ public class RectFloat implements IRect, Serializable {
 		return Collider2D.checkShapeIntersection(this, other);
 	}
 
-	public static RectFloat create(float f, float g, float h, float i) {
-		return new RectFloat(f, g, h, i);
+	public static RectInt create(int f, int g, int h, int i) {
+		return new RectInt(f, g, h, i);
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public RectFloat copy() {
-		return new RectFloat(this);
+	public RectInt copy() {
+		return new RectInt(this);
 	}
 
 	@Override
@@ -255,9 +250,42 @@ public class RectFloat implements IRect, Serializable {
 		return intersects(other.getX(), other.getY(), other.getWidth(), other.getHeight());
 	}
 
-	public void translate(float x2, float y2) {
+	public void translate(int x2, int y2) {
 		this.x += x2;
 		this.y += y2;
 	}
+
+	@Override
+	public boolean contains(float X, float Y, float W, float H) {
+		float w = this.width;
+		float h = this.height;
+		float x = this.x;
+		float y = this.y;
+		if (w < 0 || h < 0 || W < 0 || H < 0)
+			return false;
+		if (X < x || Y < y) {
+			return false;
+		}
+		w += x;
+		W += X;
+		if (W <= X) {
+			if (w >= x || W > w)
+				return false;
+		} else {
+			if (w >= x && W > w)
+				return false;
+		}
+		h += y;
+		H += Y;
+		if (H <= Y) {
+			if (h >= y || H > h)
+				return false;
+		} else {
+			if (h >= y && H > h)
+				return false;
+		}
+		return true;
+	}
+
 
 }

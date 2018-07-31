@@ -1,9 +1,5 @@
 package vgl.platform;
 
-import org.lwjgl.opengl.GL30;
-
-import com.shc.webgl4j.client.WebGL10;
-
 import vgl.core.buffers.MemoryBuffer;
 import vgl.core.gfx.shader.ShaderType;
 import vgl.platform.gl.GLBufferTarget;

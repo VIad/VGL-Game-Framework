@@ -7,6 +7,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL44;
 
 import vgl.core.gfx.Color;
 import vgl.core.gfx.font.FontSpecifics;
@@ -17,39 +18,37 @@ import vgl.core.gfx.gl.IndexBuffer;
 import vgl.core.gfx.gl.Texture;
 import vgl.core.gfx.render.IRenderer2D;
 import vgl.core.gfx.renderable.ColoredSprite;
-import vgl.core.gfx.renderable.ImageSprite;
 import vgl.core.gfx.renderable.Renderable2D;
+import vgl.core.gfx.renderable.Sprite;
 import vgl.core.internal.Checks;
 import vgl.main.VGL;
 import vgl.maths.geom.Size2i;
 import vgl.maths.vector.Matrix4f;
 import vgl.maths.vector.Vector2f;
 import vgl.maths.vector.Vector3f;
+import vgl.platform.gl.GLBufferTarget;
 import vgl.platform.gl.GLBufferUsage;
 import vgl.platform.gl.Primitive;
 
 final public class DirectGPUAccessRenderer2D implements IRenderer2D {
 
-	private int				vao;
-	private int				indexCount;
-	private IndexBuffer		ibo;
-	
-	private IRenderer2D.OverflowPolicy overflowPolicy = OverflowPolicy.UNSPECIFIED;
+	private int							vao;
+	private int							indexCount;
+	private IndexBuffer					ibo;
 
-	private List<Integer>	textureSlots;
+	private IRenderer2D.OverflowPolicy	overflowPolicy				= OverflowPolicy.UNSPECIFIED;
 
-	private final int		MAX_RENDERABLES;
-	private final int		IBO_TOTAL_BUFFER_LENGTH;
-	private int				RENDERABLE_SIZE;
-	private int				VERTEX_ATTRIB_STRIDE;
-	private int				RENDERER_BUFFER_SIZE;
+	private List<Integer>				textureSlots;
 
-	private GPUBuffer		vbo;
+	private final int					MAX_RENDERABLES;
+	private final int					IBO_TOTAL_BUFFER_LENGTH;
+	private int							RENDERABLE_SIZE;
+	private int							VERTEX_ATTRIB_STRIDE;
+	private int							RENDERER_BUFFER_SIZE;
 
-	/**
-	 * TODO WEBGL shaders don't support more than 8 concurrently bound samplers
-	 */
-	public static final int	RENDERER_MAX_TEXTURE_UNITS	= 32;
+	private ImmutableGPUBuffer			vbo;
+
+	public static final int				RENDERER_MAX_TEXTURE_UNITS	= 32;
 
 	public DirectGPUAccessRenderer2D() {
 		Checks.checkIfInitialized();
@@ -76,16 +75,16 @@ final public class DirectGPUAccessRenderer2D implements IRenderer2D {
 		this.indexCount = 0;
 		vao = GL30.glGenVertexArrays();
 		GL30.glBindVertexArray(vao);
-		vbo = new GPUBuffer(GLBufferUsage.DYNAMIC_DRAW);
+		vbo = new ImmutableGPUBuffer(GLBufferUsage.DYNAMIC_DRAW);
 		vbo.bind();
 		vbo.resize(RENDERER_BUFFER_SIZE);
 		;
 		vbo.setLayout(
 		        new GPUBuffer.Layout()
-		                     .push(Primitive.FLOAT, 3)
-		                     .push(Primitive.FLOAT, 4)
-		                     .push(Primitive.FLOAT, 2)
-		                     .push(Primitive.FLOAT, 1));
+		                	 .push(Primitive.FLOAT /*Vertex*/,  3)
+		                	 .push(Primitive.FLOAT /*Color*/,   4)
+		                	 .push(Primitive.FLOAT /*texID*/,   2)
+		                	 .push(Primitive.FLOAT /*texSlot*/, 1));
 		vbo.unbind();
 
 		GL30.glBindVertexArray(0);
@@ -104,8 +103,8 @@ final public class DirectGPUAccessRenderer2D implements IRenderer2D {
 
 	private float	projectionWidth	= 16f, projectionHeight = 9f;
 
-	private float	scaleX		= (float) VGL.display.getWidth() / projectionWidth;
-	private float	scaleY		= (float) VGL.display.getHeight() / projectionHeight;
+	private float	scaleX			= (float) VGL.display.getWidth() / projectionWidth;
+	private float	scaleY			= (float) VGL.display.getHeight() / projectionHeight;
 
 	private void setupIBO() {
 		int[] indices = new int[IBO_TOTAL_BUFFER_LENGTH];
@@ -126,7 +125,12 @@ final public class DirectGPUAccessRenderer2D implements IRenderer2D {
 
 	public void begin() {
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo.getId());
-		gpuDirect = GL15.glMapBuffer(GL15.GL_ARRAY_BUFFER, GL15.GL_WRITE_ONLY).asFloatBuffer();
+		// gpuDirect = GL15.glMapBuffer(GL15.GL_ARRAY_BUFFER,
+		// GL15.GL_WRITE_ONLY).asFloatBuffer();
+		gpuDirect = GL30.glMapBufferRange(GL15.GL_ARRAY_BUFFER, 0, RENDERER_BUFFER_SIZE,
+		            GL30.GL_MAP_WRITE_BIT 	   |
+		            GL44.GL_MAP_PERSISTENT_BIT |
+		            GL44.GL_MAP_COHERENT_BIT   ).asFloatBuffer();
 	}
 
 	public void end() {
@@ -160,13 +164,14 @@ final public class DirectGPUAccessRenderer2D implements IRenderer2D {
 		return ts;
 	}
 
-	public IRenderer2D drawText(String str, float x, float y, IFont font) {
+	@Override
+	public IRenderer2D drawText(String str, float x, float y, IFont font, Color color) {
 		checkHasSpace(VERTEX_ATTRIB_STRIDE * str.length());
 		final FontSpecifics fs = font.getFontSpecifics();
 		float currentX = x;
 		float currentY = y;
 		for (char ch : str.toCharArray()) {
-			Color c = Color.DARK_BLUE;
+			Color c = color != null ? color : Color.WHITE;
 
 			if (ch == '\n') {
 				currentY += fs.getHeight() / scaleY;
@@ -274,7 +279,7 @@ final public class DirectGPUAccessRenderer2D implements IRenderer2D {
 		checkHasSpace(40);
 		if (renderable == null)
 			return;
-		if (renderable instanceof ImageSprite) {
+		if (renderable instanceof Sprite) {
 			if (transformation != null)
 				if (requestedSize)
 					bufferTransformed(renderable, x, y, width, height, transformation);
@@ -323,10 +328,10 @@ final public class DirectGPUAccessRenderer2D implements IRenderer2D {
 
 	private void buffer(Renderable2D renderable, float x, float y, float width, float height) {
 		float ts = 0.0f;
-		final Vector2f[] uv = ImageSprite.defaultUVS();
+		final Vector2f[] uv = Sprite.defaultUVS();
 		Color c = null;
-		if (renderable instanceof ImageSprite) {
-			ts = getTextureSlot(((ImageSprite) renderable).getTexture());
+		if (renderable instanceof Sprite) {
+			ts = getTextureSlot(((Sprite) renderable).getTexture());
 			c = Color.WHITE;
 		}
 		if (renderable instanceof ColoredSprite) {
@@ -401,10 +406,10 @@ final public class DirectGPUAccessRenderer2D implements IRenderer2D {
 	private void bufferTransformed(Renderable2D renderable, float x, float y, float width, float height,
 	        Matrix4f transformation) {
 		float ts = 0.0f;
-		final Vector2f[] uv = ImageSprite.defaultUVS();
+		final Vector2f[] uv = Sprite.defaultUVS();
 		Color c = null;
-		if (renderable instanceof ImageSprite) {
-			ts = getTextureSlot(((ImageSprite) renderable).getTexture());
+		if (renderable instanceof Sprite) {
+			ts = getTextureSlot(((Sprite) renderable).getTexture());
 			c = Color.WHITE;
 		}
 		if (renderable instanceof ColoredSprite) {
@@ -487,7 +492,7 @@ final public class DirectGPUAccessRenderer2D implements IRenderer2D {
 	private void bufferGradientSpriteTransformed(ColoredSprite renderable, float x, float y, Matrix4f transformation) {
 		Color[] grad = renderable.getGrad();
 		boolean _doubleGradient = grad.length == 4;
-		Vector2f[] uv = ImageSprite.defaultUVS();
+		Vector2f[] uv = Sprite.defaultUVS();
 		// Vertex -> Color -> UV -> TID
 		// putVec(x, y);
 		putVec3f(new Vector3f(x, y, 0f).multiply(transformation));
@@ -525,7 +530,7 @@ final public class DirectGPUAccessRenderer2D implements IRenderer2D {
 	private void bufferGradientSprite(ColoredSprite renderable, float x, float y) {
 		Color[] grad = renderable.getGrad();
 		boolean _doubleGradient = grad.length == 4;
-		Vector2f[] uv = ImageSprite.defaultUVS();
+		Vector2f[] uv = Sprite.defaultUVS();
 		// Vertex -> Color -> UV -> TID
 		putVec(x, y);
 		putColor(grad[0]);
@@ -636,21 +641,21 @@ final public class DirectGPUAccessRenderer2D implements IRenderer2D {
 	}
 
 	private void checkHasSpace(int floats) {
-		if(gpuDirect.position() + floats >= gpuDirect.capacity()) {
-			if(overflowPolicy == OverflowPolicy.DO_RENDER) {
+		if (gpuDirect.position() + floats >= gpuDirect.capacity()) {
+			if (overflowPolicy == OverflowPolicy.DO_RENDER) {
 				end();
 				render();
 				begin();
 			}
 		}
 	}
-	
+
 	@Override
 	public IRenderer2D drawLine(float x0, float y0, float x1, float y1, float thiccness, Color color) {
 		checkHasSpace(40);
 		Vector2f lineNormal = new Vector2f(y1 - y0, -(x1 - x0)).normalize().multiply(thiccness);
 		float ts = 0.0f;
-		final Vector2f[] uv = ImageSprite.defaultUVS();
+		final Vector2f[] uv = Sprite.defaultUVS();
 		// gpuDirect.put(x0 + lineNormal.x).put(y0 + lineNormal.y).put(0.0f);
 		putVec(x0 + lineNormal.x, y0 + lineNormal.y);
 		putColor(color);
@@ -684,30 +689,46 @@ final public class DirectGPUAccessRenderer2D implements IRenderer2D {
 
 	@Override
 	public IRenderer2D drawTriangle(float x0, float y0, float x1, float y1, float x2, float y2, Color color) {
-		Vector2f[] uv = ImageSprite.defaultUVS();
+		Vector2f[] uv = Sprite.defaultUVS();
 		float ts = 0.0f;
 		putVec(x0, y0);
 		putColor(color);
 		putUVElement(uv[0]);
 		gpuDirect.put(ts);
-		
+
 		putVec(x1, y1);
 		putColor(color);
 		putUVElement(uv[1]);
 		gpuDirect.put(ts);
-		
+
 		putVec(x2, y2);
 		putColor(color);
 		putUVElement(uv[2]);
 		gpuDirect.put(ts);
-		
+
 		putVec(x1, y1);
 		putColor(color);
 		putUVElement(uv[3]);
 		gpuDirect.put(ts);
-		
+
 		indexCount += 6;
 		return this;
+	}
+
+	private static class ImmutableGPUBuffer extends GPUBuffer {
+
+		ImmutableGPUBuffer(int usage) {
+			super(usage);
+		}
+		
+		@Override
+		public void resize(int bytes) {
+			bind();
+			GL44.glBufferStorage(GLBufferTarget.ARRAY_BUFFER.nativeGL(), bytes,
+			        GL30.GL_MAP_WRITE_BIT 	  | 
+			        GL44.GL_MAP_COHERENT_BIT  | 
+			        GL44.GL_MAP_PERSISTENT_BIT);
+		}
 	}
 
 }

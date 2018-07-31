@@ -74,8 +74,4 @@ public class WebGLExtensions {
 		}
 	}
 
-	public static void tryEnable(Class<?> extension) {
-
-	}
-
 }

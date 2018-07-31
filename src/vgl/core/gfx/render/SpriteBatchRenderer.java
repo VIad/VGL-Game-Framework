@@ -3,11 +3,9 @@ package vgl.core.gfx.render;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWJoystickCallbackI;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
-import org.lwjgl.opengl.GL30;
+
+import com.shc.webgl4j.client.WebGL20;
 
 import vgl.core.annotation.UnusedParameter;
 import vgl.core.buffers.MemoryBufferFloat;
@@ -19,8 +17,8 @@ import vgl.core.gfx.gl.GPUBuffer;
 import vgl.core.gfx.gl.IndexBuffer;
 import vgl.core.gfx.gl.Texture;
 import vgl.core.gfx.renderable.ColoredSprite;
-import vgl.core.gfx.renderable.ImageSprite;
 import vgl.core.gfx.renderable.Renderable2D;
+import vgl.core.gfx.renderable.Sprite;
 import vgl.main.VGL;
 import vgl.maths.geom.Size2i;
 import vgl.maths.vector.Matrix4f;
@@ -33,7 +31,6 @@ final public class SpriteBatchRenderer implements IRenderer2D{
 
 	final private static int	RENDERER_MAX_TEXTURE_UNITS	= 8;
 	final private int			BUFFER_BYTE_SIZE;
-	final private int			MAX_SPRITES;
 	final private int           VERTEX_SIZE;
 	final private int			IBO_LENGTH;
 	
@@ -55,7 +52,6 @@ final public class SpriteBatchRenderer implements IRenderer2D{
 	private int indexCount;
 
 	public SpriteBatchRenderer(int maxSprites, GPUBuffer.Layout layout) {
-		MAX_SPRITES = maxSprites;
 		BUFFER_BYTE_SIZE = maxSprites * 4 * layout.getVertexSizeBytes();
 		VERTEX_SIZE = layout.getVertexSizeBytes();
 		IBO_LENGTH = maxSprites * 6;
@@ -149,10 +145,10 @@ final public class SpriteBatchRenderer implements IRenderer2D{
 	        @UnusedParameter(reason = "Not yet implemented") Matrix4f transformation) {
 		checkOverflow(40);
 		float ts = 0.0f;
-		final Vector2f[] uv = ImageSprite.defaultUVS();
+		final Vector2f[] uv = Sprite.defaultUVS();
 		Color c = null;
-		if (renderable instanceof ImageSprite) {
-			ts = getTextureSlot(((ImageSprite) renderable).getTexture());
+		if (renderable instanceof Sprite) {
+			ts = getTextureSlot(((Sprite) renderable).getTexture());
 			c = Color.WHITE;
 		}
 		if (renderable instanceof ColoredSprite) {
@@ -225,13 +221,14 @@ final public class SpriteBatchRenderer implements IRenderer2D{
 		return this;
 	}
 
-	public IRenderer2D drawText(String str, float x, float y, IFont font) {
+	@Override
+	public IRenderer2D drawText(String str, float x, float y, IFont font, Color color) {
 		checkOverflow(str.length() * VERTEX_SIZE);
 		final FontSpecifics fs = font.getFontSpecifics();
 		float currentX = x;
 		float currentY = y;
 			for (char ch : str.toCharArray()) {
-				Color c = Color.DARK_BLUE;
+				Color c = color != null ? color : Color.WHITE;
 
 				if (ch == '\n') {
 					currentY += fs.getHeight() / scaleY;
@@ -363,7 +360,7 @@ final public class SpriteBatchRenderer implements IRenderer2D{
 		checkOverflow(40);
 		Vector2f lineNormal = new Vector2f(y1 - y0, -(x1 - x0)).normalize().multiply(thiccness);
 		float ts = 0.0f;
-		final Vector2f[] uv = ImageSprite.defaultUVS();
+		final Vector2f[] uv = Sprite.defaultUVS();
 		// gpuDirect.put(x0 + lineNormal.x).put(y0 + lineNormal.y).put(0.0f);
 		putVec(x0 + lineNormal.x, y0 + lineNormal.y);
 		putColor(color);
@@ -397,7 +394,7 @@ final public class SpriteBatchRenderer implements IRenderer2D{
 
 	@Override
 	public IRenderer2D drawTriangle(float x0, float y0, float x1, float y1, float x2, float y2, Color color) {
-		Vector2f[] uv = ImageSprite.defaultUVS();
+		Vector2f[] uv = Sprite.defaultUVS();
 		float ts = 0.0f;
 		putVec(x0, y0);
 		putColor(color);

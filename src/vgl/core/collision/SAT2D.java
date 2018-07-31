@@ -8,7 +8,7 @@ import vgl.maths.geom.shape2d.IRect;
 import vgl.maths.geom.shape2d.Polygon;
 import vgl.maths.vector.Vector2f;
 
-public class SAT2D implements ICollisionEngine2D {
+public final class SAT2D implements ICollisionEngine2D {
 
 	@Override
 	public CollisionReport2D testPolygonIntersection(Polygon first, Polygon second) {
@@ -23,7 +23,7 @@ public class SAT2D implements ICollisionEngine2D {
 			OrthoProjection p1 = first.project(axis);
 			OrthoProjection p2 = second.project(axis);
 			if (!p1.overlaps(p2))
-				return new CollisionReport2D();
+				return new CollisionReport2D.Builder().build();
 			else {
 				if(!p1.contains(p2)) {
 					allProjectionsInsideA = false;
@@ -55,7 +55,7 @@ public class SAT2D implements ICollisionEngine2D {
 			OrthoProjection p1 = first.project(axis);
 			OrthoProjection p2 = second.project(axis);
 			if (!p1.overlaps(p2))
-				return new CollisionReport2D();
+				return new CollisionReport2D.Builder().build();
 			else {
 				
 				if(!p1.contains(p2)) {
@@ -82,27 +82,29 @@ public class SAT2D implements ICollisionEngine2D {
 				}
 			}
 		}
-		return new CollisionReport2D()
-				           .collided(true)
-				           .firstContainsSecond(allProjectionsInsideA)
-				           .secondContainsFirst(allProjectionsInsideB)
-				           .mtv(new CollisionReport2D.MTV(smallest, overlap));
+		return new CollisionReport2D.Builder()
+				                    .setCollided(true)
+				                    .firstContainsSecond(allProjectionsInsideA)
+				                    .secondContainsFirst(allProjectionsInsideB)
+				                    .mtv(new CollisionReport2D.MTV(smallest, overlap))
+				                    .build();
 	}
 
 	@Override
 	public CollisionReport2D testRectangleIntersection(IRect rect1, IRect rect2) {
-		return new CollisionReport2D()
-				            .collided(rect1.intersects(rect2))
-				            .mtv(null)
-				            .firstContainsSecond(rect1.contains(rect2))
-				            .secondContainsFirst(rect2.contains(rect1));
+		return new CollisionReport2D.Builder()
+				                    .setCollided(rect1.intersects(rect2))
+				                    .mtv(null)
+				                    .firstContainsSecond(rect1.contains(rect2))
+				                    .secondContainsFirst(rect2.contains(rect1))
+				                    .build();
 	}
 
 	//TODO
 	@Override
-	public boolean testCircularCollision() {
+	public CollisionReport2D testCircularCollision() {
 		// TODO Auto-generated method stub
-		return false;
+		return null;
 	}
 
 }

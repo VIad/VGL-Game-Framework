@@ -16,9 +16,7 @@ public class Result<T> {
 	private State		state	= State.PENDING;
 
 	public static enum State {
-
 		FAILED, SUCCEEDED, PENDING
-
 	}
 
 	public Result(BinaryCallback<Callback<T>, Callback<Throwable>> callback) {
@@ -41,6 +39,7 @@ public class Result<T> {
 //			throw new IllegalStateException("Result was already successful");
 //		if (state == State.FAILED)
 //			throw new IllegalStateException("Result already failed");
+		
 		this.successRes = arg;
 		if (cb != null)
 			cb.invoke(arg);
