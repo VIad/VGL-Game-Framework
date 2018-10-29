@@ -1,8 +1,5 @@
 package vgl.core.gfx.shader;
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL20;
-
 import vgl.core.buffers.Buffers;
 import vgl.core.buffers.MemoryBuffer;
 import vgl.main.VGL;
@@ -11,7 +8,6 @@ import vgl.maths.vector.Vector2f;
 import vgl.maths.vector.Vector3f;
 import vgl.maths.vector.Vector4f;
 import vgl.platform.gl.Shader;
-import vgl.tools.ShaderTools;
 
 abstract public class ShaderProgram extends Shader {
 
@@ -71,9 +67,7 @@ abstract public class ShaderProgram extends Shader {
 		final int shaderID = VGL.api_gfx.glCreateShader(type);
 		VGL.api_gfx.glShaderSource(shaderID, source);
 		VGL.api_gfx.glCompileShader(shaderID);
-//		if (VGL.api_gfx.glGetShaderi(shaderID, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
-//			throw new vgl.core.exception.VGLFatalError("Shader failed to compile >> [" + source + "]");
-//		}
+
 		VGL.logger.warn("*********Shader Compilation Info log**********");
 		VGL.logger.warn(VGL.api_gfx.glGetShaderInfoLog(shaderID));
 		VGL.logger.warn("**********************************************");

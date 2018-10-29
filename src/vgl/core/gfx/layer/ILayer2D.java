@@ -1,15 +1,11 @@
 package vgl.core.gfx.layer;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import vgl.core.annotation.VGLInternal;
 import vgl.core.gfx.Color;
 import vgl.core.gfx.camera.OrthographicCamera;
 import vgl.core.gfx.render.IRenderer2D;
 import vgl.core.gfx.render.RenderContext;
 import vgl.core.gfx.renderable.ColoredSprite;
-import vgl.core.gfx.renderable.Renderable2D;
 import vgl.core.gfx.shader.ShaderFactory;
 import vgl.core.gfx.shader.ShaderProgram;
 import vgl.core.internal.Checks;
@@ -127,7 +123,6 @@ abstract public class ILayer2D implements ILayer {
 		shader.start();
 		layerCam.uploadToShader("transformationMatrix", shader);
 		layerRenderer.begin();
-		//TODO fix fix fix fix
 		if (!layerBackground.equals(Color.TRANSPARENT))
 			layerRenderer.draw(new ColoredSprite(layerBackground, Float.MAX_VALUE, Float.MAX_VALUE), -1000000F, -1000000F);
 		render(graphicsInstance);

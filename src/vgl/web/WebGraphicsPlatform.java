@@ -3,16 +3,13 @@ package vgl.web;
 import java.util.Arrays;
 
 import com.google.gwt.typedarrays.shared.ArrayBufferView;
-import com.google.gwt.typedarrays.shared.Uint8Array;
 import com.shc.webgl4j.client.WebGL10;
 import com.shc.webgl4j.client.WebGL20;
 import com.vgl.gwtreq.client.GWTDataView;
 
 import vgl.core.buffers.Buffers;
 import vgl.core.buffers.MemoryBuffer;
-import vgl.core.exception.VGLFatalError;
 import vgl.core.gfx.shader.ShaderType;
-import vgl.main.VGL;
 import vgl.platform.IGraphicsPlatorm;
 import vgl.platform.gl.GLBufferTarget;
 import vgl.platform.gl.GLPrimitiveMode;
@@ -385,7 +382,7 @@ public class WebGraphicsPlatform implements IGraphicsPlatorm {
 
 	@Override
 	public int glGenRenderbuffer() {
-		return WebGL10.glCreateFramebuffer();
+		return WebGL10.glCreateRenderbuffer();
 	}
 
 	@Override

@@ -1,0 +1,10 @@
+EXPORTS
+    Java_vgl_natives_memory_VGLMemory__1_1nvglbyteArray@12 @1
+    Java_vgl_natives_memory_VGLMemory__1_1nvglcharArray@12 @2
+    Java_vgl_natives_memory_VGLMemory__1_1nvgldoubleArray@12 @3
+    Java_vgl_natives_memory_VGLMemory__1_1nvglfloatArray@12 @4
+    Java_vgl_natives_memory_VGLMemory__1_1nvglintArray@12 @5
+    Java_vgl_natives_memory_VGLMemory__1_1nvgllongArray@12 @6
+    Java_vgl_natives_memory_VGLMemory__1_1nvglmemAllocByte@12 @7
+    Java_vgl_natives_memory_VGLMemory__1_1nvglmemFree@12 @8
+    Java_vgl_natives_memory_VGLMemory__1_1nvglshortArray@12 @9

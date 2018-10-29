@@ -4,7 +4,6 @@ import java.util.function.Supplier;
 
 import vgl.core.annotation.SupportedPlatforms;
 import vgl.core.exception.VGLRuntimeException;
-import vgl.main.VGL;
 import vgl.platform.Platform;
 import vgl.tools.functional.callback.BinaryCallback;
 import vgl.tools.functional.callback.Callback;

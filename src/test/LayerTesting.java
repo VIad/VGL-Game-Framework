@@ -13,14 +13,15 @@ import vgl.core.exception.VGLException;
 import vgl.core.gfx.Color;
 import vgl.core.gfx.Image;
 import vgl.core.gfx.Image.Format;
+import vgl.core.gfx.font.IFont;
 import vgl.core.gfx.gl.Texture;
 import vgl.core.gfx.layer.GFX2D;
 import vgl.core.gfx.layer.ILayer2D;
 import vgl.core.gfx.layer.LayeredLayout;
 import vgl.core.gfx.renderable.Sprite;
+import vgl.core.input.Key;
 import vgl.desktop.DesktopSpecific;
 import vgl.desktop.VGLApplication;
-import vgl.desktop.input.Key;
 import vgl.main.VGL;
 import vgl.tools.IResourceLoader;
 
@@ -33,6 +34,8 @@ public class LayerTesting {
 	private static Texture			tex;
 
 	private static IResourceLoader	resLoader;
+	
+	private static IFont font;
 
 	public static void main(String[] args) {
 		app = new App("Sad", 640, 480);
@@ -115,6 +118,9 @@ public class LayerTesting {
 			resLoader.loadImage(VGL.files.resource("resources/0.png"), image -> {
 				System.out.println("Image loaded");
 			});
+			resLoader.loadFont(VGL.files.resource("resources/fonts/font_test.fnt"), font -> {
+				LayerTesting.font = font;
+			});
 			resLoader.begin();
 			System.out.println("After begin");
 			// AudioManager.reconfigure("music", 0.1f, 1f);
@@ -132,12 +138,34 @@ public class LayerTesting {
 				@Override
 				public void update() {
 					angle += 0.5f;
+					if(VGL.input.isKeyDown(Key.S)) {
+						getCamera().moveBy(0f, -1f);
+					}
+					if(VGL.input.isKeyDown(Key.W)) {
+						getCamera().moveBy(0f, 1f);
+					}
+					if(VGL.input.isKeyDown(Key.A)) {
+						getCamera().moveBy(1f, 0f);
+					}
+					if(VGL.input.isKeyDown(Key.D)) {
+						getCamera().moveBy(-1f, 0f);
+					}
 				}
 
 				@Override
 				public void render(GFX2D graphics) {
 					if (tex != null)
 						graphics.drawSprite(new Sprite(tex), 2f, 2f, 3f, 3f);
+					if(font != null) {
+						graphics.setFont(font);
+					}
+					if(graphics.getFont() != null)
+					graphics.drawTextCentered("This is on text", 5f, 10f);
+					graphics.setColor(Color.CADET_BLUE);
+					graphics.drawLine(0f, 0f, 3f, 3f, 0.01f);
+					graphics.fillRect(5f, 3f, 5f, 5f);
+					graphics.setColor(Color.LIGHT_GOLDEN_ROD_YELLOW);
+					graphics.drawRectangle(5f, 8f, 5f, 5f);
 					// graphics.renderSprite(new ImageSprite(tex), new Transform2D(new Vector2f(2,
 					// 2)));
 					// graphics.renderSprite(new ColoredSprite(Color.LAVENDER, 2f, 2f),

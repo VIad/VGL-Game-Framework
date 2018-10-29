@@ -4,6 +4,7 @@ import vgl.core.audio.IAudioPlatform;
 import vgl.core.events.EventFeedback;
 import vgl.core.input.IPlatformInputDevice;
 import vgl.core.internal.ErrorChannel;
+import vgl.core.net.Net;
 import vgl.platform.AbstractDisplayDevice;
 import vgl.platform.IFactory;
 import vgl.platform.IGraphicsPlatorm;
@@ -39,6 +40,8 @@ public class VGL {
 	 * Methods for receiving cross-platform file I/O and other utilities
 	 */
 	public static IOSystem				io;
+	
+	public static Net                   net;
 
 	public static IPlatformInputDevice	input;
 	

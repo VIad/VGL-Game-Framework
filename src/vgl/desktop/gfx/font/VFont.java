@@ -9,13 +9,11 @@ import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 
-import vgl.core.annotation.SupportedPlatforms;
 import vgl.core.gfx.font.FontSpecifics;
 import vgl.core.gfx.font.Glyph;
 import vgl.core.gfx.font.IFont;
 import vgl.core.gfx.gl.Texture;
 import vgl.core.internal.Checks;
-import vgl.platform.Platform;
 
 public class VFont implements IFont {
 

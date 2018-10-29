@@ -1,16 +1,19 @@
 package vgl.desktop;
 
 import static org.lwjgl.glfw.GLFW.glfwDefaultWindowHints;
+import static org.lwjgl.glfw.GLFW.glfwDestroyWindow;
 import static org.lwjgl.glfw.GLFW.glfwInit;
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
+import static org.lwjgl.glfw.GLFW.glfwShowWindow;
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
+import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
+import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_VERSION;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glGetString;
-import static org.lwjgl.glfw.GLFW.*;
 
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -18,9 +21,8 @@ import org.lwjgl.opengl.GL;
 
 import vgl.core.exception.VGLException;
 import vgl.core.exception.VGLFatalError;
-import vgl.core.gfx.layer.LayeredLayout;
+import vgl.core.gfx.gl.VertexArray;
 import vgl.core.internal.Checks;
-import vgl.desktop.gl.VertexArray;
 import vgl.desktop.input.DesktopInputSystem;
 import vgl.main.VGL;
 import vgl.natives.NativeUtils;
@@ -94,6 +96,7 @@ public class DesktopContext extends AbstractContext<VGLApplication> implements I
 		else
 			glfwSwapInterval(0);
 		VGL.logger.info("VGL " + VGL.build + " | OpenGL " + glGetString(GL_VERSION));
+		VGL.logger.warn("Opening runtime for desktop platform");
 	}
 
 	@Override

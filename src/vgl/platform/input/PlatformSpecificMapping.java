@@ -5,8 +5,8 @@ import java.util.Map;
 
 import com.google.gwt.event.dom.client.KeyCodes;
 
+import vgl.core.input.Key;
 import vgl.core.internal.GlobalDetails;
-import vgl.desktop.input.Key;
 import vgl.platform.Platform;
 
 abstract public class PlatformSpecificMapping {

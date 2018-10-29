@@ -1,14 +1,7 @@
 package vgl.core.gfx.gl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-
-import org.lwjgl.openal.ALC;
-import org.lwjgl.openal.ALC10;
-import org.lwjgl.opengl.GPU_DEVICE;
-
-import com.shc.webgl4j.client.WebGL10;
 
 import vgl.core.buffers.MemoryBuffer;
 import vgl.main.VGL;

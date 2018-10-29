@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.shc.gwtal.client.openal.AL10;
-
 import vgl.audio.Sound;
 import vgl.core.exception.VGLAudioException;
 import vgl.main.VGL;

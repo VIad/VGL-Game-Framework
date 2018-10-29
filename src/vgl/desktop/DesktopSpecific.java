@@ -1,5 +1,6 @@
 package vgl.desktop;
 
+import java.awt.Desktop;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
@@ -11,28 +12,31 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.ForkJoinPool;
 
 import javax.imageio.ImageIO;
 
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.openal.AL10;
 
+import vgl.core.events.WindowFocusedEvent;
 import vgl.core.gfx.Color;
 import vgl.core.gfx.Image;
-import vgl.core.gfx.Image.Format;
 import vgl.desktop.audio.OggReader;
 import vgl.desktop.audio.TMWaveData;
 import vgl.desktop.tools.async.VoidWorker;
 import vgl.main.VGL;
 import vgl.maths.vector.Matrix4f;
 import vgl.tools.IResource;
-import vgl.tools.ISpecifier;
 import vgl.tools.IResource.ResourceState;
+import vgl.tools.ISpecifier;
 import vgl.tools.functional.callback.Callback;
-import vgl.tools.managers.Managers;
 
 abstract public class DesktopSpecific {
 	
@@ -40,12 +44,42 @@ abstract public class DesktopSpecific {
 		
 	}
 	
+	abstract public static class Utility{
+		
+		public static void browse(String url) {
+			try {
+				Desktop.getDesktop().browse(new URI(url));
+			} catch (IOException | URISyntaxException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+	}
+	
+	abstract public static class Tasking{
+		public final static ForkJoinPool THREAD_POOL = new ForkJoinPool();
+	}
+	
+	abstract public static class Display{
+		public static void initListeners() {
+			GLFW.glfwSetWindowFocusCallback(((vgl.desktop.Window) VGL.display).__nativePtr(), (window, focused) -> {
+				VGL.eventController.fire(new WindowFocusedEvent(focused));
+				VGL.display._internalSet("focused", (Boolean) focused);
+			});
+		}
+	}
+	
 	abstract public static class FileLoading {
 
 		public static Image loadImage0(String absPath) throws Throwable {
+			return loadImage0(absPath, Image.Format.RGBA);
+		}
+		
+		public static Image loadImage0(String absPath, Image.Format format) throws Throwable {
 			Image result = null;
 			BufferedImage buffered = ImageIO.read(new File(absPath));
-			result = new Image(buffered.getWidth(), buffered.getHeight(), Format.ARGB);
+			result = new Image(buffered.getWidth(), buffered.getHeight(), format);
 			for (int y = 0; y < buffered.getHeight(); y++) {
 				for (int x = 0; x < buffered.getWidth(); x++) {
 					result.setPixel(x, y, Color.fromARGB(buffered.getRGB(x, y)));

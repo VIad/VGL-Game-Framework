@@ -33,6 +33,8 @@ public class WebResourceLoader implements IResourceLoader {
 	private float																																							readyPercentage;
 	private float																																							percIncreasePerFile;
 
+	private Runnable																																						finishCallback;
+
 	private Map<FileDetails, TernaryContainer<Class<? extends IResource>,
                                               List<? extends ILoadOption>,
                                               TernaryCallback<? super IResource, ? super IResource, Throwable>>> loadMap;
@@ -51,6 +53,7 @@ public class WebResourceLoader implements IResourceLoader {
 
 	public WebResourceLoader() {
 		this.loadMap = new HashMap<>();
+		this.finishCallback = () -> {};
 	}
 
 	@Override
@@ -126,6 +129,7 @@ public class WebResourceLoader implements IResourceLoader {
 			} catch (Throwable e) {
 				entry.getValue().third.invoke(null, null, e);
 			}
+			
 		});
 	}
 
@@ -166,6 +170,9 @@ public class WebResourceLoader implements IResourceLoader {
 						        ? image
 						        : Image.copy(image, loadFormatFinal, true), (IResource) null, (Throwable) null);
 						WebResourceLoader.this.readyPercentage += percIncreasePerFile;
+						filesToLoad--;
+						if(filesToLoad <= 0)
+							ProcessManager.get().runNextUpdate(finishCallback);
 					});
 					return;
 				}
@@ -173,6 +180,9 @@ public class WebResourceLoader implements IResourceLoader {
 				finisher.invoke(
 				        image.getDataFormat() == loadFormatFinal ? image : Image.copy(image, loadFormatFinal, true),
 				        (IResource) null, (Throwable) null);
+				        filesToLoad--;
+				        if(filesToLoad <= 0)
+				        	ProcessManager.get().runNextUpdate(finishCallback);
 			});
 		}
 		if (type.equals(Sound.class)) {
@@ -181,6 +191,9 @@ public class WebResourceLoader implements IResourceLoader {
 					ProcessManager.get().runNextUpdate(() -> {
 						finisher.invoke(new Sound(alBuffer), null, null);
 						WebResourceLoader.this.readyPercentage += percIncreasePerFile;
+						filesToLoad--;
+						if(filesToLoad <= 0)
+							ProcessManager.get().runNextUpdate(finishCallback);
 					});
 				}, error -> {
 					throw new VGLIOException("Error while decoding audio : " + error);
@@ -197,6 +210,9 @@ public class WebResourceLoader implements IResourceLoader {
 				ProcessManager.get().runNextUpdate(() -> {
 					finisher.invoke(new Texture(image), image, null);
 					WebResourceLoader.this.readyPercentage += percIncreasePerFile;
+					filesToLoad--;
+					if(filesToLoad <= 0)
+						ProcessManager.get().runNextUpdate(finishCallback);
 				});
 			});
 		}
@@ -204,8 +220,16 @@ public class WebResourceLoader implements IResourceLoader {
 			BMFont.load(file, (font, error) -> {
 				finisher.invoke(font, null, error);
 				WebResourceLoader.this.readyPercentage += percIncreasePerFile;
+				filesToLoad--;
+				if(filesToLoad <= 0)
+					ProcessManager.get().runNextUpdate(finishCallback);
 			});
 		}
+	}
+
+	@Override
+	public void onLoadingFinished(Runnable onFinish) {
+		this.finishCallback = onFinish;
 	}
 
 }

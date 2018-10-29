@@ -73,7 +73,7 @@ public interface IAudioPlatform {
 
 	int alGetBufferi(int buffer, int param);
 	
-	void setupAudioContext();
+	void setup();
 	
 	boolean isInitialized();
 	

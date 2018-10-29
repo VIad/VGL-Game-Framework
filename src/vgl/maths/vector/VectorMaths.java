@@ -121,10 +121,7 @@ public class VectorMaths {
 	}
 
 	public static Matrix4f transformationMatrix(Transform2D transform2d) {
-		return transformationMatrix(new Vector3f(transform2d.position().x, transform2d.position().y, 0f),
-				0f, 0f,
-		        transform2d.angleDegrees(), 
-		        1f); 
+		return transform2d.toMatrix();
 	}
 
 }

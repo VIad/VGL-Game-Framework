@@ -3,9 +3,10 @@ package vgl.web.input;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.dom.client.NativeEvent;
 
+import vgl.core.annotation.VGLInternal;
 import vgl.core.exception.VGLRuntimeException;
 import vgl.core.input.IPlatformInputDevice;
-import vgl.desktop.input.Mouse;
+import vgl.core.input.Mouse;
 import vgl.main.VGL;
 import vgl.platform.input.PlatformSpecificMapping;
 import vgl.web.VGLWebApplication;
@@ -14,7 +15,7 @@ public class WebInputSystem implements IPlatformInputDevice{
 
 	private boolean[] keys;
 	
-	private float x, y;
+	private float x, y, dx, dy;
 	
 	private float mouseWheelDelta;
 	
@@ -25,6 +26,7 @@ public class WebInputSystem implements IPlatformInputDevice{
 		PlatformSpecificMapping.init();
 		this.keys = new boolean[2000];
 		Canvas drawSurface = ((VGLWebApplication) VGL.app).getContext().display();
+		
 		drawSurface.addKeyUpHandler(e -> {
 			keys[e.getNativeKeyCode()] = false;
 		});
@@ -32,6 +34,8 @@ public class WebInputSystem implements IPlatformInputDevice{
 			keys[e.getNativeKeyCode()] = true;
 		});
 		drawSurface.addMouseMoveHandler(e -> {
+			WebInputSystem.this.dx = (float) (e.getX() - x);
+			WebInputSystem.this.dy = (float) (e.getY() - y);
 			WebInputSystem.this.x = e.getX();
 			WebInputSystem.this.y = e.getY();
 		});
@@ -87,14 +91,12 @@ public class WebInputSystem implements IPlatformInputDevice{
 
 	@Override
 	public float getDeltaX() {
-		// TODO Auto-generated method stub
-		return 0;
+		return dx;
 	}
 
 	@Override
 	public float getDeltaY() {
-		// TODO Auto-generated method stub
-		return 0;
+		return dy;
 	}
 
 	@Override
@@ -108,8 +110,17 @@ public class WebInputSystem implements IPlatformInputDevice{
 	}
 
 	@Override
+	@VGLInternal
 	public void updateDeltas() {
 		this.mouseWheelDelta = 0;
+		this.dx = 0;
+		this.dy = 0;
+	}
+
+	@Override
+	public boolean isKeyTyped(int keyCode) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

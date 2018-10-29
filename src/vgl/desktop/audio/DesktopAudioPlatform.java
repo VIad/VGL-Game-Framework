@@ -1,8 +1,5 @@
 package vgl.desktop.audio;
 
-import java.util.Arrays;
-import java.util.stream.Stream;
-
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.AL10;
 import org.lwjgl.openal.AL11;
@@ -212,7 +209,7 @@ public class DesktopAudioPlatform implements IAudioPlatform{
 	private boolean initialized = false;
 
 	@Override
-	public void setupAudioContext() {
+	public void setup() {
 		deviceHandle = ALC10.alcOpenDevice((java.nio.ByteBuffer) null);
 		ALCCapabilities deviceCapabilities = ALC.createCapabilities(deviceHandle);
 		alContextHandle = ALC10.alcCreateContext(deviceHandle, (java.nio.IntBuffer) null);

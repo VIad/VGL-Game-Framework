@@ -31,7 +31,7 @@ public class CircularShape implements Shape2D {
 	}
 
 	public CircularShape(CircularShape other) {
-
+		
 	}
 
 	@Override

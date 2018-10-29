@@ -1,15 +1,11 @@
 package vgl.desktop.utils;
 
 import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.swing.JOptionPane;
 
-import jdk.nashorn.internal.scripts.JO;
-import vgl.desktop.tools.async.VoidWorker;
 import vgl.platform.logging.IPromptLogger;
 
 public class DesktopPromptLogger implements IPromptLogger{

@@ -14,32 +14,30 @@ import vgl.core.gfx.Color;
 import vgl.core.gfx.Image;
 import vgl.core.gfx.camera.PerspectiveCamera;
 import vgl.core.gfx.font.BMFont;
-import vgl.core.gfx.gl.GPUBuffer;
 import vgl.core.gfx.gl.Texture;
+import vgl.core.gfx.render.IRenderer2D;
+import vgl.core.gfx.render.IRenderer2D.OverflowPolicy;
 import vgl.core.gfx.render.SpriteBatchRenderer;
 import vgl.core.gfx.renderable.ColoredSprite;
-import vgl.core.gfx.renderable.Sprite;
 import vgl.core.gfx.renderable.Renderable2D;
-import vgl.core.gfx.shader.ShaderFactory;
+import vgl.core.gfx.renderable.Sprite;
 import vgl.core.gfx.shader.ShaderProgram;
 import vgl.core.gfx.shader.ShaderTokener;
+import vgl.core.input.Key;
+import vgl.core.input.Keyboard;
 import vgl.desktop.VGLApplication;
 import vgl.desktop.gfx.font.VFont;
-import vgl.desktop.gfx.renderer.DirectGPUAccessRenderer2D;
-import vgl.desktop.input.Key;
-import vgl.desktop.input.Keyboard;
 import vgl.main.VGL;
 import vgl.maths.Projection;
 import vgl.maths.vector.Matrix4f;
 import vgl.maths.vector.Vector3f;
 import vgl.maths.vector.VectorMaths;
-import vgl.platform.gl.Primitive;
 import vgl.utils.ResourceLoader;
 
 public class Test extends VGLApplication {
 
 	private static ShaderProgram			defaultShader;
-	private static SpriteBatchRenderer				bRenderer;
+	private static IRenderer2D				bRenderer;
 	private static ArrayList<Renderable2D>	sprites;
 	
 	public static String vsBatch = "precision highp float;" + 
@@ -335,13 +333,8 @@ public class Test extends VGLApplication {
 		// Color(rand.nextInt(0xffffff)),tex3));
 		font = new VFont(new Font("Times New Roman", Font.PLAIN, 100));
 
-		bRenderer = new SpriteBatchRenderer(
-		        100000,
-		        new GPUBuffer.Layout()
-		                     .push(Primitive.FLOAT, 3)
-		                     .push(Primitive.FLOAT, 4)
-		                     .push(Primitive.FLOAT, 2)
-		                     .push(Primitive.FLOAT, 1));
+		bRenderer = new SpriteBatchRenderer(50000, SpriteBatchRenderer.STD_BATCH_LAYOUT);
+		bRenderer.usingOverflowPolicy(OverflowPolicy.DO_RENDER);
 		sprites.add(new ColoredSprite(Color.LAVENDER, 5, 5));
 		sprites.add(new ColoredSprite(5, 5, new Color(rand.nextInt(0xffffff)), new Color(rand.nextInt(0xffffff))));
 		sprites.add(new ColoredSprite(
@@ -405,6 +398,7 @@ public class Test extends VGLApplication {
 		// bRenderer.drawText(randStr, 0, 10, font);
 		// bRenderer.drawText("0", 0, 0, font);
 		if (def_font != null) {
+			bRenderer.drawText("Riddle", 5f, 10f, def_font, Color.DODGER_BLUE);
 		}
 		bRenderer.end();
 		bRenderer.render();

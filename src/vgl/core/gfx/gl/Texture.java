@@ -3,20 +3,17 @@ package vgl.core.gfx.gl;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 
-import com.google.gwt.typedarrays.shared.ArrayBufferView;
-import com.google.gwt.typedarrays.shared.Uint8Array;
 import com.shc.webgl4j.client.WebGL10;
 
-import vgl.core.exception.VGLGraphicsException;
 import vgl.core.gfx.Image;
 import vgl.core.internal.GlobalDetails;
 import vgl.main.VGL;
+import vgl.maths.geom.shape2d.RectInt;
 import vgl.platform.Platform;
 import vgl.platform.gl.GLTextureType;
 import vgl.platform.gl.Primitive;
 import vgl.tools.IResource;
 import vgl.tools.ISpecifier;
-import vgl.web.WebGraphicsPlatform;
 import vgl.web.WebSpecific;
 
 public class Texture implements IResource, ISpecifier<IResource.ResourceState>{
@@ -67,11 +64,12 @@ public class Texture implements IResource, ISpecifier<IResource.ResourceState>{
 				                                      .RGBA, false);
 
 		if(GlobalDetails.getPlatform() == Platform.WEB) {
-		   	 ArrayBufferView pixels = WebSpecific.JS
-			 		                             .copy(actual.getPixels().getBuffer());
-			((WebGraphicsPlatform) VGL.api_gfx).glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, image.getWidth(),
-			        image.getHeight(), 0, GL11.GL_RGBA, Primitive.UNSIGNED_BYTE.toGLType(), pixels);
-			return;
+		   	 WebSpecific.JS
+		   	            .teximage2d(tex, actual);
+				if (!actual.equals(image))
+					actual.releaseMemory();
+				tex.specify(ResourceState.AVAILABLE);		   	 
+		   	 return;
 		}
 		VGL.api_gfx
 		   .glTexImage2D(GL11.GL_TEXTURE_2D,
@@ -88,6 +86,14 @@ public class Texture implements IResource, ISpecifier<IResource.ResourceState>{
 			actual.releaseMemory();
 		tex.specify(ResourceState.AVAILABLE);
 	}
+	
+	public TextureRegion getRegion(RectInt bounds) {
+		return new TextureRegion(this, bounds);
+	}
+
+	public TextureRegion getRegion(int x, int y, int width, int height) {
+		return new TextureRegion(this, new RectInt(x, y, width, height));
+	}	
 	
 	public static void setActiveTextureUnit(int textureUnit) {
 		if(currentlyActive == textureUnit)

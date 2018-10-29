@@ -2,7 +2,6 @@ package vgl.web.audio;
 
 import com.shc.gwtal.client.openal.AL;
 import com.shc.gwtal.client.openal.AL10;
-import com.shc.gwtal.client.openal.ALCCapabilities;
 import com.shc.gwtal.client.openal.ALContext;
 import com.shc.gwtal.client.webaudio.AudioContext;
 import com.shc.gwtal.client.webaudio.AudioContextException;
@@ -181,7 +180,7 @@ public class WebAudioPlatform implements IAudioPlatform {
 	private boolean initialized = false;
 	
 	@Override
-	public void setupAudioContext() {
+	public void setup() {
 		try {
 			context = AudioContext.create();
 		} catch (AudioContextException e) {

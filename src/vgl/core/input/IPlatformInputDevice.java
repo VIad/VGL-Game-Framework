@@ -4,7 +4,6 @@ import vgl.core.annotation.VGLInternal;
 import vgl.core.gfx.render.RenderContext;
 import vgl.main.VGL;
 import vgl.maths.Maths;
-import vgl.maths.Projection;
 import vgl.maths.vector.Vector2f;
 
 public interface IPlatformInputDevice {
@@ -14,6 +13,8 @@ public interface IPlatformInputDevice {
 	byte	CURSOR_HIDDEN_INPUT_MODE	= 0xa;
 
 	boolean isKeyDown(int keyCode);
+	
+	boolean isKeyTyped(int keyCode);
 	
 	boolean isMouseButtonDown(int mouseButton);
 	

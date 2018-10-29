@@ -1,7 +1,10 @@
 package vgl.platform;
 
+import vgl.core.annotation.VGLInternal;
 import vgl.core.gfx.Color;
+import vgl.core.input.Cursor;
 import vgl.main.VGL;
+import vgl.platform.io.FileDetails;
 
 abstract public class AbstractDisplayDevice {
 	
@@ -14,6 +17,8 @@ abstract public class AbstractDisplayDevice {
 	protected boolean vsync, fullscreen;
 	protected boolean resizable;
 	
+	protected boolean focused;
+	
 	int lastFps;
 
 	public AbstractDisplayDevice(String title ,int width, int height, boolean vsync, boolean fullscreen) {
@@ -24,6 +29,7 @@ abstract public class AbstractDisplayDevice {
 		this.vsync = vsync;
 		this.title = title;
 		this.fullscreen = fullscreen;
+		focused = false;
 	}
 	
 	public boolean isDisplayingFps() {
@@ -32,6 +38,13 @@ abstract public class AbstractDisplayDevice {
 	
 	public void setDisplayFps(boolean displayFps) {
 		this.displayFps = displayFps;
+	}
+	
+	@VGLInternal
+	public void _internalSet(String property, Object value) {
+		if(property.equals("focused")) {
+			this.focused = (Boolean) value;
+		}
 	}
 	
 	abstract public void resize(int width, int height);
@@ -52,6 +65,12 @@ abstract public class AbstractDisplayDevice {
 		return clearColor;
 	}
 	
+	abstract public void setCursor(Cursor cursor);
+	
+	abstract public void setCustomCursor(FileDetails cursor);
+	
+	abstract public boolean isFocused();
+	
 	public void setClearColor(Color color) {
 		if (color == null)
 			this.clearColor = Color.BLACK;
@@ -61,8 +80,7 @@ abstract public class AbstractDisplayDevice {
 	}
 
 	public String getTitle() {
-		// TODO Auto-generated method stub
-		return null;
+		return title;
 	}
 
 	public boolean isVerticalSyncRequested() {

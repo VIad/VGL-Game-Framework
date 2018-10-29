@@ -2,7 +2,6 @@ package vgl.core.collision;
 
 import vgl.maths.geom.shape2d.IRect;
 import vgl.maths.geom.shape2d.Polygon;
-import vgl.maths.geom.shape2d.Shape2D;
 
 public interface ICollisionEngine2D {
 

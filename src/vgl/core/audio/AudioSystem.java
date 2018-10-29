@@ -1,8 +1,5 @@
 package vgl.core.audio;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.lwjgl.openal.AL10;
 
 import vgl.main.VGL;
@@ -33,7 +30,7 @@ public class AudioSystem {
 	 */
 	public static void initialize(int sourcePoolSize) {
 		initialized = true;
-		VGL.api_afx.setupAudioContext();
+		VGL.api_afx.setup();
 		AudioSourcePool.create(sourcePoolSize);
 		setListener();
 	}

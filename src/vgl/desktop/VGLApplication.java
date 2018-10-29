@@ -1,7 +1,6 @@
 package vgl.desktop;
 
-import org.lwjgl.glfw.GLFW;
-
+import vgl.core.events.EventFeedback;
 import vgl.core.exception.VGLException;
 import vgl.core.internal.GlobalDetails;
 import vgl.desktop.audio.DesktopAudioPlatform;
@@ -9,6 +8,7 @@ import vgl.desktop.gl.DesktopGraphicsPlatform;
 import vgl.desktop.input.DesktopInputSystem;
 import vgl.desktop.io.DesktopFiles;
 import vgl.desktop.io.DesktopIOSystem;
+import vgl.desktop.net.DesktopNetworkSystem;
 import vgl.desktop.utils.DesktopLogger;
 import vgl.desktop.utils.DesktopPromptLogger;
 import vgl.main.Application;
@@ -102,7 +102,9 @@ abstract public class VGLApplication extends Application {
 		VGL.factory = new DesktopFactory();
 		VGL.files = new DesktopFiles();
 		VGL.logger = new DesktopLogger();
+		VGL.net = new DesktopNetworkSystem();
 		VGL.promptLogger = new DesktopPromptLogger();
+		VGL.eventController = new EventFeedback();
 		VGL.display = new Window(title, w_width, w_height, vsync, false);
 		VGL.api_gfx = new DesktopGraphicsPlatform();
 		VGL.api_afx = new DesktopAudioPlatform();

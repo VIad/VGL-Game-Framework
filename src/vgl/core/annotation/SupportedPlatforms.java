@@ -24,6 +24,8 @@ import vgl.platform.Platform;
  */
 public @interface SupportedPlatforms {
 
-	Platform[] values();
+	Platform[] values() default {
+		
+	};
 	
 }

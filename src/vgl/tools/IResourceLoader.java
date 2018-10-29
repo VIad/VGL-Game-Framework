@@ -45,10 +45,8 @@ public interface IResourceLoader {
 		});
 	}
 
-	void begin();
+	void onLoadingFinished(Runnable onFinish);
 	
-	interface Raw{
-		void loadSoundRaw(FileDetails fd, Callback<Integer> alBufferRaw, Callback<Throwable> error);
-	}
+	void begin();
 
 }

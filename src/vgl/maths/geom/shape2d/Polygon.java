@@ -76,6 +76,9 @@ public class Polygon implements Shape2D {
 		this.angleRot = 0.0f;
 	}
 
+	/*
+	 * O(n) each update :thinking:
+	 */
 	private void recalculateBounds() {
 		float minX = Float.POSITIVE_INFINITY, minY = Float.POSITIVE_INFINITY, maxX = Float.NEGATIVE_INFINITY,
 		        maxY = Float.NEGATIVE_INFINITY;

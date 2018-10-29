@@ -1,7 +1,5 @@
 package vgl.maths;
 
-import vgl.maths.vector.Vector2f;
-
 //============================================================================
 //Name        : Maths
 //Author      : Vladimir Ivanov

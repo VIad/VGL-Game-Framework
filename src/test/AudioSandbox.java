@@ -3,30 +3,78 @@ package test;
 import java.io.IOException;
 
 import vgl.audio.Sound;
-import vgl.core.audio.AudioManager;
 import vgl.core.audio.AudioSystem;
-import vgl.core.internal.gpu_device_l;
+import vgl.core.exception.VGLException;
+import vgl.core.input.Key;
+import vgl.desktop.DesktopSpecific;
+import vgl.main.VGL;
 
 public class AudioSandbox {
 
-	// TODO WORK ON
 	public static void main(String[] args) throws InterruptedException, IOException {
-		AudioSystem.initialize(5);
-		AudioManager.create();
-//		AudioManager.add("music", new Sound(AudioSystem.));
-//		AudioManager.add("music2", new Sound("resources/bet.ogg"));
-		AudioManager.reconfigure("music", 0.5f, 1f).play();
-		float add = 1f;
-		boolean paused = false;
-		while (true) {
-			char read = (char) System.in.read();
 
-			if (read == 'w') {
-				AudioManager.reconfigure("musicc", 0.5f,add+=0.1f);
+		VGLTestApp testApp = new VGLTestApp() {
+
+			Sound	sound;
+
+			boolean	played			= false;
+
+			boolean	loadShortSound	= false;
+
+			@Override
+			public void update() throws VGLException {
+				if (VGL.input.isKeyDown(Key.P)) {
+					if (!played) {
+						sound.play();
+						played = true;
+					}
+				}
+
+				if (VGL.input.isKeyDown(Key.L)) {
+					if (!played) {
+						sound.loop();
+						played = true;
+					}
+				}
+
+				if (VGL.input.isKeyDown(Key.DOWN)) {
+					sound.setGain(sound.getGain() - 0.05f);
+				}
+
+				if (VGL.input.isKeyDown(Key.UP)) {
+					sound.setGain(sound.getGain() + 0.05f);
+				}
+				
+				if(VGL.input.isKeyDown(Key.SPACE)) {
+					if(played) {
+						sound.togglePause();
+					}
+				}
+			}
+
+			@Override
+			public void render() throws VGLException {
+			}
+
+			@Override
+			public void init() throws VGLException {
+				VGL.logger.info("Perform init");
+				AudioSystem.initialize();
+				if (loadShortSound)
+					sound = new Sound(DesktopSpecific.AudioDecoder.decodeAudio("resources/untitled.wav"));
+				else
+					sound = new Sound(DesktopSpecific.AudioDecoder.decodeOGG("resources/bet.ogg"));
+			}
+
+			@Override
+			public void finish() throws VGLException {
+				VGL.logger.info("Perform finish");
 
 			}
-		}
-		// AudioSystem.destroy();
+		};
+
+		testApp.startApplication();
+
 	}
 
 }

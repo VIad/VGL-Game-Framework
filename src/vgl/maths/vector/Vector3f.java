@@ -86,6 +86,11 @@ public class Vector3f implements java.io.Serializable, Comparable<Vector3f> {
 		this(0, 0, 0);
 	}
 
+	public Vector3f(Vector2f position) {
+		this.x = position.x;
+		this.y = position.y;
+	}
+
 	public Vector3f add(final Vector3f other) {
 		this.x += other.x;
 		this.y += other.y;
@@ -147,13 +152,21 @@ public class Vector3f implements java.io.Serializable, Comparable<Vector3f> {
 	}
 	
 	public Vector3f multiply(Matrix4f mat) {
-		float x = mat.m00 * this.x + mat.m10 * this.y + mat.m20 * this.z;
-		float y = mat.m01 * this.x + mat.m11 * this.y + mat.m21 * this.z;
-		float z = mat.m02 * this.x + mat.m12 * this.y + mat.m22 * this.z;
-		this.x = x;
-		this.y = y;
-		this.z = z;
-		return this;
+//		float x = mat.m00 * this.x + mat.m10 * this.y + mat.m20 * this.z;
+//		float y = mat.m01 * this.x + mat.m11 * this.y + mat.m21 * this.z;
+//		float z = mat.m02 * this.x + mat.m12 * this.y + mat.m22 * this.z;
+//		this.x = x;
+//		this.y = y;
+//		this.z = z;
+//		return this;
+        
+        float A = mat.m00, B = mat.m10, C = mat.m20, D = mat.m30;
+        float E = mat.m01, F = mat.m11, G = mat.m21, H = mat.m31;
+        float I = mat.m02, J = mat.m12, K = mat.m22, L = mat.m32;
+        
+        return set(A * x + B * y + C * z + D * 1,
+                E * x + F * y + G * z + H * 1,
+                I * x + J * y + K * z + L * 1);
 	}
 
 	public Vector3f cross(Vector3f other) {

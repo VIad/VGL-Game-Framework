@@ -1,6 +1,5 @@
 package vgl.tools;
 
-import vgl.core.annotation.VGLInternal;
 import vgl.core.exception.VGLRuntimeException;
 
 public interface IResource {

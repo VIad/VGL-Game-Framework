@@ -1,11 +1,6 @@
 package vgl.core.gfx.shader;
 
-import java.io.File;
-
-import org.apache.commons.collections.list.SetUniqueList;
-
 import vgl.core.internal.GlobalDetails;
-import vgl.desktop.io.FileInput;
 import vgl.platform.Platform;
 
 public class ShaderFactory {
@@ -130,7 +125,7 @@ public class ShaderFactory {
 			"       if(tid == 7)\n "+
 			"       color = texture2D(textures_7, fs_in_uvs);\r\n" + 
 			"    }\r\n" + 
-			"    gl_FragColor = color;"+
+			"    gl_FragColor = color * fs_in_color;"+
 			"}";
 
 	public static ShaderProgram batch2DGLSL() {

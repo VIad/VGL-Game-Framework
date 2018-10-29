@@ -1,15 +1,32 @@
 package vgl.desktop;
 
-import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.glfw.GLFW.GLFW_ARROW_CURSOR;
+import static org.lwjgl.glfw.GLFW.GLFW_CROSSHAIR_CURSOR;
+import static org.lwjgl.glfw.GLFW.GLFW_FALSE;
+import static org.lwjgl.glfw.GLFW.GLFW_HAND_CURSOR;
+import static org.lwjgl.glfw.GLFW.GLFW_RESIZABLE;
+import static org.lwjgl.glfw.GLFW.GLFW_TRUE;
+import static org.lwjgl.glfw.GLFW.GLFW_VISIBLE;
+import static org.lwjgl.glfw.GLFW.glfwCreateStandardCursor;
+import static org.lwjgl.glfw.GLFW.glfwDestroyCursor;
+import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
+import static org.lwjgl.glfw.GLFW.glfwGetVideoMode;
+import static org.lwjgl.glfw.GLFW.glfwSetCursor;
+import static org.lwjgl.glfw.GLFW.glfwWindowHint;
+
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.system.MemoryStack;
 
 import vgl.core.annotation.VGLInternal;
 import vgl.core.gfx.Color;
-import vgl.main.VGL;
+import vgl.core.gfx.Image;
+import vgl.core.input.Cursor;
 import vgl.maths.vector.Vector2i;
 import vgl.platform.AbstractDisplayDevice;
+import vgl.platform.io.FileDetails;
 
 public class Window extends AbstractDisplayDevice {
 
@@ -51,7 +68,9 @@ public class Window extends AbstractDisplayDevice {
 			glfwWindowHint(GLFW.GLFW_REFRESH_RATE, vidMode.refreshRate());
 		glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
 		glfwWindowHint(GLFW_RESIZABLE, resizable ? GLFW_TRUE : GLFW_FALSE);
+		
 		this.position = new Vector2i(200, 200);
+
 	}
 
 	private volatile static boolean updateOnResize = false;
@@ -69,11 +88,13 @@ public class Window extends AbstractDisplayDevice {
 	public void setClearColor(int r, int g, int b) {
 		super.setClearColor(new Color(r, g, b));
 	}
-
+	
 	void create() {
 		__ptr = GLFW.glfwCreateWindow(width, height, title, fullscreen ? GLFW.glfwGetPrimaryMonitor() : 0, 0);
 		setPosition(position.x, position.y);
 		VGLPrivateUtils.__wresizeCallback(__nativePtr());
+		DesktopSpecific.Display.initListeners();
+		focused = true;
 //		VGL.display.setClearColor(Color.BLACK);
 	}
 
@@ -104,6 +125,68 @@ public class Window extends AbstractDisplayDevice {
 		if (__ptr != NULL) {			
 			GLFW.glfwSetWindowPos(__ptr, x, y);
 		}
+	}
+
+	/**
+	 * To avoid cursor memory leak
+	 */
+	private long lastCursorPtr = NULL;
+
+	/**
+	 * Add support for hidden
+	 */
+	@Override
+	public void setCursor(Cursor cursor) {
+		if (lastCursorPtr != NULL)
+			glfwDestroyCursor(lastCursorPtr);
+		switch (cursor)
+		{
+			case ARROW:
+				glfwSetCursor(__ptr, lastCursorPtr = glfwCreateStandardCursor(GLFW_ARROW_CURSOR));
+				break;
+			case CROSSHAIR:
+				glfwSetCursor(__ptr, lastCursorPtr = glfwCreateStandardCursor(GLFW_CROSSHAIR_CURSOR));
+				break;
+			case HIDDEN:
+//				GLFW.glfwSetInputMode(__ptr, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_HIDDEN);
+				break;
+			case DEFAULT:
+				glfwSetCursor(__ptr, lastCursorPtr = glfwCreateStandardCursor(GLFW_ARROW_CURSOR));
+				break;
+			case HAND:
+				glfwSetCursor(__ptr, lastCursorPtr = glfwCreateStandardCursor(GLFW_HAND_CURSOR));
+				break;
+			default:
+				break;
+
+		}
+	}
+
+	@Override
+	public void setCustomCursor(FileDetails cursor) {
+		if(lastCursorPtr != NULL)
+			glfwDestroyCursor(lastCursorPtr);
+		try {
+			glfwSetCursor(__ptr, lastCursorPtr = createCursor(DesktopSpecific.FileLoading.loadImage0(cursor.absolutePath())));
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private long createCursor(Image image) {
+		try(MemoryStack stack = MemoryStack.stackPush()){
+			GLFWImage glfw = GLFWImage.mallocStack(stack);
+			
+			glfw.width(image.getWidth());
+			glfw.height(image.getHeight());
+			glfw.pixels((java.nio.ByteBuffer) image.getPixels().getBuffer().nativeBufferDetails().getBuffer());
+			return GLFW.glfwCreateCursor(glfw, 0, 0);
+		}		
+	}
+
+	@Override
+	public boolean isFocused() {
+		return focused;
 	}
 
 }

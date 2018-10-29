@@ -2,7 +2,6 @@ package vgl.web.io;
 
 import java.util.List;
 
-
 import vgl.main.VGL;
 import vgl.platform.io.FileDetails;
 import vgl.tools.functional.Result;

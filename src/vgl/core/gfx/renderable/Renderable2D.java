@@ -2,16 +2,25 @@ package vgl.core.gfx.renderable;
 
 import vgl.maths.geom.Size2f;
 
-abstract public class Renderable2D {
+public interface Renderable2D {
 
-	protected Size2f size;
-
-	public float getWidth() {
-		return size.width;
+	default float getWidth() {
+		return getSize().width;
 	}
 
-	public float getHeight() {
-		return size.height;
+	default float getHeight() {
+		return getSize().height;
 	}
 
+	static Renderable2D create(float w, float h) {
+		return new Renderable2D() {
+			
+			@Override
+			public Size2f getSize() {
+				return new Size2f(w, h);
+			}
+		};
+	}
+	
+	vgl.maths.geom.Size2f getSize();
 }

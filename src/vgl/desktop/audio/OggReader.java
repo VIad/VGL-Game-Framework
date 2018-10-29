@@ -10,6 +10,7 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 import org.lwjgl.stb.STBVorbisInfo;
+import org.lwjgl.system.MemoryUtil;
 
 import vgl.core.audio.al.ALFormat;
 
@@ -39,10 +40,8 @@ public class OggReader {
 	}
 
 	private void decodeToPCM(String input) {
-
-		IntBuffer error = ByteBuffer.allocateDirect(1 << 2).asIntBuffer();
+		IntBuffer error = MemoryUtil.memAllocInt(1);
 		long handle = stb_vorbis_open_filename(input, error, null);
-
 		if (handle == 0)
 			throw new RuntimeException("Error " + error.get(0) + ": decoding the OGG data");
 
@@ -56,7 +55,7 @@ public class OggReader {
 		int numSamples = stb_vorbis_stream_length_in_samples(handle);
 		ByteBuffer pcm = ByteBuffer.allocateDirect(numSamples * Short.BYTES * channels);
 		stb_vorbis_get_samples_short_interleaved(handle, channels, pcm.asShortBuffer());
-
+		
 		data = pcm;
 
 		stb_vorbis_close(handle);

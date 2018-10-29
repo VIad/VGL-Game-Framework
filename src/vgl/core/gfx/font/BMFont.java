@@ -3,12 +3,6 @@ package vgl.core.gfx.font;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.GL43;
-import org.lwjgl.opengl.GLDebugMessageCallbackI;
-
-import vgl.core.exception.VGLFontException;
-import vgl.core.exception.VGLIOException;
 import vgl.core.gfx.gl.Texture;
 import vgl.core.gfx.render.RenderContext;
 import vgl.core.internal.ProcessManager;

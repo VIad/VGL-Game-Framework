@@ -16,7 +16,6 @@ import vgl.core.buffers.MemoryBuffer;
 import vgl.core.gfx.Image;
 import vgl.desktop.DesktopSpecific;
 import vgl.desktop.tools.async.VoidWorker;
-import vgl.main.VGL;
 import vgl.platform.io.FileDetails;
 import vgl.platform.io.IOSystem;
 import vgl.platform.io.ReadOption;

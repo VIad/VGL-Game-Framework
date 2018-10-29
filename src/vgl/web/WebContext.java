@@ -1,9 +1,9 @@
 package vgl.web;
 
+
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.Document;
-import com.shc.gwtal.client.openal.AudioDecoder;
 import com.shc.webgl4j.client.WebGL10;
 import com.shc.webgl4j.client.WebGL20;
 import com.shc.webgl4j.client.WebGLContext;
@@ -55,6 +55,7 @@ public class WebContext extends AbstractContext<VGLWebApplication> implements IP
 
 		application.set(new Dim(ce.getWidth(), ce.getHeight()));
 		this.details = new CanvasDetails(ce);
+		
 	}
 
 	private long	last	= System.currentTimeMillis();

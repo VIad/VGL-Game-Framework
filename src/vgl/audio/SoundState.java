@@ -7,6 +7,8 @@ public enum SoundState {
 	PLAYING,
 
 	PAUSED,
+	
+	LOOPING,
 
 	STOPPED;
 
@@ -21,6 +23,8 @@ public enum SoundState {
 				return AL10.AL_PLAYING;
 			case STOPPED:
 				return AL10.AL_STOPPED;
+			case LOOPING:
+				return AL10.AL_LOOPING;
 		}
 	}
 

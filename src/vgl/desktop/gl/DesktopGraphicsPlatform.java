@@ -43,6 +43,14 @@ public class DesktopGraphicsPlatform implements IGraphicsPlatorm {
 			return null;
 		});
 	}
+	
+	private <T> T runGLMethod(String methodName, Supplier<T> action) {
+		return runGLMethod(this::shouldTest, methodName, action);
+	}
+	
+	private void runGLVoidMethod(String methodName, Runnable action) {
+		 runGLVoidMethod(this::shouldTest, methodName, action);
+	}
 
 	@Override
 	public int glGenVertexArray() {

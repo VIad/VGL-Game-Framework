@@ -5,7 +5,6 @@ import java.util.Queue;
 import java.util.function.Supplier;
 
 import vgl.core.exception.ErrorChannelHandler;
-import vgl.main.VGL;
 
 public class ErrorChannel {
 	

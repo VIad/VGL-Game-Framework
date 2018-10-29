@@ -2,7 +2,6 @@ package vgl.web.io;
 
 import java.util.Arrays;
 
-import com.google.gwt.core.client.GWT;
 import com.vgl.gwtreq.client.GWTArrayBuffer;
 
 import vgl.core.buffers.MemoryBuffer;

@@ -2,7 +2,6 @@ package vgl.core.internal;
 
 import vgl.main.VGL;
 import vgl.platform.gl.GLBufferTarget;
-import vgl.platform.gl.GLBufferUsage;
 
 public class gpu_device_l {
 

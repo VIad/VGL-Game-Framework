@@ -5,9 +5,6 @@ import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
-import com.shc.webgl4j.client.WebGL20;
-
-import vgl.core.annotation.UnusedParameter;
 import vgl.core.buffers.MemoryBufferFloat;
 import vgl.core.gfx.Color;
 import vgl.core.gfx.font.FontSpecifics;
@@ -16,6 +13,7 @@ import vgl.core.gfx.font.IFont;
 import vgl.core.gfx.gl.GPUBuffer;
 import vgl.core.gfx.gl.IndexBuffer;
 import vgl.core.gfx.gl.Texture;
+import vgl.core.gfx.gl.TextureRegion;
 import vgl.core.gfx.renderable.ColoredSprite;
 import vgl.core.gfx.renderable.Renderable2D;
 import vgl.core.gfx.renderable.Sprite;
@@ -23,33 +21,31 @@ import vgl.main.VGL;
 import vgl.maths.geom.Size2i;
 import vgl.maths.vector.Matrix4f;
 import vgl.maths.vector.Vector2f;
+import vgl.maths.vector.Vector3f;
 import vgl.platform.gl.GLBufferUsage;
 import vgl.platform.gl.GLPrimitiveMode;
 import vgl.platform.gl.Primitive;
 
-final public class SpriteBatchRenderer implements IRenderer2D{
+final public class SpriteBatchRenderer implements IRenderer2D {
 
-	final private static int	RENDERER_MAX_TEXTURE_UNITS	= 8;
-	final private int			BUFFER_BYTE_SIZE;
-	final private int           VERTEX_SIZE;
-	final private int			IBO_LENGTH;
-	
-	private IRenderer2D.OverflowPolicy overflowPolicy = OverflowPolicy.UNSPECIFIED;
-	
-	public final static GPUBuffer.Layout STD_BATCH_LAYOUT = new GPUBuffer.Layout()
-			                                                             .push(Primitive.FLOAT, 3)
-			                                                             .push(Primitive.FLOAT, 4)
-			                                                             .push(Primitive.FLOAT, 2)
-			                                                             .push(Primitive.FLOAT, 1);
+	final private static int				RENDERER_MAX_TEXTURE_UNITS	= 8;
+	final private int						BUFFER_BYTE_SIZE;
+	final private int						VERTEX_SIZE;
+	final private int						IBO_LENGTH;
 
-	final private List<Integer>	textureSlots;
+	private IRenderer2D.OverflowPolicy		overflowPolicy				= OverflowPolicy.UNSPECIFIED;
 
-	private int					vao;
-	private GPUBuffer			renderer_gpuBuffer;
-	private MemoryBufferFloat	local;
+	public final static GPUBuffer.Layout	STD_BATCH_LAYOUT			= new GPUBuffer.Layout().push(Primitive.FLOAT,
+	        3).push(Primitive.FLOAT, 4).push(Primitive.FLOAT, 2).push(Primitive.FLOAT, 1);
 
-	private IndexBuffer			ibo;
-	private int indexCount;
+	final private List<Integer>				textureSlots;
+
+	private int								vao;
+	private GPUBuffer						renderer_gpuBuffer;
+	private MemoryBufferFloat				local;
+
+	private IndexBuffer						ibo;
+	private int								indexCount;
 
 	public SpriteBatchRenderer(int maxSprites, GPUBuffer.Layout layout) {
 		BUFFER_BYTE_SIZE = maxSprites * 4 * layout.getVertexSizeBytes();
@@ -92,7 +88,7 @@ final public class SpriteBatchRenderer implements IRenderer2D{
 		}
 		return ts;
 	}
-	
+
 	private void setupIndexBuffer() {
 		int[] indices = new int[IBO_LENGTH];
 		int iOffs = 0;
@@ -117,9 +113,9 @@ final public class SpriteBatchRenderer implements IRenderer2D{
 		renderer_gpuBuffer.setData(local.getBuffer(), 0);
 		renderer_gpuBuffer.unbind();
 	}
-	
+
 	public void render() {
-		for(int i = 0; i < textureSlots.size(); i++) {
+		for (int i = 0; i < textureSlots.size(); i++) {
 			Texture.setActiveTextureUnit(i);
 			VGL.api_gfx.glBindTexture(GL11.GL_TEXTURE_2D, textureSlots.get(i));
 		}
@@ -139,22 +135,228 @@ final public class SpriteBatchRenderer implements IRenderer2D{
 		this.scaleX = (float) VGL.display.getWidth() * 1.0f / projWidth;
 		this.scaleY = (float) VGL.display.getHeight() * 1.0f / projHeight;
 	}
-	
+
 	@Override
-	public IRenderer2D draw(Renderable2D renderable, float x, float y, float width, float height,
-	        @UnusedParameter(reason = "Not yet implemented") Matrix4f transformation) {
+	public IRenderer2D drawText(String str, float x, float y, IFont font, Color color) {
+		checkOverflow(str.length() * VERTEX_SIZE);
+		final FontSpecifics fs = font.getFontSpecifics();
+		float currentX = x;
+		float currentY = y;
+		for (char ch : str.toCharArray()) {
+			Color c = color != null ? color : Color.WHITE;
+
+			if (ch == '\n') {
+				currentY += fs.getHeight() / scaleY;
+				currentX = x;
+				continue;
+			}
+
+			Glyph glyph = font.getGlyph((int) ch);
+			// if (glyph.page == pages.getKey()) {
+			float ts = getTextureSlot(font.getFontTextureFor(glyph));
+			float x0 = currentX + glyph.xoffset / scaleX;
+			float y0 = currentY + glyph.yoffset / scaleY;
+			float x1 = x0 + glyph.width / scaleX;
+
+			float y1 = y0 + glyph.height / scaleY;
+
+			float s0 = glyph.x;
+			float t0 = glyph.y;
+			float s1 = glyph.x + glyph.width;
+			float t1 = glyph.y + glyph.height;
+			Size2i fTex = fs.getFontTextureDimensions();
+			float u0 = s0 / fTex.width;
+			float v0 = t0 / fTex.height;
+			float u1 = s1 / fTex.width;
+			float v1 = t1 / fTex.height;
+
+			currentX += glyph.xadvance / scaleX;
+			/**
+			 * VBO LAYOUT
+			 */
+			// Vertex
+			local.put(x0);
+			local.put(y0);
+			local.put(0f);
+			// Color
+			local.put(c.getRed());
+			local.put(c.getGreen());
+			local.put(c.getBlue());
+			local.put(c.getAlpha());
+			// UVs
+			local.put(u0);
+			local.put(v0);
+			// TID
+			local.put(ts);
+
+			// Vertex
+			local.put(x0);
+			local.put(y1);
+			local.put(0f);
+			// Color
+			local.put(c.getRed());
+			local.put(c.getGreen());
+			local.put(c.getBlue());
+			local.put(c.getAlpha());
+			// UVs
+			local.put(u0);
+			local.put(v1);
+			// TID
+			local.put(ts);
+
+			// Vertex
+			local.put(x1);
+			local.put(y1);
+			local.put(0f);
+			// Color
+			local.put(c.getRed());
+			local.put(c.getGreen());
+			local.put(c.getBlue());
+			local.put(c.getAlpha());
+			// UVs
+			local.put(u1);
+			local.put(v1);
+			// TID
+			local.put(ts);
+
+			// Vertex
+			local.put(x1);
+			local.put(y0);
+			local.put(0f);
+			// Color
+			local.put(c.getRed());
+			local.put(c.getGreen());
+			local.put(c.getBlue());
+			local.put(c.getAlpha());
+			// UVs
+			local.put(u1);
+			local.put(v0);
+			// TID
+			local.put(ts);
+
+			indexCount += 6;
+			// }
+		}
+		return this;
+	}
+
+	@Override
+	public void dispose() {
+		ibo.dispose();
+		VGL.api_gfx.glDeleteVertexArrays(vao);
+		local.getBuffer().free();
+		local = null;
+		renderer_gpuBuffer.dispose();
+	}
+
+	private void putColor(Color c) {
+		local.put(c.getRed()).put(c.getGreen()).put(c.getBlue()).put(c.getAlpha());
+	}
+
+	private void putUVElement(Vector2f uv) {
+		local.put(uv.x).put(uv.y);
+	}
+
+	private void putVec(float x, float y) {
+		local.put(x).put(y).put(0f);
+	}
+
+	private void checkOverflow(int floats) {
+		if (local.pointer() + floats >= local.capacity())
+			if (this.overflowPolicy == OverflowPolicy.DO_RENDER) {
+				end();
+				render();
+				begin();
+			}
+	}
+
+	@Override
+	public IRenderer2D drawLine(float x0, float y0, float x1, float y1, float thiccness, Color color) {
 		checkOverflow(40);
+		Vector2f lineNormal = new Vector2f(y1 - y0, -(x1 - x0)).normalize().multiply(thiccness);
 		float ts = 0.0f;
 		final Vector2f[] uv = Sprite.defaultUVS();
-		Color c = null;
+		// gpuDirect.put(x0 + lineNormal.x).put(y0 + lineNormal.y).put(0.0f);
+		putVec(x0 + lineNormal.x, y0 + lineNormal.y);
+		putColor(color);
+		putUVElement(uv[0]);
+		local.put(ts);
+
+		putVec(x1 + lineNormal.x, y1 + lineNormal.y);
+		putColor(color);
+		putUVElement(uv[1]);
+		local.put(ts);
+
+		putVec(x1 - lineNormal.x, y1 - lineNormal.y);
+		putColor(color);
+		putUVElement(uv[2]);
+		local.put(ts);
+
+		putVec(x0 - lineNormal.x, y0 - lineNormal.y);
+		putColor(color);
+		putUVElement(uv[3]);
+		local.put(ts);
+
+		indexCount += 6;
+		return this;
+	}
+
+	@Override
+	public IRenderer2D usingOverflowPolicy(OverflowPolicy policy) {
+		this.overflowPolicy = policy;
+		return this;
+	}
+
+	@Override
+	public IRenderer2D drawTriangle(float x0, float y0, float x1, float y1, float x2, float y2, Color color) {
+		Vector2f[] uv = Sprite.defaultUVS();
+		float ts = 0.0f;
+		putVec(x0, y0);
+		putColor(color);
+		putUVElement(uv[0]);
+		local.put(ts);
+
+		putVec(x1, y1);
+		putColor(color);
+		putUVElement(uv[1]);
+		local.put(ts);
+
+		putVec(x2, y2);
+		putColor(color);
+		putUVElement(uv[2]);
+		local.put(ts);
+
+		putVec(x1, y1);
+		putColor(color);
+		putUVElement(uv[3]);
+		local.put(ts);
+
+		indexCount += 6;
+		return this;
+	}
+
+	@Override
+	public IRenderer2D draw(Renderable2D renderable, float x, float y, float width, float height, Color tint,
+	        Matrix4f transformation, boolean doScale) {
+		if(transformation != null) {
+			drawTransformed(renderable, x, y, width, height, tint, transformation, doScale);
+			return this;
+		}
+		checkOverflow(40);
+		float ts = 0.0f;
+		Vector2f[] uv = Sprite.defaultUVS();
+		Color c = tint == null ? Color.WHITE : tint;
 		if (renderable instanceof Sprite) {
 			ts = getTextureSlot(((Sprite) renderable).getTexture());
+			uv = ((Sprite) renderable).getUVs();
 			c = Color.WHITE;
 		}
 		if (renderable instanceof ColoredSprite) {
 			ColoredSprite cs = (ColoredSprite) renderable;
 			c = cs.getColor();
 		}
+		width = doScale ? width / scaleX : width;
+		height = doScale ? height / scaleY : height;
 		/**
 		 * VBO LAYOUT
 		 */
@@ -221,201 +423,160 @@ final public class SpriteBatchRenderer implements IRenderer2D{
 		return this;
 	}
 
-	@Override
-	public IRenderer2D drawText(String str, float x, float y, IFont font, Color color) {
-		checkOverflow(str.length() * VERTEX_SIZE);
-		final FontSpecifics fs = font.getFontSpecifics();
-		float currentX = x;
-		float currentY = y;
-			for (char ch : str.toCharArray()) {
-				Color c = color != null ? color : Color.WHITE;
-
-				if (ch == '\n') {
-					currentY += fs.getHeight() / scaleY;
-					currentX = x;
-					continue;
-				}
-
-				Glyph glyph = font.getGlyph((int) ch);
-//				if (glyph.page == pages.getKey()) {
-				float ts = getTextureSlot(font.getFontTextureFor(glyph));
-					float x0 = currentX + glyph.xoffset / scaleX;
-					float y0 = currentY + glyph.yoffset / scaleY;
-					float x1 = x0 + glyph.width / scaleX;
-					
-					float y1 = y0 + glyph.height / scaleY;
-
-					float s0 = glyph.x;
-					float t0 = glyph.y;
-					float s1 = glyph.x + glyph.width;
-					float t1 = glyph.y + glyph.height;
-					Size2i fTex = fs.getFontTextureDimensions();
-					float u0 = s0 / fTex.width;
-					float v0 = t0 / fTex.height;
-					float u1 = s1 / fTex.width;
-					float v1 = t1 / fTex.height;
-
-					currentX += glyph.xadvance / scaleX;
-					/**
-					 * VBO LAYOUT
-					 */
-					// Vertex
-					local.put(x0);
-					local.put(y0);
-					local.put(0f);
-					// Color
-					local.put(c.getRed());
-					local.put(c.getGreen());
-					local.put(c.getBlue());
-					local.put(c.getAlpha());
-					// UVs
-					local.put(u0);
-					local.put(v0);
-					// TID
-					local.put(ts);
-
-					// Vertex
-					local.put(x0);
-					local.put(y1);
-					local.put(0f);
-					// Color
-					local.put(c.getRed());
-					local.put(c.getGreen());
-					local.put(c.getBlue());
-					local.put(c.getAlpha());
-					// UVs
-					local.put(u0);
-					local.put(v1);
-					// TID
-					local.put(ts);
-
-					// Vertex
-					local.put(x1);
-					local.put(y1);
-					local.put(0f);
-					// Color
-					local.put(c.getRed());
-					local.put(c.getGreen());
-					local.put(c.getBlue());
-					local.put(c.getAlpha());
-					// UVs
-					local.put(u1);
-					local.put(v1);
-					// TID
-					local.put(ts);
-
-					// Vertex
-					local.put(x1);
-					local.put(y0);
-					local.put(0f);
-					// Color
-					local.put(c.getRed());
-					local.put(c.getGreen());
-					local.put(c.getBlue());
-					local.put(c.getAlpha());
-					// UVs
-					local.put(u1);
-					local.put(v0);
-					// TID
-					local.put(ts);
-
-					indexCount += 6;
-//				}
-			}
-			return this;
-	}
-
-	@Override
-	public void dispose() {
-		ibo.dispose();
-		VGL.api_gfx.glDeleteVertexArrays(vao);
-		local.getBuffer().free();
-		local = null;
-		renderer_gpuBuffer.dispose();
-	}
-	
-	private void putColor(Color c) {
-		local.put(c.getRed()).put(c.getGreen()).put(c.getBlue()).put(c.getAlpha());
-	}
-
-	private void putUVElement(Vector2f uv) {
-		local.put(uv.x).put(uv.y);
-	}
-	
-	private void putVec(float x, float y) {
-		local.put(x).put(y).put(0f);
-	}
-
-	private void checkOverflow(int floats) {
-		if (local.pointer() + floats >= local.capacity())
-			if (this.overflowPolicy == OverflowPolicy.DO_RENDER) {
-				end();
-				render();
-				begin();
-			}
-	}
-	
-	@Override
-	public IRenderer2D drawLine(float x0, float y0, float x1, float y1, float thiccness, Color color) {
+	private void drawTransformed(Renderable2D renderable, float x, float y, float width, float height, Color tint,
+	        Matrix4f transformation, boolean doScale) {
 		checkOverflow(40);
-		Vector2f lineNormal = new Vector2f(y1 - y0, -(x1 - x0)).normalize().multiply(thiccness);
 		float ts = 0.0f;
-		final Vector2f[] uv = Sprite.defaultUVS();
-		// gpuDirect.put(x0 + lineNormal.x).put(y0 + lineNormal.y).put(0.0f);
-		putVec(x0 + lineNormal.x, y0 + lineNormal.y);
-		putColor(color);
-		putUVElement(uv[0]);
-		local.put(ts);
-
-		putVec(x1 + lineNormal.x, y1 + lineNormal.y);
-		putColor(color);
-		putUVElement(uv[1]);
-		local.put(ts);
-
-		putVec(x1 - lineNormal.x, y1 - lineNormal.y);
-		putColor(color);
-		putUVElement(uv[2]);
-		local.put(ts);
-
-		putVec(x0 - lineNormal.x, y0 - lineNormal.y);
-		putColor(color);
-		putUVElement(uv[3]);
-		local.put(ts);
-
-		indexCount += 6;
-		return this;
-	}
-
-	@Override
-	public IRenderer2D usingOverflowPolicy(OverflowPolicy policy) {
-		this.overflowPolicy = policy;
-		return this;
-	}
-
-	@Override
-	public IRenderer2D drawTriangle(float x0, float y0, float x1, float y1, float x2, float y2, Color color) {
 		Vector2f[] uv = Sprite.defaultUVS();
-		float ts = 0.0f;
-		putVec(x0, y0);
-		putColor(color);
-		putUVElement(uv[0]);
+		Color c = tint == null ? Color.WHITE : tint;
+		if (renderable instanceof Sprite) {
+			ts = getTextureSlot(((Sprite) renderable).getTexture());
+			uv = ((Sprite) renderable).getUVs();
+			c = Color.WHITE;
+		}
+		if (renderable instanceof ColoredSprite) {
+			ColoredSprite cs = (ColoredSprite) renderable;
+			c = cs.getColor();
+		}
+		width = doScale ? width / scaleX : width;
+		height = doScale ? height / scaleY : height;
+		/**
+		 * VBO LAYOUT
+		 */
+		// Vertex
+		Vector3f vertex = new Vector3f(x,y,1f);
+		vertex.multiply(transformation);
+		local.put(vertex.x);
+		local.put(vertex.y);
+		local.put(0f);
+		// Color -> RGBA
+		local.put(c.getRed());
+		local.put(c.getGreen());
+		local.put(c.getBlue());
+		local.put(c.getAlpha());
+		// UVs
+		local.put(uv[0].x);
+		local.put(uv[0].y);
+		// TID
 		local.put(ts);
-		
-		putVec(x1, y1);
-		putColor(color);
-		putUVElement(uv[1]);
+		// Vertex
+		vertex.set(x, y + height, 1f);
+		vertex.multiply(transformation);
+		local.put(vertex.x);
+		local.put(vertex.y);
+		local.put(0f);
+		// Color
+		local.put(c.getRed());
+		local.put(c.getGreen());
+		local.put(c.getBlue());
+		local.put(c.getAlpha());
+		// UVs
+		local.put(uv[1].x);
+		local.put(uv[1].y);
+		// TID
 		local.put(ts);
-		
-		putVec(x2, y2);
-		putColor(color);
-		putUVElement(uv[2]);
+
+		// Vertex
+		vertex.set(x + width, y + height, 1f);
+		vertex.multiply(transformation);
+		local.put(vertex.x);
+		local.put(vertex.y);
+		local.put(0f);
+		// Color
+		local.put(c.getRed());
+		local.put(c.getGreen());
+		local.put(c.getBlue());
+		local.put(c.getAlpha());
+		// UVs
+		local.put(uv[2].x);
+		local.put(uv[2].y);
+		// TID
 		local.put(ts);
-		
-		putVec(x1, y1);
-		putColor(color);
-		putUVElement(uv[3]);
+
+		// Vertex
+		vertex.set(x + width, y, 1f);
+		vertex.multiply(transformation);
+		local.put(vertex.x);
+		local.put(vertex.y);
+		local.put(0f);
+		// Color
+		local.put(c.getRed());
+		local.put(c.getGreen());
+		local.put(c.getBlue());
+		local.put(c.getAlpha());
+		// UVs
+		local.put(uv[3].x);
+		local.put(uv[3].y);
+		// TID
 		local.put(ts);
+
+		indexCount += 6;	
+	}
+
+	@Override
+	public IRenderer2D drawTextureRegion(TextureRegion texRegion, float x, float y, float width, float height) {
+		Color c = Color.WHITE;
+		float ts = getTextureSlot(texRegion.getTexture());
 		
+		// Vertex
+		local.put(x);
+		local.put(y);
+		local.put(0f);
+		// Color -> RGBA
+		local.put(c.getRed());
+		local.put(c.getGreen());
+		local.put(c.getBlue());
+		local.put(c.getAlpha());
+		// UVs
+		local.put(texRegion.getMinX());
+		local.put(texRegion.getMinY());
+		// TID
+		local.put(ts);
+		// Vertex
+		local.put(x);
+		local.put(y + height);
+		local.put(0f);
+		// Color
+		local.put(c.getRed());
+		local.put(c.getGreen());
+		local.put(c.getBlue());
+		local.put(c.getAlpha());
+		// UVs
+		local.put(texRegion.getMinX());
+		local.put(texRegion.getMaxY());
+		// TID
+		local.put(ts);
+
+		// Vertex
+		local.put(x + width);
+		local.put(y + height);
+		local.put(0f);
+		// Color
+		local.put(c.getRed());
+		local.put(c.getGreen());
+		local.put(c.getBlue());
+		local.put(c.getAlpha());
+		// UVs
+		local.put(texRegion.getMaxX());
+		local.put(texRegion.getMaxY());
+		// TID
+		local.put(ts);
+
+		// Vertex
+		local.put(x + width);
+		local.put(y);
+		local.put(0f);
+		// Color
+		local.put(c.getRed());
+		local.put(c.getGreen());
+		local.put(c.getBlue());
+		local.put(c.getAlpha());
+		// UVs
+		local.put(texRegion.getMaxX());
+		local.put(texRegion.getMinY());
+		// TID
+		local.put(ts);
+
 		indexCount += 6;
 		return this;
 	}

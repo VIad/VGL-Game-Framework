@@ -3,7 +3,6 @@ package vgl.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import vgl.core.gfx.font.BMFont;
 import vgl.core.gfx.font.Glyph;
 
 //TODO Font kerning
@@ -109,6 +108,7 @@ public class FNTParser {
 		this.fntFile = fntFile;
 		this.pagesList = new ArrayList<>();
 		this.glyphs = new ArrayList<>();
+	
 	}
 
 	public void doParse() {

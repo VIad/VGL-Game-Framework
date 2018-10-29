@@ -1,11 +1,9 @@
 package vgl.platform;
 
 import org.lwjgl.openal.AL10;
-import org.lwjgl.opengl.GL11;
 
 import vgl.core.annotation.UnusedParameter;
 import vgl.core.exception.VGLException;
-import vgl.core.gfx.layer.LayeredLayout;
 import vgl.core.internal.ProcessManager;
 import vgl.main.Application;
 import vgl.main.VGL;

@@ -1,16 +1,15 @@
 package vgl.web;
 
 import vgl.core.buffers.MemoryBuffer;
-import vgl.core.gfx.gl.GPUBuffer;
 import vgl.core.gfx.render.IRenderer2D;
+import vgl.core.gfx.render.IRenderer2D.OverflowPolicy;
 import vgl.core.gfx.render.SpriteBatchRenderer;
+import vgl.core.internal.Tasking;
 import vgl.platform.IFactory;
-import vgl.platform.gl.Primitive;
-import vgl.platform.io.FileDetails;
 import vgl.platform.logging.ILogger;
 import vgl.tools.IResourceLoader;
-import vgl.web.io.WebFileDetails;
 import vgl.web.tools.WebResourceLoader;
+import vgl.web.tools.WebTaskingSystem;
 import vgl.web.utils.WebLogger;
 
 public class WebFactory implements IFactory {
@@ -32,7 +31,22 @@ public class WebFactory implements IFactory {
 
 	@Override
 	public IRenderer2D newPlatformOptimalRenderer2D(int batchesHint) {
-		return new SpriteBatchRenderer(batchesHint, SpriteBatchRenderer.STD_BATCH_LAYOUT);
+		return new SpriteBatchRenderer(batchesHint, SpriteBatchRenderer.STD_BATCH_LAYOUT)
+				                           .usingOverflowPolicy(OverflowPolicy.DO_RENDER);
+	}
+
+	@Override
+	public IFactory.Internal internalFrameworkFactory() {
+		return new WebInternalFactory();
+	}
+	
+	private class WebInternalFactory implements IFactory.Internal{
+
+		@Override
+		public Tasking platformSpecificTaskingSystem() {
+			return new WebTaskingSystem();
+		}
+		
 	}
 
 }

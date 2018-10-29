@@ -1,24 +1,21 @@
 package vgl.web;
 
-import com.google.gwt.user.client.Window;
-import com.shc.gwtal.client.openal.AudioDecoder;
 import com.vgl.gwtreq.client.Dim;
-import com.vgl.gwtreq.client.GWTDataView;
 import com.vgl.gwtreq.client.VGWT;
 
-import vgl.audio.Sound;
+import vgl.core.events.EventFeedback;
 import vgl.core.exception.VGLException;
 import vgl.core.gfx.Color;
 import vgl.core.internal.Checks;
 import vgl.core.internal.GlobalDetails;
 import vgl.main.Application;
 import vgl.main.VGL;
-import vgl.platform.AbstractDisplayDevice;
 import vgl.platform.Platform;
 import vgl.web.audio.WebAudioPlatform;
 import vgl.web.input.WebInputSystem;
 import vgl.web.io.WebFiles;
 import vgl.web.io.WebIOSystem;
+import vgl.web.networking.WebNetworkSystem;
 import vgl.web.utils.WebLogger;
 import vgl.web.utils.WebPromptLogger;
 
@@ -77,6 +74,8 @@ abstract public class VGLWebApplication extends Application {
 		VGL.app = (Application) this;
 		VGL.context = this.context;
 		VGL.files = new WebFiles();
+		VGL.net = new WebNetworkSystem();
+		VGL.eventController = new EventFeedback();
 		VGL.display = new WebDisplay("display",w_width, w_height, true, false);
 		VGL.factory = new WebFactory();
 		VGL.logger = new WebLogger();

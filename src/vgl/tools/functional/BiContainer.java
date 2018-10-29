@@ -1,8 +1,5 @@
 package vgl.tools.functional;
 
-import vgl.core.gfx.Image;
-import vgl.tools.managers.Managers;
-
 public class BiContainer<A1, A2> {
 	
 	private A1 a1;

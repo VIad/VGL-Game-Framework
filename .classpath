@@ -5,12 +5,14 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="VGL/src/vgl/natives"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="con" path="com.gwtplugins.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry exported="true" kind="lib" path="E:/Restored/webgl4j-0.2.9.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/LWJGL"/>
 	<classpathentry kind="lib" path="C:/libs/common Java libs/lwjgl_util.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="C:/wr/li.jar"/>
 	<classpathentry kind="lib" path="C:/wr/al.jar"/>
+	<classpathentry kind="lib" path="C:/wr/gwt-user.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/LWJGL-CROSS"/>
+	<classpathentry kind="lib" path="C:/wr/imgui-all.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/VglDesktopPlatform"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

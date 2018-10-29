@@ -2,13 +2,14 @@ package vgl.core.gfx.renderable;
 
 import vgl.core.gfx.Color;
 import vgl.maths.geom.Size2f;
-import vgl.maths.vector.Vector2f;
 
-public final class ColoredSprite extends Renderable2D {
+public final class ColoredSprite implements Renderable2D {
 
 	private Color	color;
 	private Color[]	grad;
 	private boolean	gradientSprite;
+	
+	private Size2f size;
 
 	public ColoredSprite(Color color, float width, float height) {
 		this.size = new Size2f(width, height);
@@ -41,6 +42,10 @@ public final class ColoredSprite extends Renderable2D {
 
 	public boolean isGradientSprite() {
 		return gradientSprite;
+	}
+	
+	public Size2f getSize() {
+		return size;
 	}
 
 }

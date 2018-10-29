@@ -16,6 +16,7 @@ import vgl.core.gfx.font.IFont;
 import vgl.core.gfx.gl.GPUBuffer;
 import vgl.core.gfx.gl.IndexBuffer;
 import vgl.core.gfx.gl.Texture;
+import vgl.core.gfx.gl.TextureRegion;
 import vgl.core.gfx.render.IRenderer2D;
 import vgl.core.gfx.renderable.ColoredSprite;
 import vgl.core.gfx.renderable.Renderable2D;
@@ -181,7 +182,8 @@ final public class DirectGPUAccessRenderer2D implements IRenderer2D {
 
 			Glyph glyph = font.getGlyph((int) ch);
 			// if (glyph.page == pages.getKey()) {
-			float ts = getTextureSlot(font.getFontTextureFor(glyph));
+			Texture page = font.getFontTextureFor(glyph);
+			float ts = getTextureSlot(page);
 			float x0 = currentX + glyph.xoffset / scaleX;
 			float y0 = currentY + glyph.yoffset / scaleY;
 			float x1 = x0 + glyph.width / scaleX;
@@ -287,9 +289,9 @@ final public class DirectGPUAccessRenderer2D implements IRenderer2D {
 					bufferTransformed(renderable, x, y, width / scaleX, height / scaleY, transformation);
 			else {
 				if (requestedSize)
-					buffer(renderable, x, y, width, height);
+					buffer(renderable, x, y, width, height, null);
 				else
-					buffer(renderable, x, y, width / scaleX, height / scaleY);
+					buffer(renderable, x, y, width / scaleX, height / scaleY, null);
 			}
 		} else if (renderable instanceof ColoredSprite) {
 			ColoredSprite cs = (ColoredSprite) renderable;
@@ -302,7 +304,7 @@ final public class DirectGPUAccessRenderer2D implements IRenderer2D {
 				if (transformation != null)
 					bufferTransformed(renderable, x, y, width, height, transformation);
 				else
-					buffer(renderable, x, y, width, height);
+					buffer(renderable, x, y, width, height, null);
 			}
 		}
 		// TODO
@@ -326,13 +328,14 @@ final public class DirectGPUAccessRenderer2D implements IRenderer2D {
 		// }
 	}
 
-	private void buffer(Renderable2D renderable, float x, float y, float width, float height) {
+	private void buffer(Renderable2D renderable, float x, float y, float width, float height, Color color) {
 		float ts = 0.0f;
-		final Vector2f[] uv = Sprite.defaultUVS();
-		Color c = null;
+		Vector2f[] uv = Sprite.defaultUVS();
+		Color c = color;
 		if (renderable instanceof Sprite) {
 			ts = getTextureSlot(((Sprite) renderable).getTexture());
 			c = Color.WHITE;
+			uv = ((Sprite) renderable).getUVs();
 		}
 		if (renderable instanceof ColoredSprite) {
 			ColoredSprite cs = (ColoredSprite) renderable;
@@ -406,11 +409,12 @@ final public class DirectGPUAccessRenderer2D implements IRenderer2D {
 	private void bufferTransformed(Renderable2D renderable, float x, float y, float width, float height,
 	        Matrix4f transformation) {
 		float ts = 0.0f;
-		final Vector2f[] uv = Sprite.defaultUVS();
+		Vector2f[] uv = Sprite.defaultUVS();
 		Color c = null;
 		if (renderable instanceof Sprite) {
 			ts = getTextureSlot(((Sprite) renderable).getTexture());
 			c = Color.WHITE;
+			uv = ((Sprite) renderable).getUVs();
 		}
 		if (renderable instanceof ColoredSprite) {
 			ColoredSprite cs = (ColoredSprite) renderable;
@@ -565,9 +569,19 @@ final public class DirectGPUAccessRenderer2D implements IRenderer2D {
 	}
 
 	public IRenderer2D draw(final Renderable2D renderable, final float x, final float y, final float width,
-	        final float height, Matrix4f transformation) {
+	        final float height, Matrix4f transformation, boolean doScale) {
 		if (validateRenderable(renderable))
-			assignBuffer(renderable, x, y, width, height, transformation, true);
+			assignBuffer(renderable, x, y, width, height, transformation, !doScale);
+		return this;
+	}
+	
+	@Override
+	public IRenderer2D draw(Renderable2D renderable, float x, float y, float width, float height, Color tint,
+	        Matrix4f transformation, boolean doScale) {
+		if (transformation == null)
+			this.buffer(renderable, x, y, doScale ? width / scaleX : width, doScale ? height / scaleY : height, tint);
+		else
+			this.bufferTransformed(renderable, x, y, doScale ? width / scaleX : width, doScale ? height / scaleY : height, transformation);
 		return this;
 	}
 
@@ -686,6 +700,10 @@ final public class DirectGPUAccessRenderer2D implements IRenderer2D {
 		this.overflowPolicy = policy;
 		return this;
 	}
+	
+	private void putUVElement(float x, float y) {
+		gpuDirect.put(x).put(y);
+	}
 
 	@Override
 	public IRenderer2D drawTriangle(float x0, float y0, float x1, float y1, float x2, float y2, Color color) {
@@ -714,6 +732,32 @@ final public class DirectGPUAccessRenderer2D implements IRenderer2D {
 		indexCount += 6;
 		return this;
 	}
+	
+	@Override
+	public IRenderer2D drawTextureRegion(TextureRegion texRegion, float x, float y, float width, float height) {
+		Color color = Color.WHITE;
+		float ts = getTextureSlot(texRegion.getTexture());
+		putVec(x, y);
+		putColor(color);
+		putUVElement(texRegion.getMinX(), texRegion.getMinY());
+		gpuDirect.put(ts);
+		
+		putVec(x , y + height);
+		putColor(color);
+		putUVElement(texRegion.getMinX(), texRegion.getMaxY());
+		gpuDirect.put(ts);
+		
+		putVec(x + width, y + height);
+		putColor(color);
+		putUVElement(texRegion.getMaxX(), texRegion.getMaxY());
+		gpuDirect.put(ts);
+		
+		putVec(x + width, y);
+		putColor(color);
+		putUVElement(texRegion.getMaxX(), texRegion.getMinY());
+		gpuDirect.put(ts);
+		return this;
+	}
 
 	private static class ImmutableGPUBuffer extends GPUBuffer {
 
@@ -730,5 +774,9 @@ final public class DirectGPUAccessRenderer2D implements IRenderer2D {
 			        GL44.GL_MAP_PERSISTENT_BIT);
 		}
 	}
+
+	
+
+	
 
 }

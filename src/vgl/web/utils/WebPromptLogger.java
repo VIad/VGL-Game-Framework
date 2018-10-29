@@ -1,7 +1,5 @@
 package vgl.web.utils;
 
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.function.Supplier;
 
 import com.google.gwt.user.client.Window;

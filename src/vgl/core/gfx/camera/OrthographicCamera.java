@@ -1,7 +1,5 @@
 package vgl.core.gfx.camera;
 
-import java.awt.Graphics2D;
-
 import vgl.core.gfx.shader.ShaderProgram;
 import vgl.maths.geom.Size2f;
 import vgl.maths.geom.Transform2D;
@@ -15,6 +13,8 @@ public class OrthographicCamera {
 	private Transform2D			cameraTransform;
 	
 	private RectFloat           viewport;
+	
+	private Vector2f offset;
 
 	public OrthographicCamera(RectFloat viewport) {
 		this(viewport.getLocation(), viewport.getSize());
@@ -26,7 +26,8 @@ public class OrthographicCamera {
 	
 	public OrthographicCamera(Vector2f position, Size2f viewportsize) {
 		this.viewport = new RectFloat(viewportsize);
-		this.cameraTransform = new Transform2D(position);
+		this.cameraTransform = new Transform2D();
+		this.offset = position;
 	}
 
 	public void uploadToShader(ShaderProgram shader) {
@@ -39,7 +40,12 @@ public class OrthographicCamera {
 	
 	public OrthographicCamera moveBy(float x, float y) {
 		this.cameraTransform.translateBy(x, y);
+		this.offset.subtract(x,y);
 		return this;
+	}
+	
+	public Vector2f offset() {
+		return offset;
 	}
 	
 	public OrthographicCamera rotateByDegrees(float degrees) {

@@ -1,11 +1,15 @@
 package vgl.web;
 
+import org.lwjgl.opengl.GL11;
+
 import com.google.gwt.canvas.dom.client.ImageData;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.typedarrays.client.Uint8ArrayNative;
 import com.google.gwt.typedarrays.shared.ArrayBuffer;
 import com.google.gwt.typedarrays.shared.ArrayBufferView;
 import com.google.gwt.typedarrays.shared.Float32Array;
 import com.google.gwt.typedarrays.shared.Uint8Array;
+import com.google.gwt.user.client.Window;
 import com.vgl.gwtreq.client.GWTDataView;
 
 import vgl.core.buffers.MemoryBuffer;
@@ -13,11 +17,13 @@ import vgl.core.exception.VGLFatalError;
 import vgl.core.exception.VGLIOException;
 import vgl.core.gfx.Color;
 import vgl.core.gfx.Image;
+import vgl.core.gfx.gl.Texture;
 import vgl.main.VGL;
+import vgl.platform.gl.Primitive;
 import vgl.platform.io.FileDetails;
 import vgl.tools.IResource;
-import vgl.tools.ISpecifier;
 import vgl.tools.IResource.ResourceState;
+import vgl.tools.ISpecifier;
 import vgl.tools.functional.callback.BinaryCallback;
 import vgl.tools.functional.callback.Callback;
 
@@ -42,6 +48,14 @@ abstract public class WebSpecific {
 	}
 
 	abstract public static class JS{
+		
+		public static void teximage2d(Texture tex, Image image) {
+			ArrayBufferView pixels = WebSpecific.JS
+					 							.copy(image.getPixels().getBuffer());
+			((WebGraphicsPlatform) VGL.api_gfx).glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, image.getWidth(),
+			        image.getHeight(), 0, GL11.GL_RGBA, Primitive.UNSIGNED_BYTE.toGLType(), pixels);
+			return;
+		}
 		
 		public static void jsLoadedCallback(ImageData pixels, int width, int height, int oWidth, int oHeight,
 		        Callback<Image> onComplete) {
@@ -127,6 +141,25 @@ abstract public class WebSpecific {
 			return ((GWTDataView) buffer.nativeBufferDetails().getBuffer()).getView().buffer();
 		}
 		
+		public static native void setTimeout(int ms, Runnable action)/*-{
+			$wnd.setTimeout(function() {
+				action.@java.lang.Runnable::run(*)();
+			}, ms);
+		}-*/;
+		
+		public static native boolean hasFocus(Element element)/*-{
+			return element.ownerDocument.activeElement == element;
+		}-*/;
+		
+		public static void open(String url) {
+			Window.open(url, null, null);
+		}
+		
+		public native static void addEventListener(String eventType, Element element, Runnable onEvent)/*-{
+			element.addEventListener(eventType, function() {
+				onEvent.@java.lang.Runnable::run(*)();
+			});
+		}-*/;
 	}
 	
 	abstract public static class Memory{

@@ -2,8 +2,6 @@ package vgl.platform.gl;
 
 import org.lwjgl.opengl.GL11;
 
-import com.shc.webgl4j.client.WebGL10;
-
 public enum Primitive {
 	
 	                 

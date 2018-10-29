@@ -1,6 +1,5 @@
 package vgl.web;
 
-import com.gargoylesoftware.htmlunit.javascript.host.arrays.DataView;
 import com.vgl.gwtreq.client.GWTArrayBuffer;
 import com.vgl.gwtreq.client.GWTDataView;
 

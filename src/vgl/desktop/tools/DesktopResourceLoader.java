@@ -1,11 +1,10 @@
-package vgl.desktop.tools;
+ package vgl.desktop.tools;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ForkJoinPool;
 
 import vgl.audio.Sound;
 import vgl.core.gfx.Image;
@@ -14,7 +13,6 @@ import vgl.core.gfx.font.BMFont;
 import vgl.core.gfx.gl.Texture;
 import vgl.core.internal.ProcessManager;
 import vgl.desktop.DesktopSpecific;
-import vgl.main.VGL;
 import vgl.platform.io.FileDetails;
 import vgl.platform.io.ILoadOption;
 import vgl.platform.io.ImageLoadOption;
@@ -29,16 +27,17 @@ import vgl.tools.functional.callback.TernaryCallback;
 
 public class DesktopResourceLoader implements IResourceLoader {
 
-	private int									filesRemaining;
-	private int									filesToLoad;
-	private float								readyPercentage;
-	private float								percIncreasePerFile;
-	private java.util.concurrent.ForkJoinPool	loadPerformer;
+	private volatile int		filesRemaining;
+	private volatile int		filesToLoad;
+	private volatile float		readyPercentage;
+	private volatile float		percIncreasePerFile;
+	private volatile Runnable	finishCallback;
 
 	public DesktopResourceLoader() {
 		this.loadMap = new HashMap<>();
-		this.loadPerformer = new ForkJoinPool(10);
+		this.finishCallback = () -> {};
 	}
+	
 	
 	private Map<FileDetails, TernaryContainer<Class<? extends IResource>,
 	                                          List<? extends ILoadOption>,
@@ -65,32 +64,33 @@ public class DesktopResourceLoader implements IResourceLoader {
 	public void begin() {
 		this.readyPercentage = 0f;
 		this.percIncreasePerFile = 100.0f / filesToLoad;
+		this.filesRemaining = filesToLoad;
 		beginLoad();
 	}
 
-	private void beginLoad() {	
-		new Thread(() -> {			
-			loadMap.entrySet()
-			.stream()
-			.forEach(entry -> {
-				loadPerformer.execute(() -> {
-					try {
-						loadByClass(entry.getKey(),
-								entry.getValue().first,
-								entry.getValue().second,
-								entry.getValue().third
-								);
-					} catch (Throwable e) {
-						entry.getValue()
-						.third
-						.invoke(null, null, e);
-					}
-					readyPercentage += percIncreasePerFile;
-					filesRemaining--;
+	private void beginLoad() {
+		new Thread(() -> {
+			loadMap.entrySet().stream().forEach(entry -> {
+				DesktopSpecific.Tasking
+				               .THREAD_POOL.execute(() -> {
+					            try {
+					            	loadByClass(entry.getKey(),
+					            			    entry.getValue().first,
+					            			    entry.getValue().second,
+					            	            entry.getValue().third);
+					            } catch (Throwable e) {
+					            	entry.getValue()
+					            	     .third
+					            	     .invoke(null, null, e);
+					            }
+					            readyPercentage += percIncreasePerFile;
+					            filesRemaining--;
+					            if (filesRemaining <= 0) {
+					            	ProcessManager.get().runNextUpdate(finishCallback);
+					            }
 				});
-				
+
 			});
-			this.loadPerformer.shutdown();
 		}).start();
 	}
 
@@ -221,14 +221,10 @@ public class DesktopResourceLoader implements IResourceLoader {
 			filesToLoad++;
 		}
 	}
-	
-	public class RawLoader implements IResourceLoader.Raw{
 
-		@Override
-		public void loadSoundRaw(FileDetails fd, Callback<Integer> alBufferRaw, Callback<Throwable> error) {
-			
-		}
-		
+	@Override
+	public void onLoadingFinished(Runnable onFinish) {
+		this.finishCallback = onFinish;
 	}
 
 }

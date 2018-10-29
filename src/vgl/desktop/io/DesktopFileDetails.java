@@ -1,14 +1,12 @@
 package vgl.desktop.io;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import vgl.platform.io.FileDetails;
 import vgl.tools.functional.Result;
-import vgl.tools.functional.SynchronousHold;
 
 public class DesktopFileDetails extends FileDetails {
 

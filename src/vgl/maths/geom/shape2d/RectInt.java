@@ -137,6 +137,10 @@ public class RectInt implements IRect{
 				              .addVertex(x, y + height);
 				       
 	}
+	
+	public static RectInt from(int x, int y, int width, int height) {
+		return new RectInt(x,y,width,height);
+	}
 
 	public boolean intersects(float x, float y, float w, float h) {
 		float tw = this.width;
