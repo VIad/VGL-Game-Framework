@@ -32,9 +32,8 @@ abstract public class VGLApplication extends Application {
 		this.w_height = window_height;
 		this.w_width = window_width;
 		this.fixedUpdateTs = 1f;
-		boolean osarch64 = Integer.valueOf(System.getProperty("sun.arch.data.model")) == 64;
 		GlobalDetails.set((Application) this);
-		GlobalDetails.set(osarch64 ? Platform.DESKTOP_X64 : Platform.DESKTOP_X86);
+		GlobalDetails.set(Platform.DESKTOP);
 		context = new DesktopContext(this);
 		initGlobals();
 	}

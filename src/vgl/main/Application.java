@@ -7,6 +7,7 @@ abstract public class Application {
 
 	protected static int	instancesOf;
 	private ILayout			layout;
+	
 	protected float fixedUpdateTs;
 
 	public Application() {

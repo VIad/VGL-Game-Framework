@@ -1,11 +1,11 @@
 package vgl.web.audio;
 
+import com.google.gwt.typedarrays.shared.DataView;
 import com.shc.gwtal.client.openal.AL;
 import com.shc.gwtal.client.openal.AL10;
 import com.shc.gwtal.client.openal.ALContext;
 import com.shc.gwtal.client.webaudio.AudioContext;
 import com.shc.gwtal.client.webaudio.AudioContextException;
-import com.vgl.gwtreq.client.GWTDataView;
 
 import vgl.core.audio.AudioSourcePool;
 import vgl.core.audio.IAudioPlatform;
@@ -44,7 +44,7 @@ public class WebAudioPlatform implements IAudioPlatform {
 
 	@Override
 	public void alBufferData(int buffer, int format, MemoryBuffer data, int freq) {
-		AL10.alBufferData(buffer, format, ((GWTDataView) data.nativeBufferDetails().getBuffer()).getView().buffer(),
+		AL10.alBufferData(buffer, format, ((DataView) data.nativeBufferDetails().getBuffer()).buffer(),
 		        freq);
 	}
 

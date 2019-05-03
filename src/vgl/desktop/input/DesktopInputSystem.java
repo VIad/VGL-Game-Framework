@@ -38,7 +38,7 @@ public class DesktopInputSystem implements IPlatformInputDevice {
 	private static boolean					init	= false;
 
 	public DesktopInputSystem() {
-
+		
 	}
 
 	public void onGlfwInit() {

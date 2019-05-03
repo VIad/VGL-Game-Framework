@@ -124,7 +124,7 @@ abstract public class ILayer2D implements ILayer {
 		layerCam.uploadToShader("transformationMatrix", shader);
 		layerRenderer.begin();
 		if (!layerBackground.equals(Color.TRANSPARENT))
-			layerRenderer.draw(new ColoredSprite(layerBackground, Float.MAX_VALUE, Float.MAX_VALUE), -1000000F, -1000000F);
+			layerRenderer.draw(new ColoredSprite(layerBackground, Float.MAX_VALUE, Float.MAX_VALUE), -1000000F, -1000000F, Float.MAX_VALUE, Float.MAX_VALUE, null, null, true);
 		render(graphicsInstance);
 		layerRenderer.end();
 		layerRenderer.render();

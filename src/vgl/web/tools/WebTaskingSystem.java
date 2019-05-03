@@ -15,8 +15,14 @@ public class WebTaskingSystem implements Tasking {
 	}
 
 	@Override
-	public void runLater(Runnable runnable, int ms, boolean sync) {
-		WebSpecific.JS.setTimeout(ms, sync ? () -> ProcessManager.get().runNextUpdate(runnable) : runnable);
+	public void runLater(Runnable runnable, int ms) {
+		WebSpecific.JS.setTimeout(ms, runnable);
+	}
+
+	@Override
+	public void runLater(Runnable runnable, int ms, When when) {
+		WebSpecific.JS.setTimeout(ms, when == Tasking.When.NEXT_UPDATE ? () -> ProcessManager.get().runNextUpdate(runnable) 
+																  : () -> ProcessManager.get().runNextRender(runnable));
 	}
 
 }

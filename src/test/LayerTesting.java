@@ -6,6 +6,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import org.lwjgl.opengl.GL11;
+
 import vgl.audio.AudioManager;
 import vgl.audio.Sound;
 import vgl.core.audio.AudioSystem;
@@ -86,12 +88,13 @@ public class LayerTesting {
 		@Override
 		public void init() throws VGLException {
 			resLoader = VGL.factory.createResourceLoader();
+			System.out.println(GL11.glGetString(GL11.GL_RENDERER));
 			AudioSystem.initialize();
 			AudioManager.insert("sounds_2d", "music",
 			        new Sound(DesktopSpecific.AudioDecoder.decodeOGG("resources/bet.ogg")));
-//			AudioManager.fetch("sounds_2d", "music").setGain(0.01f)
-//			                                        .setPitch(0.8f)
-//			                                        .play();
+			AudioManager.fetch("sounds_2d", "music").setGain(0.1f)
+			                                        .setPitch(1f)
+			                                        .play();
 			resLoader.loadTexture(VGL.files.resource("resources/tex.png"), texture -> {
 				tex = texture;
 				System.out.println("tex loaded");
@@ -134,6 +137,7 @@ public class LayerTesting {
 			VGL.display.setDisplayFps(true);
 			layout.pushLayer(new ILayer2D(16f, 9f) {
 				float angle = 0f;
+				long start = System.currentTimeMillis() + 5000;
 
 				@Override
 				public void update() {
@@ -150,6 +154,7 @@ public class LayerTesting {
 					if(VGL.input.isKeyDown(Key.D)) {
 						getCamera().moveBy(-1f, 0f);
 					}
+					
 				}
 
 				@Override

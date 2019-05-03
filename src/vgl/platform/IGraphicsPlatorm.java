@@ -1,5 +1,7 @@
 package vgl.platform;
 
+import com.shc.webgl4j.client.WebGL10;
+
 import vgl.core.buffers.MemoryBuffer;
 import vgl.core.gfx.shader.ShaderType;
 import vgl.platform.gl.GLBufferTarget;
@@ -83,6 +85,8 @@ public interface IGraphicsPlatorm {
 
 	void glTexImage2D(int target, int level, int internalF, int width, int height, int border, int format, int type,
 	        MemoryBuffer data);
+	
+	void glReadPixels(int x, int y, int w, int h, int format, int type, MemoryBuffer pixels);
 
 	// Core GL
 	void glEnable(int what);
@@ -177,5 +181,7 @@ public interface IGraphicsPlatorm {
 	String glGetShaderInfoLog(int shaderID);
 
 	boolean glGetBoolean(int which);
+
+	void glReadBuffer(int glFront);
 
 }

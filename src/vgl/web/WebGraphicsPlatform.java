@@ -3,9 +3,9 @@ package vgl.web;
 import java.util.Arrays;
 
 import com.google.gwt.typedarrays.shared.ArrayBufferView;
+import com.google.gwt.typedarrays.shared.DataView;
 import com.shc.webgl4j.client.WebGL10;
 import com.shc.webgl4j.client.WebGL20;
-import com.vgl.gwtreq.client.GWTDataView;
 
 import vgl.core.buffers.Buffers;
 import vgl.core.buffers.MemoryBuffer;
@@ -70,7 +70,7 @@ public class WebGraphicsPlatform implements IGraphicsPlatorm {
 
 	@Override
 	public void glBufferData(GLBufferTarget target, MemoryBuffer data, int usage) {
-		WebGL10.glBufferData(target.nativeGL(), ((GWTDataView) data.nativeBufferDetails().getBuffer()).getView(),
+		WebGL10.glBufferData(target.nativeGL(), ((DataView) data.nativeBufferDetails().getBuffer()),
 		        usage);
 	}
 
@@ -87,7 +87,7 @@ public class WebGraphicsPlatform implements IGraphicsPlatorm {
 
 	@Override
 	public void glBufferData(int target, MemoryBuffer data, int usage) {
-		WebGL10.glBufferData(target, ((GWTDataView) data.nativeBufferDetails().getBuffer()).getView(), usage);
+		WebGL10.glBufferData(target, ((DataView) data.nativeBufferDetails().getBuffer()), usage);
 	}
 
 	@Override
@@ -97,7 +97,7 @@ public class WebGraphicsPlatform implements IGraphicsPlatorm {
 
 	@Override
 	public void glBufferSubData(int target, int offset, MemoryBuffer data) {
-		WebGL10.glBufferSubData(target, offset, ((GWTDataView) data.nativeBufferDetails().getBuffer()).getView());
+		WebGL10.glBufferSubData(target, offset, ((DataView) data.nativeBufferDetails().getBuffer()));
 	}
 
 	@Override
@@ -139,7 +139,7 @@ public class WebGraphicsPlatform implements IGraphicsPlatorm {
 	public void glTexImage2D(int target, int level, int internalF, int width, int height, int border, int format,
 	        int type, MemoryBuffer data) {
 		WebGL10.glTexImage2D(target, level, internalF, width, height, border, format, type,
-		        data != null ? ((GWTDataView) data.nativeBufferDetails().getBuffer()).getView() : null);
+		        data != null ? ((DataView) data.nativeBufferDetails().getBuffer()) : null);
 	}
 
 	public void glTexImage2D(int target, int level, int internalF, int width, int height, int border, int format,
@@ -418,6 +418,16 @@ public class WebGraphicsPlatform implements IGraphicsPlatorm {
 	@Override
 	public int glGetProgrami(int program, int flag) {
 		return WebGL10.glGetProgramParameter(program, flag);
+	}
+
+	@Override
+	public void glReadPixels(int x, int y, int w, int h, int format, int type, MemoryBuffer pixels) {
+		WebGL10.glReadPixels(x, y, w, h, format, type, (DataView) pixels.nativeBufferDetails().getBuffer());
+	}
+
+	@Override
+	public void glReadBuffer(int glFront) {
+		WebGL20.glReadBuffer(glFront);
 	}
 
 }

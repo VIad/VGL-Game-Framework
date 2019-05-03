@@ -50,7 +50,7 @@ public class Result<T> {
 		tryRun(result.get());
 	}
 
-	@SupportedPlatforms(values = { Platform.DESKTOP_X64, Platform.DESKTOP_X86 })
+	@SupportedPlatforms(values = Platform.DESKTOP)
 	public T get() {
 		return successRes;
 	}

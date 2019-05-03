@@ -1,7 +1,9 @@
 package vgl.web;
 
-import com.vgl.gwtreq.client.GWTArrayBuffer;
-import com.vgl.gwtreq.client.GWTDataView;
+import com.google.gwt.typedarrays.client.ArrayBufferNative;
+import com.google.gwt.typedarrays.client.DataViewNative;
+import com.google.gwt.typedarrays.shared.ArrayBuffer;
+import com.google.gwt.typedarrays.shared.DataView;
 
 import vgl.core.buffers.BufferDetails;
 import vgl.core.buffers.MemoryBuffer;
@@ -9,9 +11,9 @@ import vgl.main.VGL;
 
 public class WebMemoryBuffer extends MemoryBuffer {
 
-	private GWTArrayBuffer		buffer;
+	private ArrayBuffer		buffer;
 
-	private GWTDataView			dataView;
+	private DataView			dataView;
 
 	private static int			endian			= 0;
 	private static final int	LITTLE_ENDIAN	= 1;
@@ -24,52 +26,52 @@ public class WebMemoryBuffer extends MemoryBuffer {
 		if (endian == 0) {
 			endian = isLittleEndian() ? LITTLE_ENDIAN : BIG_ENDIAN;
 		}
-		this.buffer = new GWTArrayBuffer(capacity);
-		this.dataView = new GWTDataView(buffer);
+		this.buffer = ArrayBufferNative.create(capacity);
+		this.dataView = DataViewNative.create(buffer);
 		this.details = new BufferDetails(dataView, capacity);
 	}
 
-	public WebMemoryBuffer(GWTArrayBuffer arrayBuffer) {
+	public WebMemoryBuffer(ArrayBuffer arrayBuffer) {
 		super(0);
 		if (endian == 0) {
 			endian = isLittleEndian() ? LITTLE_ENDIAN : BIG_ENDIAN;
 		}
 		this.buffer = arrayBuffer;
-		this.dataView = new GWTDataView(buffer);
+		this.dataView = DataViewNative.create(buffer);
 		this.details = new BufferDetails(dataView, capacity);
 	}
 
 	@Override
 	public WebMemoryBuffer putInt(int index, int value) {
-		dataView.getView().setInt32(index, value, endian == LITTLE_ENDIAN);
+		dataView.setInt32(index, value, endian == LITTLE_ENDIAN);
 		return this;
 	}
 
 	@Override
 	public WebMemoryBuffer putByte(int index, int value) {
-		dataView.getView().setInt8(index, value);
+		dataView.setInt8(index, value);
 		return this;
 	}
 
 	@Override
 	public WebMemoryBuffer putFloat(int index, float value) {
-		dataView.getView().setFloat32(index, value, endian == LITTLE_ENDIAN);
+		dataView.setFloat32(index, value, endian == LITTLE_ENDIAN);
 		return this;
 	}
 
 	@Override
 	public int readInt(int index) {
-		return dataView.getView().getInt32(index, endian == LITTLE_ENDIAN);
+		return dataView.getInt32(index, endian == LITTLE_ENDIAN);
 	}
 
 	@Override
 	public float readFloat(int index) {
-		return dataView.getView().getFloat32(index, endian == LITTLE_ENDIAN);
+		return dataView.getFloat32(index, endian == LITTLE_ENDIAN);
 	}
 
 	@Override
 	public byte readByte(int index) {
-		return dataView.getView().getInt8(index);
+		return dataView.getInt8(index);
 	}
 
 	@Override

@@ -7,9 +7,6 @@ import com.google.gwt.dom.client.Document;
 import com.shc.webgl4j.client.WebGL10;
 import com.shc.webgl4j.client.WebGL20;
 import com.shc.webgl4j.client.WebGLContext;
-import com.vgl.gwtreq.client.CanvasDetails;
-import com.vgl.gwtreq.client.Dim;
-import com.vgl.gwtreq.client.VGWT;
 
 import vgl.core.annotation.UnusedParameter;
 import vgl.core.exception.VGLException;
@@ -18,6 +15,9 @@ import vgl.core.internal.ProcessManager;
 import vgl.main.VGL;
 import vgl.platform.AbstractContext;
 import vgl.platform.IPlatformContext;
+import vgl.tools.Dim;
+import vgl.web.utils.JSRenderInfoContainer;
+import vgl.web.utils.WebLogger;
 
 public class WebContext extends AbstractContext<VGLWebApplication> implements IPlatformContext {
 
@@ -25,7 +25,7 @@ public class WebContext extends AbstractContext<VGLWebApplication> implements IP
 
 	private WebGLContext	wglContext;
 
-	private CanvasDetails	details;
+	private CanvasElement	details;
 
 	public WebContext(VGLWebApplication app) {
 		super(app);
@@ -52,10 +52,22 @@ public class WebContext extends AbstractContext<VGLWebApplication> implements IP
 		canvas = Canvas.wrap(ce = (CanvasElement) Document.get().getElementById(application.renderTargetID));
 		// canvasDetails = VGWT.getDetailsFromDocument(app.renderTargetID);
 		initGL();
-
 		application.set(new Dim(ce.getWidth(), ce.getHeight()));
-		this.details = new CanvasDetails(ce);
-		
+		this.details = ce;
+		JSRenderInfoContainer.setCanvasElement(ce);
+	}
+	
+	@Override
+	protected void initGL() {
+		VGL.logger = new WebLogger();
+		WebGLContext.Attributes attributes = WebGLContext.Attributes.create();
+		attributes.setPreserveDrawingBuffer(true);
+		VGL.logger.info("attr : "+attributes);
+		if (WebGL20.isSupported())
+			wglContext = WebGL20.createContext(canvas, attributes);
+		else
+			wglContext = WebGL10.createContext(canvas, attributes);
+		Checks.__setglinit(true);
 	}
 
 	private long	last	= System.currentTimeMillis();
@@ -82,31 +94,24 @@ public class WebContext extends AbstractContext<VGLWebApplication> implements IP
 				application.fixedUpdate();
 			}
 			loopEnd();
-			ProcessManager.get()
-			              .runOnRender();
 			application.render();
+			ProcessManager.get()
+                          .runOnRender();
 			fps++;
 		} catch (VGLException e) {
 			VGL.errorChannel.forward(() -> e);
 		}
 		if (!shouldStop()) {
-			VGWT.requestAnimation();
+			JSRenderInfoContainer.requestFrame();
 		}
 	}
 
 	@Override
 	protected void startLoop() throws VGLException {
-		VGWT.requestAnimation();
+		JSRenderInfoContainer.requestFrame();
 	}
 
-	@Override
-	protected void initGL() {
-		if (WebGL20.isSupported())
-			wglContext = WebGL20.createContext(canvas);
-		else
-			wglContext = WebGL10.createContext(canvas);
-		Checks.__setglinit(true);
-	}
+	
 
 	@Override
 	protected void preLoop() {
@@ -116,7 +121,7 @@ public class WebContext extends AbstractContext<VGLWebApplication> implements IP
 
 	@Override
 	protected void postLoop() throws VGLException {
-		VGWT.requestAnimation();
+		JSRenderInfoContainer.requestFrame();
 	}
 
 	@Override
@@ -137,8 +142,8 @@ public class WebContext extends AbstractContext<VGLWebApplication> implements IP
 		return canvas;
 	}
 
-	public CanvasDetails getCanvasDetails() {
-		return details;
+	public CanvasElement getCanvasDetails() {
+		return this.details;
 	}
 
 }

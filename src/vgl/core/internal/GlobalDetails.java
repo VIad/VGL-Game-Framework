@@ -8,9 +8,6 @@ public class GlobalDetails {
 	private static Platform					platform;
 	private static vgl.main.Application	application;
 
-	public static int osArchitectueBits() {
-		return platform == Platform.DESKTOP_X64 ? 64 : 32;
-	}
 
 	/**
 	 * 

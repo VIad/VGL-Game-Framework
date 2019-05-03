@@ -7,10 +7,10 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.typedarrays.client.Uint8ArrayNative;
 import com.google.gwt.typedarrays.shared.ArrayBuffer;
 import com.google.gwt.typedarrays.shared.ArrayBufferView;
+import com.google.gwt.typedarrays.shared.DataView;
 import com.google.gwt.typedarrays.shared.Float32Array;
 import com.google.gwt.typedarrays.shared.Uint8Array;
 import com.google.gwt.user.client.Window;
-import com.vgl.gwtreq.client.GWTDataView;
 
 import vgl.core.buffers.MemoryBuffer;
 import vgl.core.exception.VGLFatalError;
@@ -73,6 +73,43 @@ abstract public class WebSpecific {
 			((ISpecifier<IResource.ResourceState>)image).specify(ResourceState.AVAILABLE);
 			onComplete.invoke(image);
 		}
+		
+		public static native void getImageData(String dataURL, Callback<Image> success, Callback<String> error) /*-{
+		var img = $doc.createElement("img");
+	    img.src = dataURL;
+	    img.style.display = "none";
+	    function isPowerOfTwo(x)
+	    {
+	        return (x & (x - 1)) == 0;
+	    }
+	    function nextHighestPowerOfTwo(x)
+	    {
+	        --x;
+	        for (var i = 1; i < 32; i <<= 1)
+	        {
+	            x = x | x >> i;
+	        }
+	        return x + 1;
+	    }
+	    img.onload = function ()
+	    {
+	        var canvas = $doc.createElement("canvas");
+	        //canvas.width = isPowerOfTwo(img.width) ? img.width : nextHighestPowerOfTwo(img.width);
+	       //canvas.height = isPowerOfTwo(img.height) ? img.height : nextHighestPowerOfTwo(img.height);
+	       canvas.width = img.width;
+	       canvas.height = img.height;
+	        var ctx = canvas.getContext("2d");
+	        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+	        var pix = ctx.getImageData(0, 0, canvas.width, canvas.height);
+	        $doc.body.removeChild(img);
+	        @vgl.web.WebSpecific.JS::jsLoadedCallback(*)(pix, canvas.width, canvas.height,
+	            img.width, img.height, success);
+	    };
+	    img.onerror = function(e){
+	    	error.@vgl.tools.functional.callback.Callback::invoke(*)("unable to get image");
+	    }
+	    $doc.body.appendChild(img);
+		}-*/;
 		
 		public static native void getImage(ArrayBuffer memory, Callback<Image> success, Callback<String> error) /*-{
 	    var arrayBufferView = new Uint8Array(memory);
@@ -138,7 +175,7 @@ abstract public class WebSpecific {
 		public static ArrayBuffer cast(MemoryBuffer buffer) {
 			if(buffer.getClass() != WebMemoryBuffer.class)
 				throw new VGLFatalError("This buffer is not supported by web platform");
-			return ((GWTDataView) buffer.nativeBufferDetails().getBuffer()).getView().buffer();
+			return ((DataView) buffer.nativeBufferDetails().getBuffer()).buffer();
 		}
 		
 		public static native void setTimeout(int ms, Runnable action)/*-{

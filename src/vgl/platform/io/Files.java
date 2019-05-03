@@ -5,8 +5,7 @@ import vgl.platform.Platform;
 
 public interface Files {
 
-	@SupportedPlatforms(values = { Platform.DESKTOP_X64,
-			                       Platform.DESKTOP_X86})
+	@SupportedPlatforms(values = Platform.DESKTOP)
 	FileDetails external(String path);
 
 	FileDetails resource(String path);

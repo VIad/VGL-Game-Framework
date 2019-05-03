@@ -211,7 +211,7 @@ public class ShaderTokener {
 		// }
 		String shaderSrcActual = shaderSrc;
 		if (to == Platform.WEB) {
-			shaderSrcActual = translate(shaderSrc, type, Platform.DESKTOP_X64);
+			shaderSrcActual = translate(shaderSrc, type, Platform.DESKTOP);
 
 		}
 		String[] lines = shaderSrcActual.split("\n");

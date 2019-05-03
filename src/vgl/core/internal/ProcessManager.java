@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import vgl.core.annotation.VGLInternal;
+import vgl.core.internal.Tasking.When;
 import vgl.main.VGL;
 
 public class ProcessManager {
@@ -44,12 +45,22 @@ public class ProcessManager {
 		return this;
 	}
 	
-	public ProcessManager runLater(Runnable runnable, int ms, boolean sync) {
-		tasking.runLater(runnable, ms, sync);
+	public ProcessManager runLater(Runnable runnable, int ms) {
+		tasking.runLater(runnable, ms);
+		return this;
+	}
+	
+	public ProcessManager runLater(Runnable runnable, int ms, When when) {
+		tasking.runLater(runnable, ms, when);
 		return this;
 	}
 
 	public synchronized ProcessManager runNextUpdate(final Runnable runnable) {
+		InternalHandle.getHandle().enqueueOnUpdate(runnable);
+		return this;
+	}
+	
+	public synchronized ProcessManager runNextRender(final Runnable runnable) {
 		InternalHandle.getHandle().enqueueOnUpdate(runnable);
 		return this;
 	}
@@ -65,6 +76,10 @@ public class ProcessManager {
 	
 	public void runOnRender() {
 		renderLoops.forEach(Runnable::run);
+		InternalHandle.getHandle().getOnRenderQueue().removeIf((task) -> {
+			task.run();
+			return true;
+		});
 	}
 
 }

@@ -53,7 +53,7 @@ public class ShaderTokenerV2 {
 				shd = shd.replaceAll(colName, "g_FragColor");
 			}
 		}
-		if(target == Platform.DESKTOP_X64) {
+		if(target == Platform.DESKTOP) {
 			shd = shd.replaceAll("precision highp float;", "");
 			
 		}

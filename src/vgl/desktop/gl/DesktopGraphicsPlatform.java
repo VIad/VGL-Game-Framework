@@ -462,4 +462,14 @@ public class DesktopGraphicsPlatform implements IGraphicsPlatorm {
 		return GL20.glGetProgrami(program, flag);
 	}
 
+	@Override
+	public void glReadPixels(int x, int y, int w, int h, int format, int type, MemoryBuffer pixels) {
+		GL11.glReadPixels(x, y, w, h, format, type, (java.nio.ByteBuffer) pixels.nativeBufferDetails().getBuffer());
+	}
+
+	@Override
+	public void glReadBuffer(int glFront) {
+		GL11.glReadBuffer(glFront);
+	}
+
 }

@@ -2,8 +2,6 @@ package vgl.web.io;
 
 import java.util.Arrays;
 
-import com.vgl.gwtreq.client.GWTArrayBuffer;
-
 import vgl.core.buffers.MemoryBuffer;
 import vgl.core.exception.VGLIOException;
 import vgl.core.exception.VGLRuntimeException;
@@ -32,7 +30,7 @@ public class WebIOSystem extends IOSystem {
 		request.setOnReadyStateChange(xhr -> {
 			if (request.getReadyState() == XMLHttpRequest.DONE) {
 				if (request.getStatus() == 200) {
-					result.invoke(new WebMemoryBuffer(new GWTArrayBuffer(request.getResponseArrayBuffer())));
+					result.invoke(new WebMemoryBuffer(request.getResponseArrayBuffer()));
 				}
 			}
 		});

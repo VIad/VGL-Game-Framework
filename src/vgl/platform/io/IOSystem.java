@@ -13,8 +13,7 @@ abstract public class IOSystem {
 
 	abstract public void readString(final FileDetails file, final Callback<String> result, ReadOption... options);
 	
-	@SupportedPlatforms(values = { Platform.DESKTOP_X64,
-			                       Platform.DESKTOP_X86})
+	@SupportedPlatforms(values = { Platform.DESKTOP})
 	abstract public MemoryBuffer readBytes(final FileDetails file);
 	
 	@Deprecated

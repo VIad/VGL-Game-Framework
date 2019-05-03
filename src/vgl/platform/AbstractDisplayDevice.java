@@ -2,9 +2,12 @@ package vgl.platform;
 
 import vgl.core.annotation.VGLInternal;
 import vgl.core.gfx.Color;
+import vgl.core.gfx.Image;
 import vgl.core.input.Cursor;
 import vgl.main.VGL;
 import vgl.platform.io.FileDetails;
+import vgl.tools.ScreenRecorder;
+import vgl.tools.functional.callback.Callback;
 
 abstract public class AbstractDisplayDevice {
 	
@@ -45,6 +48,10 @@ abstract public class AbstractDisplayDevice {
 		if(property.equals("focused")) {
 			this.focused = (Boolean) value;
 		}
+	}
+	
+	public void screenshot(Callback<Image> result) {
+		ScreenRecorder.captureScreen(result);
 	}
 	
 	abstract public void resize(int width, int height);

@@ -1,7 +1,7 @@
 package vgl.web;
 
-import com.vgl.gwtreq.client.Dim;
-import com.vgl.gwtreq.client.VGWT;
+import com.google.gwt.animation.client.AnimationScheduler;
+import com.google.gwt.animation.client.AnimationScheduler.AnimationCallback;
 
 import vgl.core.events.EventFeedback;
 import vgl.core.exception.VGLException;
@@ -11,11 +11,13 @@ import vgl.core.internal.GlobalDetails;
 import vgl.main.Application;
 import vgl.main.VGL;
 import vgl.platform.Platform;
+import vgl.tools.Dim;
 import vgl.web.audio.WebAudioPlatform;
 import vgl.web.input.WebInputSystem;
 import vgl.web.io.WebFiles;
 import vgl.web.io.WebIOSystem;
 import vgl.web.networking.WebNetworkSystem;
+import vgl.web.utils.JSRenderInfoContainer;
 import vgl.web.utils.WebLogger;
 import vgl.web.utils.WebPromptLogger;
 
@@ -26,25 +28,20 @@ abstract public class VGLWebApplication extends Application {
 
 	public VGLWebApplication(String documentCanvasId) {
 		super();
+		this.renderTargetID = documentCanvasId;
 		GlobalDetails.set((Application) this);
 		GlobalDetails.set(Platform.WEB);
-		this.renderTargetID = documentCanvasId;
 		this.context = new WebContext(this);
 		context.set();
 		WebGLExtensions.tryEnableAll();
 		initGlobals();
 		Checks.__setglinit(true);
-		try {
-			init();
-		} catch (VGLException e) {
-
-		}
-		VGWT.setAnimationCallback(timestamp -> {
+		
+		JSRenderInfoContainer.setAnimationCallback((timestamp) -> {
 			try {
 				context.loop(timestamp);
 			} catch (VGLException e) {
-				VGL.errorChannel
-				   .forward(() -> e);
+				VGL.errorChannel.forward(() -> e);
 			}
 		});
 		
@@ -61,12 +58,18 @@ abstract public class VGLWebApplication extends Application {
 	public void setFixedUpdateTimestamp(float seconds) {
 		this.context.setFixedUpdateTS(seconds);
 		this.fixedUpdateTs = seconds;
+		this.context.updateApplicationObject(this);
 	}
 	
 	@Override
 	public void startApplication() {
+		try {
+			init();
+		} catch (VGLException e) {
+			VGL.errorChannel.forward(() -> e);
+		}
 		VGL.display.setClearColor(Color.BLACK);
-		VGWT.requestAnimation();
+		JSRenderInfoContainer.requestFrame();
 	}
 
 	@Override
