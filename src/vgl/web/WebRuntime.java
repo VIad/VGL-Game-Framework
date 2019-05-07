@@ -1,40 +1,49 @@
 package vgl.web;
 
-import vgl.core.GameAdapter;
+import vgl.core.BasicState;
+import vgl.core.StateController;
 import vgl.core.exception.VGLException;
+import vgl.main.VGL;
 
 public class WebRuntime extends VGLWebApplication{
 
-	private GameAdapter gameAdapter;
+	private BasicState stateStorage;
 	
-	public WebRuntime(String documentCanvasId, GameAdapter gameAdapter) {
+	public WebRuntime(String documentCanvasId, BasicState stateStorage) {
 		super(documentCanvasId);
-		this.gameAdapter = gameAdapter;
+		this.stateStorage = stateStorage;
 	}
 
 	@Override
 	public void init() throws VGLException {
-		gameAdapter.init();
+		VGL.states.add(stateStorage);
+		VGL.states.setActive(stateStorage.getName());
 	}
 
 	@Override
 	public void render() throws VGLException {
-		gameAdapter.render();
+		VGL.states.render();
 	}
 
 	@Override
 	public void update() throws VGLException {
-		gameAdapter.update();
+		VGL.states.update();
 	}
 
 	@Override
 	public void finish() throws VGLException {
-		gameAdapter.finish();
+		VGL.states.finish();
 	}
 	
 	@Override
 	public void fixedUpdate() throws VGLException {
-		gameAdapter.fixedUpdate();
+		VGL.states.fixedUpdate();
+	}
+	
+	@Override
+	protected void initGlobals() {
+		super.initGlobals();
+		VGL.states = new StateController();
 	}
 
 }

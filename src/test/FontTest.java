@@ -113,7 +113,7 @@ public class FontTest {
 			gln.GlnKt.glViewport(window.getFramebufferSize());
 			
 
-			imgui.render();
+			imgui.onRender();
 			implGL3.renderDrawData(imgui.getDrawData());
 
 			gln.GlnKt.checkError("loop", true); // TODO remove

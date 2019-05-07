@@ -1,44 +1,54 @@
 package vgl.desktop;
 
-import vgl.core.GameAdapter;
+import java.util.HashMap;
+import java.util.Map;
+
+import vgl.core.BasicState;
+import vgl.core.StateControlledApplication;
+import vgl.core.StateController;
 import vgl.core.exception.VGLException;
+import vgl.core.internal.ProcessManager;
+import vgl.main.VGL;
 
-public class DesktopRuntime extends VGLApplication{
-
-	private GameAdapter gameAdapter;
+public class DesktopRuntime extends VGLApplication {
 	
-	public DesktopRuntime(String title, int window_width, int window_height) {
+	private BasicState stateStorage;
+	
+	public DesktopRuntime(String title, int window_width, int window_height, BasicState gameAdapter) {
 		super(title, window_width, window_height);
-	}
-	
-	public DesktopRuntime setAdapter(GameAdapter gameAdapter) {
-		this.gameAdapter = gameAdapter;
-		return this;
+		this.stateStorage = gameAdapter;
 	}
 
 	@Override
 	public void init() throws VGLException {
-		gameAdapter.init();
+		VGL.states.add(stateStorage);
+		VGL.states.setActive(stateStorage.getName());
 	}
 
 	@Override
 	public void render() throws VGLException {
-		gameAdapter.render();
+		VGL.states.render();
 	}
 
 	@Override
 	public void update() throws VGLException {
-		gameAdapter.update();
+		VGL.states.update();
 	}
 
 	@Override
 	public void finish() throws VGLException {
-		gameAdapter.finish();
+		VGL.states.finish();
 	}
 	
 	@Override
 	public void fixedUpdate() throws VGLException {
-		gameAdapter.fixedUpdate();
+		VGL.states.fixedUpdate();
+	}
+	
+	@Override
+	protected void initGlobals() {
+		super.initGlobals();
+		VGL.states = new StateController();
 	}
 
 }

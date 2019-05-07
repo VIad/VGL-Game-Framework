@@ -1,5 +1,6 @@
 package vgl.main;
 
+import vgl.core.StateController;
 import vgl.core.audio.IAudioPlatform;
 import vgl.core.events.EventFeedback;
 import vgl.core.input.IPlatformInputDevice;
@@ -40,9 +41,13 @@ public class VGL {
 	 * Methods for receiving cross-platform file I/O and other utilities
 	 */
 	public static IOSystem				io;
-	
+	/**
+	 * Framework for doing any kind of http requests
+	 */
 	public static Net                   net;
 
+	public static StateController       states;
+	
 	public static IPlatformInputDevice	input;
 	
 	public static IPlatformContext      context;

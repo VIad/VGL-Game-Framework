@@ -14,9 +14,8 @@ public class LayeredLayout implements ILayout {
 
 	public LayeredLayout() {
 		this.layerStack = new Stack<>();
-		ProcessManager.get()
-		              .registerRenderLoop(this::render)
-		              .registerUpdateLoop(this::update);
+		VGL.states.addOnActiveStateRender(this::render)
+				  .addOnActiveStateUpdate(this::update);
 	}
 
 	@Override

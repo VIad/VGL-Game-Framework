@@ -19,7 +19,7 @@ public class ScreenRecorder {
 
 	public static void captureScreen(Callback<Image> result) {
 		if (GlobalDetails.getPlatform() == Platform.DESKTOP) {
-
+			
 			int width = VGL.display.getWidth();
 			int height = VGL.display.getHeight();
 			Image image = new Image(width, height);
@@ -27,7 +27,6 @@ public class ScreenRecorder {
 			VGL.api_gfx.glReadBuffer(GL11.GL_FRONT);
 			VGL.api_gfx.glReadPixels(0, 0, VGL.display.getWidth(), VGL.display.getHeight(), GL11.GL_RGBA,
 					GL11.GL_UNSIGNED_BYTE, image.getPixels().getBuffer());
-			MemoryBufferInt memBufferInt = image.getPixels();
 
 			for (int y = 0; y < height; y++) {
 				for (int x = 0; x < width; x++) {
@@ -37,11 +36,13 @@ public class ScreenRecorder {
 			image.releaseMemory();
 
 			result.invoke(flipped);
-		}else{
+		} else {
 			String dataURL = ((VGLWebApplication) VGL.app).getContext().display().toDataUrl();
 			WebSpecific.JS.getImageData(dataURL, image -> {
 				result.invoke(image);
-			}, error -> {});
+			}, error -> {
+				VGL.promptLogger.promptMessage("Error taking screenshot");
+			});
 		}
 	}
 
